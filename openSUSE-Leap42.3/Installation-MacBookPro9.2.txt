@@ -1,0 +1,158 @@
+It is assumed that:
+
+  - openSUSE will be installed in EFI mode along with macOS;
+  - macOS is already installed on the MacBook Pro;
+  - the EFI partition that will be used to install openSUSE is different to the
+    macOS EFI partition, and
+  - a bootable USB stick containing the "Network CD/USB Stick" image is used to
+    install openSUSE.
+
+
+Install openSUSE
+--------------------------------------------------------------------------------
+
+1. Power on the MacBook Pro and keep the "alt" key pressed. Then select the
+   installation USB.
+
+2. Select "Install".
+
+3. Set language and keyboard layout.
+
+4. Set partition scheme.
+
+   In this step, the EFI partition for the openSUSE installation must be
+   different to the already existing EFI partition used by macOS. It is possible
+   to use the latter partition for installing openSUSE, as explained in [1], but
+   that is out of the scope of this document.
+
+5. Set clock and time zone.
+
+6. Set user interface.
+
+   Also, update the online repositories by clicking "Configure Online
+   Respositories" and selecting
+
+        "Main Repository (OSS)",
+        "Main Update Repository",
+        "Main Repository (Non-OSS)" and
+        "Main Update Repository (Non-OSS)".
+
+7. Create users.
+
+8. In the "Installation Settings" screen, check the installation information.
+
+9. Confirm and start the installation.
+
+10. When the installation process finishes, the computer should boot directly
+    into the new openSUSE installation. If that is not the case, the
+    instructions in [2] or [3] might be helpful to boot into the new system.
+
+
+Make openSUSE appear on MacBook Pro boot manager
+--------------------------------------------------------------------------------
+
+1. Install the required utilities for HFS+ filesystem
+
+        sudo zypper ar -f http://download.opensuse.org/repositories/home:/malcolmlewis:/openSUSE_General/openSUSE_Leap_42.3/ MalcolmLewis
+        sudo zypper refresh
+        sudo zypper install diskdev_cmds
+
+2. Find out the name of the disk where openSUSE is installed
+
+        sudo fdisk -l
+
+   It will be assumed that the installation was performed on "/dev/sdN", where N
+   is determined by the output of "fdisk -l".
+
+3. Create the new EFI partition
+
+        sudo gdisk /dev/sdN
+
+   Execute "p" and look for the partition number whose code is "EF00".
+
+   Execute "d" and specify the previous partition number.
+
+   Execute "n" and set 1 as partition number. For first sector and last sector
+   set the same values that this partition currently has. Finally, set "AF00" as
+   the filesystem code.
+
+   Execute "w".
+
+4. Find out the current partition mounted on "/boot/efi"
+
+        mount | grep /boot/efi
+
+   and unmount it
+
+        sudo umount /dev/sdXY
+
+   where X and Y are determined by the output of "mount | grep /boot/efi".
+
+5. Format the new EFI partition
+
+        sudo mkfs.hfsplus /dev/sdN1 -v openSUSE
+
+   where N is the same value from steps 2 and 3.
+
+6. Open "/etc/fstab"
+
+        sudo vi /etc/fstab
+
+   and delete the line that refers to "/boot/efi", save and close the file. Then
+
+        sudo bash -c 'echo UUID=$(blkid -o value -s UUID /dev/sdN1) /boot/efi auto defaults 0 0 >> /etc/fstab'
+
+7. Mount the new EFI partition
+
+        sudo mount /boot/efi
+
+8. Re-install grub on the new EFI partition
+
+        sudo mkdir -p /boot/efi/EFI/opensuse/
+        sudo bash -c 'echo "This file is required for booting" > /boot/efi/EFI/opensuse/mach_kernel'
+        sudo bash -c 'echo "This file is required for booting" > /boot/efi/mach_kernel'
+        sudo grub2-install --target x86_64-efi --boot-directory=/boot --efi-directory=/boot/efi --bootloader-id="opensuse"
+        sudo sed -i 's/GRUB_HIDDEN/#GRUB_HIDDEN/g' /etc/default/grub
+        sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+
+9. Make openSUSE's installation appear on the MacBook Pro boot manager
+
+ Option 1 (Recommended)
+
+        sudo mkdir -p /boot/efi/System/Library/CoreServices
+        sudo ln /boot/efi/EFI/opensuse/System/Library/CoreServices/boot.efi /boot/efi/System/Library/CoreServices/boot.efi
+        sudo cp /boot/efi/EFI/opensuse/System/Library/CoreServices/SystemVersion.plist /boot/efi/System/Library/CoreServices/
+
+ Option 2
+
+   Restart the computer and boot into macOS. Open a terminal and execute
+
+        sudo bless --folder /Volumes/openSUSE/EFI/opensuse/System/Library/CoreServices/ --file /Volumes/openSUSE/EFI/opensuse/System/Library/CoreServices/boot.efi
+
+10. To prevent macOS from mounting the EFI partition, restart the computer and
+    boot into macOS, then open a terminal and execute
+
+        diskutil info /Volumes/openSUSE | grep "Volume UUID" | awk 'NF>1{print $NF}'
+
+    copy the UUID value, then execute
+
+        sudo vifs
+
+    add the following line "UUID=<copied UUID value> none hfs rw,noauto", save
+    and close the file.
+
+11. In order for a custom icon to appear on the MacBook Pro boot manager, copy a
+    .icns file
+
+        sudo cp <file.icns> /Volumes/openSUSE/.VolumeIcon.icns
+
+
+REFERENCES
+--------------------------------------------------------------------------------
+[1] https://wiki.archlinux.org/index.php/mac#Installing_GRUB_to_EFI_partition_directly
+[2] https://medium.com/@mmiglier/ubuntu-installation-on-usb-stick-with-pure-efi-boot-mac-compatible-469ad33645c9
+[3] http://heeris.id.au/2014/ubuntu-plus-mac-pure-efi-boot/
+[4] https://glandium.org/blog/?p=2830
+[5] http://www.rodsbooks.com/efi-bootloaders/
+[6] https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
+[7] https://business.tutsplus.com/tutorials/how-to-create-a-bootable-ubuntu-usb-drive-for-mac-in-os-x--cms-21253

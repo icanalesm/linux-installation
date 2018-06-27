@@ -1,0 +1,35 @@
+#!/bin/bash
+
+BRIGHTNESS_FILE="/sys/class/backlight/intel_backlight/brightness"
+MAX_VAL=1800
+MOD_VAL=90
+CUR_VAL=$(cat $BRIGHTNESS_FILE)
+NEW_VAL=unset
+
+case $1 in
+up)
+	NEW_VAL=`expr $CUR_VAL + $MOD_VAL`
+	if [ $NEW_VAL -gt $MAX_VAL ]; then
+		NEW_VAL=$MAX_VAL
+	fi
+	;;
+down)
+	NEW_VAL=`expr $CUR_VAL - $MOD_VAL`
+	if [ $NEW_VAL -lt 0 ]; then
+		NEW_VAL=0
+	fi
+	;;
+full)
+	NEW_VAL=$MAX_VAL
+	;;
+off)
+	NEW_VAL=0
+	;;
+*)
+	echo $CUR_VAL
+	exit 1
+esac
+
+if [ $NEW_VAL != unset ]; then
+	echo $NEW_VAL > $BRIGHTNESS_FILE
+fi

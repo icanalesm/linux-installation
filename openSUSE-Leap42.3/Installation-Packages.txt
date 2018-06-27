@@ -1,0 +1,48 @@
+ Bootable (EFI) installation
+--------------------------------------------------------------------------------
+ aaa_base
+ dosfstools
+ e2fsprogs
+ grub2-x86_64-efi
+ kernel-default
+ kexec-tools
+ mokutil
+ shim
+
+ Useful files and tools
+--------------------------------------------------------------------------------
+ bash_doc
+ ca-certificates
+ ca-certificates-mozilla
+ command-not-found
+ gcc
+ gettext-runtime
+ git
+ glibc-locale
+ gptfdisk
+ hdparm
+ iproute2
+ iputils
+ laptop-mode-tools
+ logrotate
+ make
+ man
+ man-pages
+ ntp
+ pciutils
+ pcmciautils
+ perl
+ psmisc
+ screen
+ sensors
+ sudo
+ tar
+ unzip
+ unzip-doc
+ usbutils
+ vim
+ vim-data
+ wget
+ wpa_supplicant
+ zypper
+
