@@ -124,7 +124,7 @@ make
 sudo make install
 ```
 
-To allow user *\<user\>* to execute the script as *sudo* without password
+Configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without the password
 
 ```
 sudo visudo -f /etc/sudoers.d/brightness
