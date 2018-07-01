@@ -1,4 +1,4 @@
-# ArchLinux post-installation guide
+# ArchLinux post-installation guide - MacBook Pro 9.2
 
 The objective of this guide is to configure an ArchLinux system installation on a MacBook Pro 9.2 as described in [Installation-MacBookPro9.2.md](Installation-MacBookPro9.2.md).
 
