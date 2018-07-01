@@ -1,6 +1,6 @@
 # ArchLinux post-installation guide
 
-The objective of this guide is to configure an ArchLinux system installation on a MacBook Por 9.2 as described in [Installation-MacBookPro9.2.md](Installation-MacBookPro9.2.md).
+The objective of this guide is to configure an ArchLinux system installation on a MacBook Pro 9.2 as described in [Installation-MacBookPro9.2.md](Installation-MacBookPro9.2.md).
 
 **WARNING**: Put special attention when installing packages from [AUR](https://aur.archlinux.org/). As stated in [ArchWiki's AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository):
 > *Carefully check all files*. Carefully check the `PKGBUILD` and any .install file for malicious commands. `PKGBUILD`s are bash scripts containing functions to be executed by `makepkg`: these functions can contain any valid commands or Bash syntax, so it is totally possible for a `PKGBUILD` to contain dangerous commands through malice or ignorance on the part of the author. Since `makepkg` uses `fakeroot` (and should never be run as root), there is some level of protection but you should never count on it. If in doubt, do not build the package and seek advice on the forums or mailing list.
@@ -124,13 +124,13 @@ make
 sudo make install
 ```
 
-Allow user *\<user\>* to execute the script as *sudo* without password
+To allow user *\<user\>* to execute the script as *sudo* without password
 
 ```
 sudo visudo -f /etc/sudoers.d/brightness
 ```
 
-and adding the following line
+and add the following line
 
 ```
 <user> ALL=NOPASSWD:/usr/local/bin/brightctl
