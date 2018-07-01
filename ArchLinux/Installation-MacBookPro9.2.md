@@ -183,10 +183,11 @@ Open file `/etc/locale.gen`, uncomment the desired localisation(s), and generate
 locale-gen
 ```
 
-Create file `/etc/locale.conf` and add a line setting variable `LANG` to the desired localisation
+Create file `/etc/locale.conf` and add lines setting the variables [`LANG`](http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names) and [`LANGUAGE`](http://www.gnu.org/software/gettext/manual/gettext.html#The-LANGUAGE-variable) to the desired values
 
 ```
 LANG=<localisation>
+LANGUAGE=<list_languages>
 ```
 
 Make keyboard layout persistent by creating file `/etc/vconsole.conf` and adding a line setting variable `KEYMAP` to the desired layout (view "Set keyboard layout" above)
