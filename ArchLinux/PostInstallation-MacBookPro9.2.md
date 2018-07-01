@@ -82,9 +82,16 @@ If required, install the required library dependencies
 sudo pacman lbx11 ibxft libxinerama
 ```
 
-Download [dwm](https://dwm.suckless.org/), apply the desired customisations and patches, compile and install.
+Download [dwm](https://dwm.suckless.org/), apply the desired customisations and patches.
 
-To execute dwm, add `exec dwm` in a new line at the end of `~/.xinitrc` and execute `startx`.
+Compile and install
+
+```
+make
+sudo make install
+```
+
+To execute `dwm`, add `exec dwm` in a new line at the end of `~/.xinitrc` and execute `startx`.
 
 My customised version of dwm: [github.com/icanalesm/dwm](https://github.com/icanalesm/dwm).
 
@@ -117,14 +124,16 @@ git clone https://github.com/icanalesm/brightctl.git
 cd brightctl
 ```
 
-Apply the desired configuration. Afterwards, compile and install
+Apply the desired configuration.
+
+Compile and install
 
 ```
 make
 sudo make install
 ```
 
-Configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without the password
+To configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without the password, execute
 
 ```
 sudo visudo -f /etc/sudoers.d/brightness
