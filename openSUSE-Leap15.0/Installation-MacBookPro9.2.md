@@ -97,7 +97,7 @@ where *N* refers to some storage device and *i,j,k,l* refer to some partition nu
 
 7. Create users.
 
-8. In the "" screen, disable the firewall and install the packages in [Installation-Packages.md](Installation-Packages.md)).
+8. In the "Installation Settings" screen, disable the firewall and click "Software" to install the packages in [Installation-Packages.md](Installation-Packages.md).
 
 9. Confirm and start the installation.
 
