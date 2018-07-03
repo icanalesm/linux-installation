@@ -1,42 +1,97 @@
-# openSUSE Leap 15.0 post-installation guide - MacBook Pro (9.2)
+# openSUSE Leap 15.0 post-installation guide - MacBook Pro 9.2
 
-The objective of this guide is to configure a minimal openSUSE system installation on MacBook Por 9.2 as described in [Installation-MacBookPro9.2.md](Installation-MacBookPro9.2.md).
+The objective of this guide is to configure a minimal openSUSE system installation on a MacBook Pro 9.2 as described in [Installation-MacBookPro9.2.md](Installation-MacBookPro9.2.md).
 
 
 ## Post installation
 
-Follow the "Post installation" section of [PostInstallation.md](PostInstallation.md) and the procedure described in this document. When one of the following subsections appears in both, here and PostInstallation.md, the instructions in this document take precedence.
+### Configure keyboard layout
 
-### X Window System
-
-```
-sudo zypper install --no-recommends xorg-x11-server xorg-x11-fonts xf86-video-intel xf86-input-libinput xinit
-```
-
-In order to execute X without a display manager, open `/etc/permissions.local` and uncomment the line
+If necessary, set keyboard layout
 
 ```
-/usr/bin/Xorg  root:root  4711
+sudo localectl set-keymap <map>
 ```
 
-then execute
+where *\<map\>* is one of the available keyboard mappings from
 
 ```
-sudo chkstat --system --set
+localectl list-keymaps
 ```
 
-Optionally, configure keyboard for X
+### Timezone
+
+If necessary, set the timezone
 
 ```
-sudo localectl --no-convert set-x11-keymap <layout> apple_laptop mac
+sudo timedatectl set-timezone <timezone>
 ```
 
-where *<layout>* is one of the available layouts from
+where *\<timezone\>* is one of the available timezones from
 
 ```
-localectl list-x11-keymap-layouts
+timedatectl list-timezones
 ```
+
+NOTE: The `timezone` package contains the configuration files that describe the available timezones. If necessary, install it by executing
+
+```
+sudo zypper install timezone
+```
+
+### Locale
+
+```
+sudo localectl set-locale LANG=<localisation> 
+```
+
+where *\<localisation\>* is one of the available localisations from
+
+```
+localectl list-locales
+```
+
+### Hostname
+
+Open `/etc/hostname` and replace the default hostname with the desired new hostname *\<new hostname\>*.
+
+Open `/etc/hosts` and add 
+
+```
+127.0.1.1 <new hostname>.localdomain <new hostname>
+```
+
+in a new line after `127.0.0.1 localhost`.
+
+Finally, verify that the new configuration works by executing
+
+```
+ping <new hostname>
+```
+
+### Network manager
+
+#### NetworkManager
+
+```
+sudo zypper install --no-recommends NetworkManager yast2-network
+```
+
+Execute `yast` and under "System" select "Network Settings". In the "Global Options" tab set "NetworkManager Service" as Network Setup Method.
+
+### Firewall
+
+#### firewalld
+
+`firewalld` should be installed by default. If that is not the case
+
+```
+sudo zypper install --no-recommends firewalld
+```
+
 ### Wi-Fi
+
+#### Broadcom 4331
 
 Install either the wl-driver (option 1) or firmware for b43 driver (option 2)
 
@@ -59,12 +114,138 @@ Install either the wl-driver (option 1) or firmware for b43 driver (option 2)
   sudo install_bcm43xx_firmware
   ```
 
-Install NetworkManager and the network yast module
+### Fonts
+
+#### Arimo, Cousine, Tinos
 
 ```
-sudo zypper install --no-recommends NetworkManager yast2-network
+sudo zypper install --no-recommends google-arimo-fonts google-cousine-fonts google-tinos-fonts
 ```
 
-Execute `yast` and under "System" select "Network Settings". In the "Global Options" tab set "NetworkManager Service" as Network Setup Method.
+#### Font Awesome
 
-Execute `nmtui` to manage network connections.
+```
+...
+```
+
+#### Inconsolata
+
+```
+sudo zypper install --no-recommends google-inconsolata-fonts
+```
+
+#### Open Sans
+
+```
+sudo zypper install --no-recommends google-opensans-fonts
+```
+
+
+### X Window System
+
+```
+sudo zypper install --no-recommends xorg-x11-server xf86-input-libinput xf86-video-intel xinit
+```
+
+In order to execute X without a display manager, open `/etc/permissions.local` and uncomment the line
+
+```
+/usr/bin/Xorg  root:root  4711
+```
+
+then execute
+
+```
+sudo chkstat --system --set
+```
+
+Optionally, configure the keyboard for X
+
+```
+sudo localectl --no-convert set-x11-keymap <layout> apple_laptop mac
+```
+
+where *\<layout\>* is one of the available layouts from
+
+```
+localectl list-x11-keymap-layouts
+```
+
+### Window manager
+
+#### dwm
+
+If required, install the required library dependencies
+
+```
+sudo zypper install --no-recommends libX11-devel libXft-devel libXinerama-devel
+```
+
+Download [dwm](https://dwm.suckless.org/), apply the desired customisations and patches.
+
+Compile and install
+
+```
+make
+sudo make install
+```
+
+To execute `dwm`, add `exec dwm` in a new line at the end of `~/.xinitrc` and execute `startx`.
+
+My customised version of dwm: [github.com/icanalesm/dwm](https://github.com/icanalesm/dwm).
+
+### Terminal emulator
+
+#### rxvt-unicode
+
+```
+sudo zypper install --no-recommends rxvt-unicode
+```
+
+### Color calibration
+
+```
+sudo zypper install --no-recommends xcalib
+```
+
+### Backlight control
+
+```
+git clone https://github.com/icanalesm/brightctl.git
+cd brightctl
+```
+
+Apply the desired configuration.
+
+Compile and install
+
+```
+make
+sudo make install
+```
+
+To configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without the password, execute
+
+```
+sudo visudo -f /etc/sudoers.d/brightness
+```
+
+and add the following line
+
+```
+<user> ALL=NOPASSWD:/usr/local/bin/brightctl
+```
+
+### Sound
+
+```
+sudo zypper install --no-recommends alsa alsa-utils alsa-plugins
+```
+
+Execute `alsamixer` to adjust the required playback controls.
+
+### Web browser
+
+```
+sudo zypper install --no-recommends MozillaFirefox
+```

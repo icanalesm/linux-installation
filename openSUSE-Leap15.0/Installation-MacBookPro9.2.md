@@ -6,6 +6,8 @@ The objective of this guide is to make an installation of a minimal openSUSE sys
 - openSUSE can be booted by pressing and holding `alt` after turning on the computer, and
 - neither [rEFIt](http://refit.sourceforge.net/) nor [rEFInd](http://www.rodsbooks.com/refind/) are used.
 
+In this guide, an installation of a minimal openSUSE system means that the packages to install are those required to boot the system and those that are requested by the user. The idea is to perform an *à la* [ArchLinux](https://www.archlinux.org/) installation. However, the procedure for making openSUSE bootable by pressing and holding `alt` is applicable for any kind of installation.
+
 It will be assumed that
 
 - macOS is already installed;
@@ -23,7 +25,7 @@ According to \[1\], MacBook's native EFI bootloader looks for `.efi` files insid
 * in the root of that partition, there is a file called `mach_kernel`, and
 * inside that partition, there is a `boot.efi` file inside `/System/Library/CoreServices`.
 
-Also, according to [1], it is possible to perform the installation with the already existing EFI partition used by macOS, but that is out of the scope of this guide.
+Also, according to \[1\], it is possible to perform the installation with the already existing EFI partition used by macOS, but that is out of the scope of this guide.
 
 Given the conditions above, the following partitions will be used for the openSUSE installation:
 
@@ -32,7 +34,7 @@ Given the conditions above, the following partitions will be used for the openSU
   /dev/sd*Ni* | /boot/EFI | EFI partition | EFI partition to be used for openSUSE
   /dev/sd*Nj* | / | ext4 | root partition
   /dev/sd*Nk* | /home | ext4 | home partition
-  /dev/sd*Nl* | swap | swap | swap partition
+  /dev/sd*Nl* | swap | swap | swap partition (non solid-state drives)
 
 where *N* refers to some storage device and *i,j,k,l* refer to some partition numbers. In theory, these partions need not be all in the same device. Many different disk and partition scenarios can exist, but those which have been tested successfully are listed below.
 
@@ -72,9 +74,34 @@ where *N* refers to some storage device and *i,j,k,l* refer to some partition nu
 
 ## Installation procedure
 
-Follow the "General installation procedure" of [Installation.md](Installation.md). During installation, set the partition scheme following what is described in the previous section.
+### General installation procedure
 
-When the installation process finishes, the computer should restart and boot directly into the new openSUSE installation. If that is not the case, the instructions in [2] or [3] might be helpful to boot into the new system.
+1. Power on the computer and boot from the installation USB.
+
+2. Select "Install".
+
+3. Set language and keyboard layout.
+
+4. When setting the user interface, first update the online repositories by clicking "Configure Online Repositories" and selecting
+
+   * "Main Repository (OSS)",
+   * "Main Update Repository",
+   * "Main Repository (Non-OSS)" and
+   * "Main Update Repository (Non-OSS)".
+
+   Then select any user interface. The packages to install will be selected right before starting the actual instalaltion.
+
+4. Set the partition scheme following what is described in the previous section. Particularly, an EFI System Partition must be present in the partition scheme.
+
+5. Set clock and time zone.
+
+7. Create users.
+
+8. In the "" screen, disable the firewall and install the packages in [Installation-Packages.md](Installation-Packages.md)).
+
+9. Confirm and start the installation.
+
+When the installation finishes, the computer should restart and boot openSUSE. If that is not the case, the instructions in \[2\] or \[3\] might be helpful to boot into the new system.
 
 ### Make openSUSE appear on MacBook's boot manager
 
@@ -158,20 +185,12 @@ When the installation process finishes, the computer should restart and boot dir
 
 9. Make MacBook's boot manager recognize the openSUSE installation
 
-   * Option 1 (Recommended)
-
-     ```
-     sudo mkdir -p /boot/efi/System/Library/CoreServices
-     sudo touch /boot/efi/mach_kernel
-     sudo ln /boot/efi/EFI/opensuse/System/Library/CoreServices/boot.efi /boot/efi/System/Library/CoreServices/boot.efi
-     sudo cp /boot/efi/EFI/opensuse/System/Library/CoreServices/SystemVersion.plist /boot/efi/System/Library/CoreServices/
-     ```
-
-   * Option 2: Restart the computer and boot into macOS. Open a terminal and execute
-
-     ```
-     sudo bless --folder /Volumes/openSUSE/EFI/opensuse/System/Library/CoreServices/ --file /Volumes/openSUSE/EFI/opensuse/System/Library/CoreServices/boot.efi
-     ```
+   ```
+   sudo mkdir -p /boot/efi/System/Library/CoreServices
+   sudo touch /boot/efi/mach_kernel
+   sudo ln /boot/efi/EFI/opensuse/System/Library/CoreServices/boot.efi /boot/efi/System/Library/CoreServices/boot.efi
+   sudo cp /boot/efi/EFI/opensuse/System/Library/CoreServices/SystemVersion.plist /boot/efi/System/Library/CoreServices/
+   ```
 
 10. In order for a custom icon to appear on the MacBook Pro boot manager, copy a `.icns` file
 
@@ -179,7 +198,7 @@ When the installation process finishes, the computer should restart and boot dir
     sudo cp <file.icns> /boot/efi/.VolumeIcon.icns
     ```
 
-11. To prevent macOS from automatically mounting the openSUSE EFI partition, restart the computer and boot into macOS. Execute
+11. To prevent macOS from automatically mounting the openSUSE EFI partition, boot into macOS and execute
 
     ```
     diskutil info /Volumes/openSUSE | grep "Volume UUID" | awk 'NF>1{print $NF}'
