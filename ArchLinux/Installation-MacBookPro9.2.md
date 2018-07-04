@@ -228,11 +228,11 @@ passwd
 
 #### Make ArchLinux appear on MacBook's boot manager
 
-Install **base-devel** package group and **git**
+Install the **base-devel** package group, **efibootmgr**, **grub** and **git**
 
 ```
 pacman -Syu --needed base-devel
-pacman -Syu git
+pacman -Syu efibootmgr grub git
 ```
 
 Create a user for building and installing the **hfsprogs** package from [AUR](https://aur.archlinux.org/)
@@ -318,12 +318,6 @@ Mount the new EFI partition
 
 ```
 mount /boot/efi
-```
-
-Install **grub** and **efibootmgr**
-
-```
-pacman -Syu grub efibootmgr
 ```
 
 Re-install grub on the new EFI partition
