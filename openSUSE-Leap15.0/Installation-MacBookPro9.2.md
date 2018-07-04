@@ -103,6 +103,70 @@ where *N* refers to some storage device and *i,j,k,l* refer to some partition nu
 
 When the installation finishes, the computer should restart and boot openSUSE. If that is not the case, the instructions in \[2\] or \[3\] might be helpful to boot into the new system.
 
+### Keyboard layout
+
+If necessary, set keyboard layout
+
+```
+sudo localectl set-keymap <map>
+```
+
+where *\<map\>* is one of the available keyboard mappings from
+
+```
+localectl list-keymaps
+```
+
+### Time zone
+
+If necessary, set the time zone
+
+```
+sudo timedatectl set-timezone <timezone>
+```
+
+where *\<timezone\>* is one of the available timezones from
+
+```
+timedatectl list-timezones
+```
+
+NOTE: The `timezone` package contains the configuration files that describe the available timezones. If necessary, install it by executing
+
+```
+sudo zypper install timezone
+```
+
+### Locale
+
+```
+sudo localectl set-locale LANG=<localisation> 
+```
+
+where *\<localisation\>* is one of the available localisations from
+
+```
+localectl list-locales
+```
+
+### Hostname
+
+Open `/etc/hostname` and replace the default hostname with the desired new hostname *\<new hostname\>*.
+
+Open `/etc/hosts` and add
+
+```
+127.0.1.1 <new hostname>.localdomain <new hostname>
+```
+
+in a new line after `127.0.0.1 localhost`.
+
+Finally, verify that the new configuration works by executing
+
+```
+ping <new hostname>
+```
+
 ### Make openSUSE appear on MacBook's boot manager
 
 1. Install the required utilities for HFS+ filesystem
