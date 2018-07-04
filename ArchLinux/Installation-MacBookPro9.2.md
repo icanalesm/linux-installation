@@ -156,11 +156,10 @@ genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
 ```
 
-Install **vim** package for manipulating files in the remaining of this guide
+Install **vim** for manipulating files in the remaining of this guide
 
 ```
-pacman -Sy
-pacman -S vim
+pacman -Syu vim
 ```
 
 #### Time zone
@@ -229,11 +228,11 @@ passwd
 
 #### Make ArchLinux appear on MacBook's boot manager
 
-Install **base-devel** package group and **git** package
+Install **base-devel** package group and **git**
 
 ```
-pacman -S --needed base-devel
-pacman -S git
+pacman -Syu --needed base-devel
+pacman -Syu git
 ```
 
 Create a user for building and installing the **hfsprogs** package from [AUR](https://aur.archlinux.org/)
@@ -321,10 +320,15 @@ Mount the new EFI partition
 mount /boot/efi
 ```
 
-Install **grub** and **efibootmgr** packages, and re-install grub on the new EFI partition
+Install **grub** and **efibootmgr**
 
 ```
-pacman -S grub efibootmgr
+pacman -Syu grub efibootmgr
+```
+
+Re-install grub on the new EFI partition
+
+```
 mkdir -p /boot/efi/EFI/archlinux
 touch /boot/efi/EFI/archlinux/mach_kernel
 grub-install --target x86_64-efi --boot-directory=/boot --efi-directory=/boot/efi --bootloader-id="archlinux"
