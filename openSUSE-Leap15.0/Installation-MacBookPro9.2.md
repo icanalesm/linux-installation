@@ -139,6 +139,8 @@ sudo zypper install timezone
 
 ### Locale
 
+If necessary, set locale
+
 ```
 sudo localectl set-locale LANG=<localisation> 
 ```
