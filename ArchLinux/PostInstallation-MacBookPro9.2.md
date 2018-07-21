@@ -158,3 +158,21 @@ Execute `alsamixer` to adjust the required playback controls.
 ```
 sudo pacman -Syu firefox
 ```
+
+### Power management
+
+#### TLP
+
+```
+sudo pacman -Syu tlp
+```
+
+Enable services required by `tlp` and mask `rfkill` service and socket to avoid conflicts
+
+```
+sudo systemctl enable tlp.service
+sudo systemctl enable tlp-sleep.service
+sudo systemctl mask systemd-rfkill.service
+sudo systemctl mask systemd-rfkill.socket
+```
+
