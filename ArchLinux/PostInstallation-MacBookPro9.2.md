@@ -38,6 +38,40 @@ cd b43-firmware
 makepkg -si
 ```
 
+### NTP
+
+#### chrony
+
+```
+sudo pacman -Syu chrony
+```
+
+`systemd-timesyncd.service` is in conflict with `chronyd.service`, so disable it first
+
+```
+sudo systemctl disable systemd-timesyncd.service
+```
+
+and then enable `chronyd.service`
+
+```
+sudo systemctl enable chronyd.service
+```
+
+Enable NetworkManager's dispatcher to inform *chrony* when the network status has changed
+
+```
+sudo systemctl enable NetworkManager-dispatcher.service
+```
+
+Install the dispatcher script
+
+```
+git clone https://aur.archlinux.org/networkmanager-dispatcher-chrony.git
+cd networkmanager-dispatcher-chrony/
+makepkg -si
+```
+
 ### Fonts
 
 #### Arimo, Cousine, Tinos
