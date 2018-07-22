@@ -230,3 +230,14 @@ Execute `alsamixer` to adjust the required playback controls.
 ```
 sudo zypper install --no-recommends MozillaFirefox
 ```
+
+### Keyboard
+
+#### Use function keys by default
+
+If the `F<num>` keys do not work, this is probably because the kernel driver for the keyboard has defaulted to using the media keys, thus it is required to use the `Fn` key to get the `F<num>` keys. To change this behaviour, set the `hid_apple fnmode` option to `2` in file `/etc/modprobe.d/hid_apple.conf`
+
+```
+options hid_apple fnmode=2
+```
+
