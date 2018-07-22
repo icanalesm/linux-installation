@@ -50,6 +50,32 @@ Install either the wl-driver (option 1) or firmware for b43 driver (option 2)
   sudo install_bcm43xx_firmware
   ```
 
+### NTP
+
+#### chrony
+
+```
+sudo zypper install --no-recommends chrony
+```
+
+`systemd-timesyncd.service` is in conflict with `chronyd.service`, so disable it first
+
+```
+sudo systemctl disable systemd-timesyncd.service
+```
+
+and then enable `chronyd.service`
+
+```
+sudo systemctl enable chronyd.service
+```
+
+Enable NetworkManager's dispatcher to inform chrony when the network status has changed
+
+```
+sudo systemctl enable NetworkManager-dispatcher.service
+```
+
 ### Fonts
 
 #### Arimo, Cousine, Tinos
