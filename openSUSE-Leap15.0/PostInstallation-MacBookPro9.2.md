@@ -76,6 +76,23 @@ Enable NetworkManager's dispatcher to inform chrony when the network status has 
 sudo systemctl enable NetworkManager-dispatcher.service
 ```
 
+### Power management
+
+#### TLP
+
+```
+sudo zypper install tlp
+```
+
+Enable services required by `tlp` and mask `rfkill` service and socket to avoid conflicts
+
+```
+sudo systemctl enable tlp.service
+sudo systemctl enable tlp-sleep.service
+sudo systemctl mask systemd-rfkill.service
+sudo systemctl mask systemd-rfkill.socket
+```
+
 ### Fonts
 
 #### Arimo, Cousine, Tinos
