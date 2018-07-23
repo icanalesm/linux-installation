@@ -123,6 +123,24 @@ makepkg -si
 sudo pacman -Syu xorg-server xf86-input-libinput xf86-video-intel xorg-xinit
 ```
 
+#### Configure tap for touchpad
+
+Add `Option "Tapping" "On"` to the *touchpad* section in file `40-libinput.conf`
+
+```
+...
+Section "InputClass"
+        Identifier "libinput touchpad catchall"
+        MatchIsTouchpad "on"
+        MatchDevicePath "/dev/input/event*"
+        Driver "libinput"
+        Option "Tapping" "On"
+EndSection
+...
+```
+
+File `40-libinput.conf` can be in either `/etc/X11/xorg.conf.d/` or `/usr/share/X11/xorg.conf.d/`
+
 ### Window manager
 
 #### dwm
