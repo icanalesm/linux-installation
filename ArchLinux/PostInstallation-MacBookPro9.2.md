@@ -46,25 +46,25 @@ makepkg -si
 sudo pacman -Syu chrony
 ```
 
-`systemd-timesyncd.service` is in conflict with `chronyd.service`, so disable it first
+`systemd-timesyncd.service` is in conflict with `chronyd.service`, so disable it first:
 
 ```
 sudo systemctl disable systemd-timesyncd.service
 ```
 
-and then enable `chronyd.service`
+and then enable `chronyd.service`:
 
 ```
 sudo systemctl enable chronyd.service
 ```
 
-Enable NetworkManager's dispatcher to inform *chrony* when the network status has changed
+Enable NetworkManager's dispatcher to inform chrony when the network status has changed:
 
 ```
 sudo systemctl enable NetworkManager-dispatcher.service
 ```
 
-Install the dispatcher script
+Install the dispatcher script:
 
 ```
 git clone https://aur.archlinux.org/networkmanager-dispatcher-chrony.git
@@ -80,7 +80,7 @@ makepkg -si
 sudo pacman -Syu ethtool smartmontools tlp tlp-rdw
 ```
 
-Enable services required by `tlp` and mask `rfkill` service and socket to avoid conflicts
+Enable services required by `tlp` and mask `rfkill` service and socket to avoid conflicts:
 
 ```
 sudo systemctl enable tlp.service
@@ -125,7 +125,7 @@ sudo pacman -Syu xorg-server xf86-input-libinput xf86-video-intel xorg-xinit
 
 #### Configure tap for touchpad
 
-Add `Option "Tapping" "On"` to the *touchpad* section in file `40-libinput.conf`
+Add `Option "Tapping" "On"` to the *touchpad* section in file `40-libinput.conf`:
 
 ```
 ...
@@ -139,21 +139,21 @@ EndSection
 ...
 ```
 
-File `40-libinput.conf` can be in either `/etc/X11/xorg.conf.d/` or `/usr/share/X11/xorg.conf.d/`
+File `40-libinput.conf` can be in either `/etc/X11/xorg.conf.d/` or `/usr/share/X11/xorg.conf.d/`.
 
 ### Window manager
 
 #### dwm
 
-If required, install the required library dependencies
+If required, install the required library dependencies:
 
 ```
-sudo pacman lbx11 ibxft libxinerama
+sudo pacman libx11 libxft libxinerama
 ```
 
 Download [dwm](https://dwm.suckless.org/), apply the desired customisations and patches.
 
-Compile and install
+Compile and install:
 
 ```
 make
@@ -197,14 +197,14 @@ cd brightctl
 
 Apply the desired configuration.
 
-Compile and install
+Compile and install:
 
 ```
 make
 sudo make install
 ```
 
-Configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without asking for the password
+Configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without asking for the password:
 
 ```
 sudo visudo -f /etc/sudoers.d/usercmds
@@ -245,7 +245,7 @@ options hid_apple fnmode=2
 
 ### Power off, reboot, suspend, hibernate
 
-Configure `sudo` to allow user *\<user\>* to execute the necessary *systemctl* system commands as *root* without asking for the password
+Configure `sudo` to allow user *\<user\>* to execute the necessary *systemctl* system commands as *root* without asking for the password:
 
 ```
 sudo visudo -f /etc/sudoers.d/usercmds

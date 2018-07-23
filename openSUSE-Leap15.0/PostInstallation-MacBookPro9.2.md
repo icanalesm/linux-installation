@@ -58,19 +58,19 @@ Install either the wl-driver (option 1) or firmware for b43 driver (option 2)
 sudo zypper install --no-recommends chrony
 ```
 
-`systemd-timesyncd.service` is in conflict with `chronyd.service`, so disable it first
+`systemd-timesyncd.service` is in conflict with `chronyd.service`, so disable it first:
 
 ```
 sudo systemctl disable systemd-timesyncd.service
 ```
 
-and then enable `chronyd.service`
+and then enable `chronyd.service`:
 
 ```
 sudo systemctl enable chronyd.service
 ```
 
-Enable NetworkManager's dispatcher to inform chrony when the network status has changed
+Enable NetworkManager's dispatcher to inform chrony when the network status has changed:
 
 ```
 sudo systemctl enable NetworkManager-dispatcher.service
@@ -84,7 +84,7 @@ sudo systemctl enable NetworkManager-dispatcher.service
 sudo zypper install --no-recommends ethtool smartmontools tlp tlp-rdw
 ```
 
-Enable services required by `tlp` and mask `rfkill` service and socket to avoid conflicts
+Enable services required by `tlp` and mask `rfkill` service and socket to avoid conflicts:
 
 ```
 sudo systemctl enable tlp.service
@@ -138,7 +138,7 @@ then execute
 sudo chkstat --system --set
 ```
 
-Optionally, configure the keyboard for X
+Optionally, configure the keyboard for X:
 
 ```
 sudo localectl --no-convert set-x11-keymap <layout> apple_laptop mac
@@ -152,7 +152,7 @@ localectl list-x11-keymap-layouts
 
 #### Configure tap for touchpad
 
-Add `Option "Tapping" "On"` to the *touchpad* section in file `40-libinput.conf`
+Add `Option "Tapping" "On"` to the *touchpad* section in file `40-libinput.conf`:
 
 ```
 ...
@@ -166,13 +166,13 @@ EndSection
 ...
 ```
 
-File `40-libinput.conf` can be in either `/etc/X11/xorg.conf.d/` or `/usr/share/X11/xorg.conf.d/`
+File `40-libinput.conf` can be in either `/etc/X11/xorg.conf.d/` or `/usr/share/X11/xorg.conf.d/`.
 
 ### Window manager
 
 #### dwm
 
-If required, install the required library dependencies
+If required, install the required library dependencies:
 
 ```
 sudo zypper install --no-recommends libX11-devel libXft-devel libXinerama-devel
@@ -180,7 +180,7 @@ sudo zypper install --no-recommends libX11-devel libXft-devel libXinerama-devel
 
 Download [dwm](https://dwm.suckless.org/), apply the desired customisations and patches.
 
-Compile and install
+Compile and install:
 
 ```
 make
@@ -216,14 +216,14 @@ cd brightctl
 
 Apply the desired configuration.
 
-Compile and install
+Compile and install:
 
 ```
 make
 sudo make install
 ```
 
-Configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without asking for the password
+Configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without asking for the password:
 
 ```
 sudo visudo -f /etc/sudoers.d/usercmds
@@ -264,7 +264,7 @@ options hid_apple fnmode=2
 
 ### Power off, reboot, suspend, hibernate
 
-Configure `sudo` to allow user *\<user\>* to execute the necessary *systemctl* system commands as *root* without asking for the password
+Configure `sudo` to allow user *\<user\>* to execute the necessary *systemctl* system commands as *root* without asking for the password:
 
 ```
 sudo visudo -f /etc/sudoers.d/usercmds
