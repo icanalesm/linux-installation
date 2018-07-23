@@ -259,3 +259,19 @@ If the `F<num>` keys do not work, this is probably because the kernel driver for
 options hid_apple fnmode=2
 ```
 
+### Power off, reboot, suspend, hibernate
+
+Configure `sudo` to allow user *\<user\>* to execute the necessary *systemctl* system commands as *root* without asking for the password
+
+```
+sudo visudo -f /etc/sudoers.d/usercmds
+```
+
+and add the following lines
+
+```
+## systemctl system commands
+<user> <hostname>=NOPASSWD:/usr/bin/systemctl poweroff,/usr/bin/systemctl reboot,/usr/bin/systemctl suspend,/usr/bin/systemctl hibernate
+```
+
+where *\<hostname\>* is the machine's hostname.
