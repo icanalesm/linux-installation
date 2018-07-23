@@ -223,17 +223,20 @@ make
 sudo make install
 ```
 
-To configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without the password, execute
+Configure `sudo` to allow user *\<user\>* to execute `brightctl` as *root* without asking for the password
 
 ```
-sudo visudo -f /etc/sudoers.d/brightness
+sudo visudo -f /etc/sudoers.d/usercmds
 ```
 
 and add the following line
 
 ```
-<user> ALL=NOPASSWD:/usr/local/bin/brightctl
+## brightctl commands
+<user> <hostname>=NOPASSWD:/usr/local/bin/brightctl
 ```
+
+where *\<hostname\>* is the machine's hostname.
 
 ### Sound
 
