@@ -174,12 +174,6 @@ My customised version of [slstatus](https://tools.suckless.org/slstatus): [githu
 sudo pacman -Syu rxvt-unicode
 ```
 
-#### xterm
-
-```
-sudo pacman -Syu xterm
-```
-
 ### Color calibration
 
 ```
