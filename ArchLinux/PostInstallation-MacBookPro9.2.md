@@ -77,7 +77,7 @@ makepkg -si
 #### TLP
 
 ```
-sudo pacman -Syu tlp
+sudo pacman -Syu ethtool smartmontools tlp tlp-rdw
 ```
 
 Enable services required by `tlp` and mask `rfkill` service and socket to avoid conflicts

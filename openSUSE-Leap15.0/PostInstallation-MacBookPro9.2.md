@@ -81,7 +81,7 @@ sudo systemctl enable NetworkManager-dispatcher.service
 #### TLP
 
 ```
-sudo zypper install tlp
+sudo zypper install --no-recommends ethtool smartmontools tlp tlp-rdw
 ```
 
 Enable services required by `tlp` and mask `rfkill` service and socket to avoid conflicts
