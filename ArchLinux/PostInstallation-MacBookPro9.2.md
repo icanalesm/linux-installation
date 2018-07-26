@@ -93,7 +93,6 @@ Configure radio devices in `/etc/defualt/tlp`
 
 ```
 DEVICES_TO_DISABLE_ON_STARTUP="bluetooth"
-DEVICES_TO_ENABLE_ON_STARTUP="wifi"
 DEVICES_TO_ENABLE_ON_SHUTDOWN="bluetooth"
 ```
 
