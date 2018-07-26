@@ -270,3 +270,12 @@ and add the following lines
 ```
 
 where *\<hostname\>* is the machine's hostname.
+
+### PDF viewer
+
+#### zathura
+
+```
+sudo pacman -Syu zathura poppler-data zathura-pdf-poppler
+```
+

@@ -295,3 +295,12 @@ and add the following lines
 ```
 
 where *\<hostname\>* is the machine's hostname.
+
+### PDF viewer
+
+#### zathura
+
+```
+sudo zypper install --no-recommends zathura poppler-data zathura-plugin-pdf-poppler
+```
+
