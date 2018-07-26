@@ -101,6 +101,23 @@ DEVICES_TO_ENABLE_ON_STARTUP="wifi"
 DEVICES_TO_ENABLE_ON_SHUTDOWN="bluetooth"
 ```
 
+### Power off, reboot, suspend, hibernate
+
+Configure `sudo` to allow user *\<user\>* to execute the necessary *systemctl* system commands as *root* without asking for the password:
+
+```
+sudo visudo -f /etc/sudoers.d/usercmds
+```
+
+and add the following lines
+
+```
+## systemctl system commands
+<user> <hostname>=NOPASSWD:/usr/bin/systemctl poweroff,/usr/bin/systemctl reboot,/usr/bin/systemctl suspend,/usr/bin/systemctl hibernate
+```
+
+where *\<hostname\>* is the machine's hostname.
+
 ### Fonts
 
 #### Arimo, Cousine, Tinos
@@ -158,7 +175,9 @@ where *\<layout\>* is one of the available layouts from
 localectl list-x11-keymap-layouts
 ```
 
-#### Configure tap for touchpad
+### Keyboard and touchpad configuration
+
+#### Tap for touchpad
 
 Add `Option "Tapping" "On"` to the *touchpad* section in file `40-libinput.conf`:
 
@@ -175,6 +194,23 @@ EndSection
 ```
 
 File `40-libinput.conf` can be in either `/etc/X11/xorg.conf.d/` or `/usr/share/X11/xorg.conf.d/`.
+
+#### Function keys
+
+The behaviour of `fn`+`F<num>` is configured by the `fnmode` option of the `hid_apple` kernel module via the `/etc/modprobe.d/hid_apple.conf` file.
+
+- To disable the `fn` key (`fn`+`F<num>` will behave like `F<num>` only), add the following line:
+  ```
+  options hid_apple fnmode=0
+  ```
+- To get `F<num>` by pressing `fn`+`F<num>`, add the following line:
+  ```
+  options hid_apple fnmode=1
+  ```
+- To get `F<num>` by pressing `F<num>`, add the following line:
+  ```
+  options hid_apple fnmode=2
+  ```
 
 ### Window manager
 
@@ -259,42 +295,6 @@ Execute `alsamixer` to adjust the required playback controls.
 ```
 sudo zypper install --no-recommends MozillaFirefox
 ```
-
-### Keyboard
-
-#### Function keys
-
-The behaviour of `fn`+`F<num>` is configured by the `fnmode` option of the `hid_apple` kernel module via the `/etc/modprobe.d/hid_apple.conf` file.
-
-- To disable the `fn` key (`fn`+`F<num>` will behave like `F<num>` only), add the following line:
-  ```
-  options hid_apple fnmode=0
-  ```
-- To get `F<num>` by pressing `fn`+`F<num>`, add the following line:
-  ```
-  options hid_apple fnmode=1
-  ```
-- To get `F<num>` by pressing `F<num>`, add the following line:
-  ```
-  options hid_apple fnmode=2
-  ```
-
-### Power off, reboot, suspend, hibernate
-
-Configure `sudo` to allow user *\<user\>* to execute the necessary *systemctl* system commands as *root* without asking for the password:
-
-```
-sudo visudo -f /etc/sudoers.d/usercmds
-```
-
-and add the following lines
-
-```
-## systemctl system commands
-<user> <hostname>=NOPASSWD:/usr/bin/systemctl poweroff,/usr/bin/systemctl reboot,/usr/bin/systemctl suspend,/usr/bin/systemctl hibernate
-```
-
-where *\<hostname\>* is the machine's hostname.
 
 ### PDF viewer
 
