@@ -246,11 +246,15 @@ sudo zypper install --no-recommends rxvt-unicode
 
 ### Color calibration
 
+#### xcalib
+
 ```
 sudo zypper install --no-recommends xcalib
 ```
 
 ### Backlight control
+
+#### brightctl
 
 ```
 git clone https://github.com/icanalesm/brightctl.git
@@ -290,6 +294,8 @@ sudo zypper install --no-recommends alsa alsa-utils alsa-plugins
 Execute `alsamixer` to adjust the required playback controls.
 
 ### Web browser
+
+#### Firefox
 
 ```
 sudo zypper install --no-recommends MozillaFirefox

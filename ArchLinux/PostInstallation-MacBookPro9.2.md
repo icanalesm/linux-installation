@@ -219,6 +219,8 @@ sudo pacman -Syu rxvt-unicode
 
 ### Color calibration
 
+#### xcalib
+
 ```
 git clone https://aur.archlinux.org/xcalib.git
 cd xcalib
@@ -226,6 +228,8 @@ makepkg -si
 ```
 
 ### Backlight control
+
+#### brightctl
 
 ```
 git clone https://github.com/icanalesm/brightctl.git
@@ -265,6 +269,8 @@ sudo pacman -Syu alsa-lib alsa-utils alsa-plugins
 Execute `alsamixer` to adjust the required playback controls.
 
 ### Web browser
+
+#### Firefox
 
 ```
 sudo pacman -Syu firefox
