@@ -234,7 +234,7 @@ To execute `dwm`, add `exec dwm` in a new line at the end of `~/.xinitrc` and ex
 
 My customised version of dwm: [github.com/icanalesm/dwm](https://github.com/icanalesm/dwm).
 
-My customised version of [slstatus](https://tools.suckless.org/slstatus): [github.com/icanalesm/slstatus](https://github.com/icanalesm/slstatus).
+tstat to set the status: [github.com/icanalesm/tstat](https://github.com/icanalesm/tstat).
 
 ### Terminal emulator
 
