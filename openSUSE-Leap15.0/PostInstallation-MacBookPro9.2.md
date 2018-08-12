@@ -19,10 +19,10 @@ Execute `yast` and under "System" select "Network Settings". In the "Global Opti
 
 #### firewalld
 
-`firewalld` should be installed by default. If that is not the case
-
 ```
 sudo zypper install --no-recommends firewalld
+sudo systemctl unmask firewalld.service
+sudo systemctl enable --now firewalld.service
 ```
 
 ### Wi-Fi
