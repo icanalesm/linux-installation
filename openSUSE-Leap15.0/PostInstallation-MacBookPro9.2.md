@@ -137,13 +137,6 @@ sudo zypper install --no-recommends google-arimo-fonts google-cousine-fonts goog
 sudo zypper install --no-recommends google-inconsolata-fonts
 ```
 
-#### Open Sans
-
-```
-sudo zypper install --no-recommends google-opensans-fonts
-```
-
-
 ### X Window System
 
 ```

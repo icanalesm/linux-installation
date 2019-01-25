@@ -133,14 +133,6 @@ sudo pacman -Syu ttf-font-awesome
 sudo pacman -Syu ttf-inconsolata 
 ```
 
-#### Open Sans
-
-```
-git clone https://aur.archlinux.org/ttf-opensans.git
-cd ttf-opensans
-makepkg -si
-```
-
 ### X Window System
 
 ```
