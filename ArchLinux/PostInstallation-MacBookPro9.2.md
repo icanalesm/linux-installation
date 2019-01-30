@@ -115,22 +115,22 @@ where *\<hostname\>* is the machine's hostname.
 
 ### Fonts
 
-#### Arimo, Cousine, Tinos
+#### IBM Plex
 
 ```
-sudo pacman -Syu ttf-croscore
+sudo pacman -Syu ttf-ibm-plex
+```
+
+#### Fira Mono
+
+```
+sudo pacman -Syu ttf-fira-mono
 ```
 
 #### Font Awesome
 
 ```
 sudo pacman -Syu ttf-font-awesome
-```
-
-#### Inconsolata
-
-```
-sudo pacman -Syu ttf-inconsolata 
 ```
 
 ### X Window System
@@ -273,6 +273,6 @@ sudo pacman -Syu firefox
 #### zathura
 
 ```
-sudo pacman -Syu zathura poppler-data zathura-pdf-poppler
+sudo pacman -Syu zathura poppler-data zathura-pdf-poppler zathura-ps zathura-djvu
 ```
 

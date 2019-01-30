@@ -119,22 +119,34 @@ where *\<hostname\>* is the machine's hostname.
 
 ### Fonts
 
-#### Arimo, Cousine, Tinos
+#### IBM Plex
 
 ```
-sudo zypper install --no-recommends google-arimo-fonts google-cousine-fonts google-tinos-fonts
+git clone https://github.com/IBM/plex.git
+cd plex
+sudo cp IBM-Plex-Devanagari/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
+sudo cp IBM-Plex-Mono/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
+sudo cp IBM-Plex-Sans/fonts/complete/ttf/*.ttf  /usr/share/fonts/truetype/
+sudo cp IBM-Plex-Sans-Condensed/fonts/complete/ttf/*.ttf  /usr/share/fonts/truetype/
+sudo cp IBM-Plex-Sans-Hebrew/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
+sudo cp IBM-Plex-Serif/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
+sudo cp IBM-Plex-Thai/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
+```
+
+#### Fira
+
+```
+git clone https://github.com/mozilla/Fira.git
+cd Fira
+sudo cp ttf/*ttf /usr/share/fonts/truetype/
 ```
 
 #### Font Awesome
 
 ```
-...
-```
-
-#### Inconsolata
-
-```
-sudo zypper install --no-recommends google-inconsolata-fonts
+git clone https://github.com/FortAwesome/Font-Awesome.git
+cd Font-Awesome
+sudo cp webfonts/*.ttf /usr/share/fonts/truetype/
 ```
 
 ### X Window System
@@ -299,6 +311,6 @@ sudo zypper install --no-recommends MozillaFirefox
 #### zathura
 
 ```
-sudo zypper install --no-recommends zathura poppler-data zathura-plugin-pdf-poppler
+sudo zypper install --no-recommends zathura poppler-data zathura-plugin-pdf-poppler zathura-plugin-ps zathura-plugin-djvu
 ```
 
