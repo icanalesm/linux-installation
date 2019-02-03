@@ -237,9 +237,9 @@ sudo make install
 
 To execute `dwm`, add `exec dwm` in a new line at the end of `~/.xinitrc` and execute `startx`.
 
-My customised version of dwm: [github.com/icanalesm/dwm](https://github.com/icanalesm/dwm).
+Useful tools for cutomisation: `xev`, `xfd`, `xfontsel`, `xprop`.
 
-tstat to set the status: [github.com/icanalesm/tstat](https://github.com/icanalesm/tstat).
+My customised version of dwm: [github.com/icanalesm/dwm](https://github.com/icanalesm/dwm).
 
 ### Terminal emulator
 
