@@ -306,6 +306,14 @@ Execute `alsamixer` to adjust the required playback controls.
 sudo zypper install --no-recommends MozillaFirefox
 ```
 
+### Image viewer
+
+#### feh
+
+```
+sudo zypper install --no-recommends feh ImageMagick
+```
+
 ### PDF viewer
 
 #### zathura

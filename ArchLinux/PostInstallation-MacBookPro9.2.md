@@ -268,6 +268,14 @@ Execute `alsamixer` to adjust the required playback controls.
 sudo pacman -Syu firefox
 ```
 
+### Image viewer
+
+#### feh
+
+```
+sudo pacman -Syu feh imagemagick
+```
+
 ### PDF viewer
 
 #### zathura
