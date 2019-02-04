@@ -1,12 +1,14 @@
 # openSUSE Leap 15.0 installation guide - MacBook Pro 9.2
 
-The objective of this guide is to make an installation of a minimal openSUSE system on a MacBook Pro 9.2. The installation will have the following characteristics:
+This guide shows how to perform an installation of openSUSE Leap 15.0 on a MacBook Pro 9.2, such that:
 
 - macOS is installed and booted by default;
 - openSUSE can be booted by pressing and holding `alt` after turning on the computer, and
 - neither [rEFIt](http://refit.sourceforge.net/) nor [rEFInd](http://www.rodsbooks.com/refind/) are used.
 
-In this guide, an installation of a minimal openSUSE system means that the packages to install are those required to boot the system and those that are requested by the user. The idea is to perform an *à la* [ArchLinux](https://www.archlinux.org/) installation. However, the procedure for making openSUSE bootable by pressing and holding `alt` is applicable for any kind of installation.
+The installation will be a minimal one, meaning that the packages to install are those required to boot the system and those requested by the user only.
+
+The procedure for making openSUSE bootable on a MacBook Pro 9.2 by pressing and holding `alt` is independent of the minimal installation, i.e. the procedure is applicable to any openSUSE Leap 15.0 installation.
 
 It will be assumed that
 
