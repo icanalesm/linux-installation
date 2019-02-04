@@ -12,10 +12,16 @@ For a bootable minimal installation:
 
 Additional useful packages:
 
+- ca-certificates
+- ca-certificates-mozilla
+- gcc
+- git
+- gptfdisk
 - iproute2
 - iputils
 - less
 - logrotate
+- make
 - man
 - man-pages
 - pciutils
@@ -23,14 +29,10 @@ Additional useful packages:
 - psmisc
 - timezone
 - tar
+- unzip
+- unzip-doc
 - usbutils
 - vim
 - vim-data
-- sudo
-- gptfdisk
-- make
-- gcc
-- git
-- ca-certificates
-- ca-certificates-mozilla
 - wget
+- sudo
