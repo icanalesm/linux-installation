@@ -1,10 +1,14 @@
 # ArchLinux installation guide - MacBook Pro 9.2
 
-The objective of this guide is to make an installation of ArchLinux on a MacBook Pro 9.2. The installation will have the following characteristics:
+This guide shows how to perform an installation of ArchLinux on a MacBook Pro 9.2, such that:
 
 - macOS is installed and booted by default;
 - ArchLinux can be booted by pressing and holding `alt` after turning on the computer, and
 - neither [rEFIt](http://refit.sourceforge.net/) nor [rEFInd](http://www.rodsbooks.com/refind/) are used.
+
+The installation will be a minimal one, meaning that the packages to install are those required to boot the system and those requested by the user only.
+
+The procedure for making openSUSE bootable on a MacBook Pro 9.2 by pressing and holding `alt` is independent of the minimal installation, i.e. the procedure is applicable to any ArchLinux installation.
 
 It will be assumed that
 
@@ -138,10 +142,10 @@ The higher a mirror is placed in the list, the more priority it is given when do
 
 This file will later be copied to the new system by `pacstrap`, so it is worth getting right.
 
-#### Install the **base** package group
+#### Install initial package groups
 
 ```
-pacstrap /mnt base
+pacstrap /mnt base base-devel
 ```
 
 #### Generate `/etc/fstab` file
@@ -156,10 +160,18 @@ genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
 ```
 
-Install **vim** for manipulating files in the remaining of this guide
+#### Manage packages
+
+Remove packages from **base** and **base-devel** according to [Installation-Packages.md](Installation-Packages.md)
 
 ```
-pacman -Syu vim
+pacman -Rs <package_1> ... <package_n>
+```
+
+Install additional packages according to [Installation-Packages.md](Installation-Packages.md)
+
+```
+pacman -Syu <package_1> ... <package_n>
 ```
 
 #### Time zone
@@ -227,13 +239,6 @@ passwd
 ```
 
 #### Make ArchLinux appear on MacBook's boot manager
-
-Install the **base-devel** package group, **efibootmgr**, **grub** and **git**
-
-```
-pacman -Syu --needed base-devel
-pacman -Syu efibootmgr grub git
-```
 
 Create a user for building and installing the **hfsprogs** package from [AUR](https://aur.archlinux.org/)
 
