@@ -28,15 +28,29 @@ sudo systemctl unmask firewalld.service
 sudo systemctl enable --now firewalld.service
 ```
 
-### WiFi
+### Wi-Fi
 
 #### Broadcom 4331
 
-```
-git clone https://aur.archlinux.org/b43-firmware.git
-cd b43-firmware
-makepkg -si
-```
+Install either the wl-driver (option 1) or firmware for b43 driver (option 2)
+
+* Option 1 (Recommended)
+
+  Install broadcom-wl-dkms wireless driver
+
+  ```
+  sudo pacman -Syu linux-headers broadcom-wl-dkms
+  ```
+
+* Option 2
+
+  Install firmware for b43 wireless driver
+
+  ```
+  git clone https://aur.archlinux.org/b43-firmware.git
+  cd b43-firmware
+  makepkg -si
+  ```
 
 ### NTP
 
