@@ -272,6 +272,12 @@ where *\<hostname\>* is the machine's hostname.
 sudo pacman -Syu alsa-lib alsa-utils alsa-plugins
 ```
 
+Add to `/etc/modprobe.d/sound.conf` the following line:
+
+```
+options snd_hda_intel model=intel-mac-auto
+```
+
 Execute `alsamixer` to adjust the required playback controls.
 
 ### Web browser
