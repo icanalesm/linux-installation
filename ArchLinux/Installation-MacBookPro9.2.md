@@ -8,7 +8,7 @@ This guide shows how to perform an installation of ArchLinux on a MacBook Pro 9.
 
 The installation will be a minimal one, meaning that the packages to install are those required to boot the system and those requested by the user only.
 
-The procedure for making openSUSE bootable on a MacBook Pro 9.2 by pressing and holding `alt` is independent of the minimal installation, i.e. the procedure is applicable to any ArchLinux installation.
+The procedure for making ArchLinux bootable on a MacBook Pro 9.2 by pressing and holding `alt` is independent of the minimal installation, i.e. the procedure is applicable to any ArchLinux installation.
 
 It will be assumed that
 
@@ -29,7 +29,7 @@ According to \[1\], MacBook's native EFI bootloader looks for `.efi` files insid
 
 Also, according to \[1\], it is possible to perform the installation with the already existing EFI partition used by macOS, but that is out of the scope of this guide.
 
-Given the conditions above, the following partitions must be exist for the ArchLinux installation:
+Given the conditions above, the following partitions will be used for the ArchLinux installation:
 
   Partition | Mount point | Type | Comments
   --------- | ----------- | ---- | --------
@@ -71,7 +71,7 @@ Power on the computer and boot from the installation USB.
 loadkeys <map>
 ```
 
-where *<map>* is one of the available layouts from
+where *\<map\>* is one of the available layouts from
 
 ```
 ls /usr/share/kbd/keymaps/**/*.map.gz
@@ -87,7 +87,7 @@ Verify that there is a working Internet connection
 ping archlinux.org
 ```
 
-If no connection is available, stop the dhcpcd service with `systemctl stop dhcpcd@<interface>` where *<interface>* can be tab-completed. Then configure the network as described in [ArchWiki's Network configuration](https://wiki.archlinux.org/index.php/Network_configuration).
+If no connection is available, stop the dhcpcd service with `systemctl stop dhcpcd@<interface>` where *\<interface\>* can be tab-completed. Then configure the network as described in [ArchWiki's Network configuration](https://wiki.archlinux.org/index.php/Network_configuration).
 
 #### Update the system clock
 
@@ -140,7 +140,7 @@ Packages to be installed must be downloaded from mirror servers, which are defin
 
 The higher a mirror is placed in the list, the more priority it is given when downloading a package. It is advisable to edit the file accordingly, and move the geographically closest mirrors to the top of the list (although other criteria should be taken into account).
 
-This file will later be copied to the new system by `pacstrap`, so it is worth getting right.
+This file will later be copied to the new system by `pacstrap`, so it is worth getting it right.
 
 #### Install initial package groups
 
@@ -180,7 +180,7 @@ pacman -Syu <package_1> ... <package_n>
 ln -sf /usr/share/zoneinfo/<Region>/<City> /etc/localtime
 ```
 
-where *<Region>* and *<City>* can be checked by executing `ls` in the `/usr/share/zoneinfo` and `/usr/share/zoneinfo/<Region>` directories, respectively. Then, generate `/etc/adjtime`
+where *\<Region\>* and *\<City\>* can be checked by executing `ls` in the `/usr/share/zoneinfo` and `/usr/share/zoneinfo/<Region>` directories, respectively. Then, generate `/etc/adjtime`
 
 ```
 hwclock --systohc
@@ -209,7 +209,7 @@ KEYMAP=<map>
 
 #### Network configuration
 
-Create file `/etc/hostname` and add a line with the desired hostname *<hostname>*
+Create file `/etc/hostname` and add a line with the desired hostname *\<hostname\>*
 
 ```
 <hostname>
