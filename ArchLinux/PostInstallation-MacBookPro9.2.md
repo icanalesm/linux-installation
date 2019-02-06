@@ -301,6 +301,6 @@ sudo pacman -Syu feh imagemagick
 #### zathura
 
 ```
-sudo pacman -Syu zathura poppler-data zathura-pdf-poppler zathura-ps zathura-djvu
+sudo pacman -Syu zathura zathura-pdf-mupdf zathura-ps zathura-djvu
 ```
 
