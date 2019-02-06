@@ -249,6 +249,14 @@ My customised version of dwm: [github.com/icanalesm/dwm](https://github.com/ican
 sudo zypper install --no-recommends rxvt-unicode
 ```
 
+### Terminal multiplexer
+
+#### tmux
+
+```
+sudo zypper install --no-recommends tmux
+```
+
 ### Color calibration
 
 #### xcalib

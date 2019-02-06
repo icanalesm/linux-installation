@@ -223,6 +223,14 @@ My customised version of dwm: [github.com/icanalesm/dwm](https://github.com/ican
 sudo pacman -Syu rxvt-unicode
 ```
 
+### Terminal multiplexer
+
+#### tmux
+
+```
+sudo pacman -Syu tmux
+```
+
 ### Color calibration
 
 #### xcalib
