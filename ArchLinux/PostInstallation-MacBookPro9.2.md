@@ -150,7 +150,7 @@ sudo pacman -Syu ttf-font-awesome
 ### X Window System
 
 ```
-sudo pacman -Syu xorg-server xf86-input-libinput xf86-video-intel xorg-xinit
+sudo pacman -Syu xorg-server xf86-input-libinput xf86-video-intel xorg-xinit xorg-xrandr
 ```
 
 ### Keyboard and touchpad configuration

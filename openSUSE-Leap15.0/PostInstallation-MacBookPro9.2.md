@@ -152,7 +152,7 @@ sudo cp webfonts/*.ttf /usr/share/fonts/truetype/
 ### X Window System
 
 ```
-sudo zypper install --no-recommends xorg-x11-server xf86-input-libinput xf86-video-intel xinit
+sudo zypper install --no-recommends xorg-x11-server xf86-input-libinput xf86-video-intel xinit xrandr
 ```
 
 In order to execute X without a display manager, open `/etc/permissions.local` and uncomment the line
