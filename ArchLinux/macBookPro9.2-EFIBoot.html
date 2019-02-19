@@ -77,10 +77,10 @@ up to and including the step before the boot loader, or follow
 <pre>$ useradd --create-home <i>&lt;user&gt;</i><br />$ passwd <i>&lt;user&gt;</i></pre>
 <p>and switch user</p>
 <pre>$ su <i>&lt;user&gt;</i><br />$ cd ~</pre>
-Install the <b>hfsprogs</b> package</p>
+<p>Install the <b>hfsprogs</b> package</p>
 <p><b>WARNING</b>: Carefully check the <a href="https://wiki.archlinux.org/index.php/PKGBUILD">PKGBUILD</a>, any
 <i>.install</i> files, and any other files in the package for malicious or dangerous commands.</p>
-<pre>$ git clone https://aur.archlinux.org/hfsprogs.git<br />$ cd hfsprogs<br />$ makepg -si</pre></div>
+<pre>$ git clone https://aur.archlinux.org/hfsprogs.git<br />$ cd hfsprogs<br />$ makepg -si</pre>
 <p>Switch back to <i>root</i> user by executing <code>exit</code> or pressing <kbd>Ctrl</kbd>+<kbd>D</kbd>.</p>
 
 <h3>Fix EFI partition</h3>
