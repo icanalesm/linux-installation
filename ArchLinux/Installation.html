@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>Arch Linux installation procedure</title>
+</head>
+
+<article>
+<header>
+	<h1>Arch Linux installation procedure</h1>
+</header>
+
+<p><a href="https://wiki.archlinux.org">ArchWiki</a> has a detailed
+<a href="https://wiki.archlinux.org/index.php/Installation_guide">installation guide</a>. The instructions here are
+are heavily based on ArchWiki's guide. When some of the instructions here do not work, check ArchWiki.</p>
+
+<ol>
+<li><a href="#Preinstallation">Pre-installation</a></li>
+<li><a href="#Installation">Installation</a></li>
+</ol>
+
+<h2 id="Preinstallation">Pre-installation</h2>
+
+<p>Power on the computer and boot from the installation USB.</p>
+
+<h3 id="Keyboard_layout">Set keyboard layout</h3>
+<pre>$ loadkeys <i>&lt;map&gt;</i></pre>
+<p>where <code><i>&lt;map&gt;</i></code> is one of the available layouts from</p>
+<pre>$ ls /usr/share/kbd/keymaps/**/*.map.gz</pre>
+<p>omitting path and file extension.</p>
+
+<h3>Connect to the Internet</h3>
+<p>Verify that there is a working Internet connection</p>
+<pre>$ ping archlinux.org</pre>
+<p>If no connection is available, stop the dhcpcd service with</p>
+<pre>$ systemctl stop dhcpcd@<i>&lt;interface&gt;</i></pre>
+<p>where <code><i>&lt;interface&gt;</i></code> can be tab-completed. Then configure the network as described in
+<a href="https://wiki.archlinux.org/index.php/Network_configuration">ArchWiki's Network configuration</a>.</p>
+
+<h3>Update the system clock</h3>
+<pre>$ timedatectl set-ntp true</pre>
+
+<h3>Partition the disks</h3>
+<p>Set the partition scheme following what is described in <a href="#Partition_scheme">Partition scheme</a>.</p>
+
+<h3>Format the partitions</h3>
+<p>Format the partitions by executing</p>
+<pre>$ mkfs.fat -F32 /dev/sd<i>&lt;De&gt;</i><br />$ mkfs.ext4 /dev/sd<i>&lt;Dr&gt;</i><br />$ mkfs.ext4 /dev/sd<i>&lt;Dh&gt;</i></pre>
+<p>where <code><i>&lt;De&gt;</i></code>, <code><i>&lt;Dr&gt;</i></code> and <code><i>&lt;Dh&gt;</i></code> refer to the
+storage device and partition number of the EFI, root and home partitions, respectively. The value <code><i>D</i></code>
+is different for different devices, so change it according to the device corresponding to each partition.</p>
+<p>If a swap partition was created, initialise it with <code>mkswap</code></p>
+<pre>$ mkswap /dev/sd<i>&lt;Ds&gt;</i><br />$ swapon /dev/sd<i>&lt;Ds&gt;</i></pre>
+<p>where <code><i>&lt;Ds&gt;</i></code> refers to the storage device and partition number of the swap partition.</p>
+
+<h3>Mount the file systems</h3>
+<p>Mount the root partition under /mnt, and the EFI and home partitions under the root partition</p>
+<pre>$ mount /dev/sd<i>&lt;Dr&gt;</i> /mnt<br />$ mkdir -p /mnt/boot/efi<br />$ mount /dev/sd<i>&lt;De&gt;</i> /mnt/boot/efi<br />$ mkdir /mnt/home<br />$ mount /dev/sd<i>&lt;Dh&gt;</i> /mnt/home</pre>
+<p>where <code><i>&lt;De&gt;</i></code>, <code><i>&lt;Dr&gt;</i></code> and <code><i>&lt;Dh&gt;</i></code> are as
+explained above.</p>
+
+<h2 id="Installation">Installation</h3>
+
+<h3>Select the mirrors</h3>
+<p>Packages to be installed must be downloaded from mirror servers, which are defined in
+<code>/etc/pacman.d/mirrorlist</code>. The higher a mirror is placed in this file, the more priority it is given when
+downloading a package. Edit the file to assign the desired priority (e.g. prefer mirrors geographically closer.) This
+file will be copied to the new system, so it is advisable getting it right.</p>
+
+<h3>Install initial package groups</h3>
+<pre>$ pacstrap /mnt base base-devel</pre>
+
+<h3>Generate <code>/etc/fstab</code> file</h3>
+<pre>$ genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</pre>
+
+<h3>Change root into the new system</h3>
+<pre>$ arch-chroot /mnt</pre>
+
+<h3>Manage packages</h3>
+<p>Following the <a href="packages.html">list of packages</a>, remove packages from groups <b>base</b> and
+<b>base-devel</b></p>
+<pre>$ pacman -Rs <i>&lt;package<sub>1</sub>&gt;</i> ...<i>&lt;package<sub>n</sub>&gt;</i></pre>
+<p>and install the additional packages</p>
+<pre>$ pacman -Syu <i>&lt;package<sub>1</sub>&gt;</i> ...<i>&lt;package<sub>n</sub>&gt;</i></pre>
+
+<h3>Time zone</h3>
+<pre>$ ln -sf /usr/share/zoneinfo/<i>&lt;Region&gt;</i>/<i>&lt;City&gt;</i> /etc/localtime</pre>
+<p>where <code><i>&lt;Region&gt;</i></code> is one of the available options from</p>
+<pre>$ ls /usr/share/zoneinfo</pre>
+<p>and <code><i>&lt;City&gt;</i></code> is one of the available options from</p>
+<pre>$ ls /usr/share/zoneinfo/<i>&lt;Region&gt;</i></pre>
+<p>Then, generate <code>/etc/adjtime</code></p>
+<pre>$ hwclock --systohc</pre>
+
+<h3>Locale</h3>
+<p>Open <code>/etc/locale.gen</code>, uncomment the desired localisation(s), and generate them with</p>
+<pre>$ locale-gen</pre>
+<p>Create <code>/etc/locale.conf</code> and add lines setting the variables
+<a href="http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names"><code>LANG</code></a> and
+<a href="http://www.gnu.org/software/gettext/manual/gettext.html#The-LANGUAGE-variable"><code>LANGUAGE</code></a> to
+the desired values</p>
+<pre>LANG=<i>&lt;localisation&gt;</i><br />LANGUAGE=<i>&lt;list_languages&gt;</i></pre>
+<p>Make keyboard layout persistent by creating <code>/etc/vconsole.conf</code> and adding a line setting the variable
+<code>KEYMAP</code> to the desired layout (see <a href="packages.html">Set keyboard layout</a> above)</p>
+<pre>KEYMAP=<i>&lt;map&gt;</i></pre>
+
+<h3>Network configuration</h3>
+<p>Create <code>/etc/hostname</code> and add a line with the desired hostname <i>&lt;hostname&gt;</i>.</p>
+<p>Create <code>/etc/hosts</code> and add matching entries</p>
+<pre>127.0.0.1    localhost<br />127.0.1.1    <i>&lt;hostname&gt;</i>.localdomain    <i>&lt;hostname&gt;</i><br />::1          localhost</pre>
+<p>If the system has a permanent IP address, it should be used instead of <code>127.0.1.1</code>.</p>
+<p>Complete the network configuration for the newly installed environment as described in
+<a href="https://wiki.archlinux.org/index.php/Network_configuration" rel="nofollow">ArchWiki's Network configuration</a>.
+Finally, verify that there is a working Internet connection</p>
+<pre>$ ping archlinux.org</pre>
+
+<h3>Set root password</h3>
+<pre>$ passwd</pre>
+</article>
