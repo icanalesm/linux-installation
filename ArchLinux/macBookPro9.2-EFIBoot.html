@@ -74,13 +74,17 @@ up to and including the step before the boot loader, or follow
 <h3>Install utilities for HFS+ filesystem</h3>
 <p>Create a user for building and installing the <b>hfsprogs</b> package from
 <a href="https://aur.archlinux.org/">AUR</a></p>
-<pre>$ useradd --create-home <i>&lt;user&gt;</i><br />$ passwd <i>&lt;user&gt;</i></pre>
+<pre>$ useradd --create-home <i>&lt;user&gt;</i>
+$ passwd <i>&lt;user&gt;</i></pre>
 <p>and switch user</p>
-<pre>$ su <i>&lt;user&gt;</i><br />$ cd ~</pre>
+<pre>$ su <i>&lt;user&gt;</i>
+$ cd ~</pre>
 <p>Install the <b>hfsprogs</b> package</p>
 <p><b>WARNING</b>: Carefully check the <a href="https://wiki.archlinux.org/index.php/PKGBUILD">PKGBUILD</a>, any
 <i>.install</i> files, and any other files in the package for malicious or dangerous commands.</p>
-<pre>$ git clone https://aur.archlinux.org/hfsprogs.git<br />$ cd hfsprogs<br />$ makepg -si</pre>
+<pre>$ git clone https://aur.archlinux.org/hfsprogs.git
+$ cd hfsprogs
+$ makepg -si</pre>
 <p>Switch back to <i>root</i> user by executing <code>exit</code> or pressing <kbd>Ctrl</kbd>+<kbd>D</kbd>.</p>
 
 <h3>Fix EFI partition</h3>
@@ -111,12 +115,18 @@ the same values that the partition currently has. Finally, set <code>AF00</code>
 <pre>$ mount /boot/efi</pre>
 
 <h3>Install GRUB</h3>
-<pre>$ mkdir -p /boot/efi/EFI/archlinux<br />$ touch /boot/efi/EFI/archlinux/mach_kernel<br />$ grub-install --target x86_64-efi --boot-directory=/boot --efi-directory=/boot/efi --bootloader-id="archlinux"<br />$ grub-mkconfig -o /boot/grub/grub.cfg</pre>
+<pre>$ mkdir -p /boot/efi/EFI/archlinux
+$ touch /boot/efi/EFI/archlinux/mach_kernel
+$ grub-install --target x86_64-efi --boot-directory=/boot --efi-directory=/boot/efi --bootloader-id="archlinux"
+$ grub-mkconfig -o /boot/grub/grub.cfg</pre>
 <p>Open <code>/boot/efi/EFI/archlinux/System/Library/CoreServices/SystemVersion.plist</code> and modify the
 <i>ProductName</i> string value to <code>Linux</code> and the <em>ProductVersion</em> string value to
 <code>ArchLinux</code>.</p>
 <p>Make MacBook's boot manager recognize the ArchLinux installation</p>
-<pre>mkdir -p /boot/efi/System/Library/CoreServices<br />$ touch /boot/efi/mach_kernel<br />$ ln /boot/efi/EFI/archlinux/System/Library/CoreServices/boot.efi /boot/efi/System/Library/CoreServices/boot.efi<br />$ cp /boot/efi/EFI/archlinux/System/Library/CoreServices/SystemVersion.plist /boot/efi/System/Library/CoreServices/</pre>
+<pre>$ mkdir -p /boot/efi/System/Library/CoreServices
+$ touch /boot/efi/mach_kernel
+$ ln /boot/efi/EFI/archlinux/System/Library/CoreServices/boot.efi /boot/efi/System/Library/CoreServices/boot.efi
+$ cp /boot/efi/EFI/archlinux/System/Library/CoreServices/SystemVersion.plist /boot/efi/System/Library/CoreServices/</pre>
 <p>Create a new <code>initramfs</code></p>
 <pre>$ mkinitcpio -p linux</pre>
 <p>The system should now be bootable.</p>

@@ -8,12 +8,14 @@ body {
 h1,h2,h3 {
 	font-family: serif;
 }
-table, th, td {
-	border: 1px solid #444;
-	border-collapse: collapse;
-}
-th, td {
-	padding: 0.25em 0.5em;
+kbd {
+	margin: 0 .1em;
+	padding: 0.1em 0.6em;
+	font-size: 0.9em;
+	background-color: #e1e3e5;
+	border: 1px solid #adb3b9;
+	border-radius: .20em;
+	box-shadow: 0 1px 0 rgba(12,13,14,0.2),0 0 0 2px #FFF inset;
 }
 pre {
 	background-color: #ebf1f5;
@@ -22,15 +24,20 @@ pre {
 	overflow: auto;
 	padding: 1em;
 }
-kbd {
-	margin: 0 .1em;
-	padding: 0.1em 0.6em;
-	font-size: 0.9em;
-	text-shadow: 0 1px 0 #FFF;
-	background-color: #e1e3e5;
-	border: 1px solid #adb3b9;
-	border-radius: .20em;
-	box-shadow: 0 1px 0 rgba(12,13,14,0.2),0 0 0 2px #FFF inset;
+pre.header {
+	margin-bottom: 0;
+	border-bottom: none;
+}
+pre.content {
+	margin-top: 0;
+	border-top-style: dashed;
+}
+table, th, td {
+	border: 1px solid #444;
+	border-collapse: collapse;
+}
+th, td {
+	padding: 0.25em 0.5em;
 }
 @media print{
 	body{

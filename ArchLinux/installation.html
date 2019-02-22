@@ -56,17 +56,24 @@ heavily based on ArchWiki's guide. When some of the instructions here do not wor
 
 <h3>Format the partitions</h3>
 <p>Format the partitions by executing</p>
-<pre>$ mkfs.fat -F32 /dev/sd<i>&lt;De&gt;</i><br />$ mkfs.ext4 /dev/sd<i>&lt;Dr&gt;</i><br />$ mkfs.ext4 /dev/sd<i>&lt;Dh&gt;</i></pre>
+<pre>$ mkfs.fat -F32 /dev/sd<i>&lt;De&gt;</i>
+$ mkfs.ext4 /dev/sd<i>&lt;Dr&gt;</i>
+$ mkfs.ext4 /dev/sd<i>&lt;Dh&gt;</i></pre>
 <p>where <code><i>&lt;De&gt;</i></code>, <code><i>&lt;Dr&gt;</i></code> and <code><i>&lt;Dh&gt;</i></code> refer to the
 storage device and partition number of the EFI, root and home partitions, respectively. The value <code><i>D</i></code>
 is different for different devices, so change it according to the device corresponding to each partition.</p>
 <p>If a swap partition was created, initialise it with <code>mkswap</code></p>
-<pre>$ mkswap /dev/sd<i>&lt;Ds&gt;</i><br />$ swapon /dev/sd<i>&lt;Ds&gt;</i></pre>
+<pre>$ mkswap /dev/sd<i>&lt;Ds&gt;</i>
+$ swapon /dev/sd<i>&lt;Ds&gt;</i></pre>
 <p>where <code><i>&lt;Ds&gt;</i></code> refers to the storage device and partition number of the swap partition.</p>
 
 <h3>Mount the file systems</h3>
-<p>Mount the root partition under /mnt, and the EFI and home partitions under the root partition</p>
-<pre>$ mount /dev/sd<i>&lt;Dr&gt;</i> /mnt<br />$ mkdir -p /mnt/boot/efi<br />$ mount /dev/sd<i>&lt;De&gt;</i> /mnt/boot/efi<br />$ mkdir /mnt/home<br />$ mount /dev/sd<i>&lt;Dh&gt;</i> /mnt/home</pre>
+<p>Mount the root partition under <code>/mnt</code>, and the EFI and home partitions under the root partition</p>
+<pre>$ mount /dev/sd<i>&lt;Dr&gt;</i> /mnt
+$ mkdir -p /mnt/boot/efi
+$ mount /dev/sd<i>&lt;De&gt;</i> /mnt/boot/efi
+$ mkdir /mnt/home
+$ mount /dev/sd<i>&lt;Dh&gt;</i> /mnt/home</pre>
 <p>where <code><i>&lt;De&gt;</i></code>, <code><i>&lt;Dr&gt;</i></code> and <code><i>&lt;Dh&gt;</i></code> are as
 explained above.</p>
 
@@ -76,7 +83,7 @@ explained above.</p>
 <p>Packages to be installed must be downloaded from mirror servers, which are defined in
 <code>/etc/pacman.d/mirrorlist</code>. The higher a mirror is placed in this file, the more priority it is given when
 downloading a package. Edit the file to assign the desired priority (e.g. prefer mirrors geographically closer.) This
-file will be copied to the new system, so it is advisable getting it right.</p>
+file will be copied to the new system.</p>
 
 <h3>Install initial package groups</h3>
 <pre>$ pacstrap /mnt base base-devel</pre>
@@ -110,15 +117,23 @@ file will be copied to the new system, so it is advisable getting it right.</p>
 <a href="http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names"><code>LANG</code></a> and
 <a href="http://www.gnu.org/software/gettext/manual/gettext.html#The-LANGUAGE-variable"><code>LANGUAGE</code></a> to
 the desired values</p>
-<pre>LANG=<i>&lt;localisation&gt;</i><br />LANGUAGE=<i>&lt;list_languages&gt;</i></pre>
+<pre class="header">/etc/locale.conf</pre>
+<pre class="content">LANG=<i>&lt;localisation&gt;</i>
+LANGUAGE=<i>&lt;list_languages&gt;</i></pre>
 <p>Make keyboard layout persistent by creating <code>/etc/vconsole.conf</code> and adding a line setting the variable
 <code>KEYMAP</code> to the desired layout (see <a href="packages.html">Set keyboard layout</a> above)</p>
-<pre>KEYMAP=<i>&lt;map&gt;</i></pre>
+<pre class="header">/etc/vconsole.conf</pre>
+<pre class="content">KEYMAP=<i>&lt;map&gt;</i></pre>
 
 <h3>Network configuration</h3>
-<p>Create <code>/etc/hostname</code> and add a line with the desired hostname <i>&lt;hostname&gt;</i>.</p>
+<p>Create <code>/etc/hostname</code> and add a line with the desired hostname <code><i>&lt;hostname&gt;</i></code></p>
+<pre class="header">/etc/hostname</pre>
+<pre class="content"><i>&lt;hostname&gt;</i></pre>
 <p>Create <code>/etc/hosts</code> and add matching entries</p>
-<pre>127.0.0.1    localhost<br />127.0.1.1    <i>&lt;hostname&gt;</i>.localdomain    <i>&lt;hostname&gt;</i><br />::1          localhost</pre>
+<pre class="header">/etc/hosts</pre>
+<pre class="content">127.0.0.1    localhost
+127.0.1.1    <i>&lt;hostname&gt;</i>.localdomain    <i>&lt;hostname&gt;</i>
+::1          localhost</pre>
 <p>If the system has a permanent IP address, it should be used instead of <code>127.0.1.1</code>.</p>
 <p>Complete the network configuration for the newly installed environment as described in
 <a href="https://wiki.archlinux.org/index.php/Network_configuration" rel="nofollow">ArchWiki's Network configuration</a>.
