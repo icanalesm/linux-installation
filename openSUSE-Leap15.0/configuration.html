@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>openSUSE Leap 15.0 configuration</title>
+</head>
+
+<article>
+<header>
+	<h1>openSUSE Leap 15.0 configuration</h1>
+</header>
+
+<p>This guide shows how to configure <a href="installation.html">my minimal installation of openSUSE Leap 15.0</a>.</p>
+
+<h2>Network manager</h2>
+
+<h3>NetworkManager</h3>
+<pre>$ sudo zypper install --no-recommends NetworkManager yast2-network</pre>
+
+Execute <code>yast</code> and under "System" select "Network Settings". In the "Global Options" tab set
+"NetworkManager Service" as Network Setup Method.
+
+<h2>Firewall</h2>
+
+<h3>firewalld</h3>
+<pre>$ sudo zypper install --no-recommends firewalld
+$ sudo systemctl unmask firewalld.service
+$ sudo systemctl enable --now firewalld.service</pre>
+
+<h2>Wi-Fi</h2>
+
+<h3>Broadcom 4331 (MacBook Pro 9.2)</h3>
+<p>Install either the wl-driver (option 1) or firmware for b43 driver (option 2).</p>
+<ul>
+<li>
+<p>Option 1 (Recommended)</p>
+<p>Install broadcom-wl wireless driver from <a href="http://packman.links2linux.org/">Packman</a>:</p>
+<pre>$ sudo zypper ar -f http://packman.inode.at/suse/openSUSE_Leap_15.0/ Packman
+$ sudo zypper refresh
+$ sudo zypper install broadcom-wl broadcom-wl-kmp-default</pre>
+</li>
+<li>
+<p>Option 2</p>
+<p>Install firmware for b43 wireless driver:</p>
+<pre>$ sudo zypper install --no-recommends b43-fwcutter
+$ sudo install_bcm43xx_firmware</pre>
+</li>
+</ul>
+
+<h2>NTP</h2>
+
+<h3>chrony</h3>
+<pre>$ sudo zypper install --no-recommends chrony</pre>
+<p><code>systemd-timesyncd.service</code> is in conflict with <code>chronyd.service</code>, so disable it first:</p>
+<pre>$ sudo systemctl disable systemd-timesyncd.service</pre>
+<p>and then enable <code>chronyd.service</code>:</p>
+<pre>$ sudo systemctl enable chronyd.service</pre>
+<p>Enable NetworkManager's dispatcher to inform chrony when the network status has changed:</p>
+<pre>$ sudo systemctl enable NetworkManager-dispatcher.service</pre>
+
+<h2>Power management</h2>
+
+<h3>TLP</h3>
+<pre>$ sudo zypper install --no-recommends ethtool smartmontools tlp tlp-rdw</pre>
+<p>Enable services required by <code>tlp</code> and mask <code>rfkill</code> service and socket to avoid conflicts:</p>
+<pre>$ sudo systemctl enable tlp.service
+$ sudo systemctl enable tlp-sleep.service
+$ sudo systemctl mask systemd-rfkill.service
+$ sudo systemctl mask systemd-rfkill.socket</pre>
+<p>Configure radio devices in file <code>/etc/default/tlp</code>:</p>
+<pre class="header">/etc/default/tlp</pre>
+<pre class="content">DEVICES_TO_DISABLE_ON_STARTUP="bluetooth"
+DEVICES_TO_ENABLE_ON_SHUTDOWN="bluetooth"</pre>
+
+<h2>Power off, reboot, suspend, hibernate</h2>
+
+<p>Configure <code>sudo</code> to allow user <code><i>&lt;user&gt;</i></code> to execute the necessary
+<code>systemctl</code> system commands as <i>root</i> without asking for the password:</p>
+<pre>$ sudo visudo -f /etc/sudoers.d/usercmds</pre>
+<p>and add the following lines:</p>
+<pre class="header">/etc/sudoers.d/usercmds</pre>
+<pre class="content">## systemctl system commands
+<i>&lt;user&gt;</i> <i>&lt;hostname&gt;</i>=NOPASSWD:/usr/bin/systemctl poweroff,/usr/bin/systemctl reboot,/usr/bin/systemctl suspend,/usr/bin/systemctl hibernate</pre>
+<p>where <code><i>&lt;hostname&gt;</i></code> is the machine's hostname.</p>
+
+<h2>Fonts</h2>
+
+<h3>IBM Plex</h3>
+<pre>$ git clone https://github.com/IBM/plex.git
+$ cd plex
+$ sudo cp IBM-Plex-Devanagari/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
+$ sudo cp IBM-Plex-Mono/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
+$ sudo cp IBM-Plex-Sans/fonts/complete/ttf/*.ttf  /usr/share/fonts/truetype/
+$ sudo cp IBM-Plex-Sans-Condensed/fonts/complete/ttf/*.ttf  /usr/share/fonts/truetype/
+$ sudo cp IBM-Plex-Sans-Hebrew/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
+$ sudo cp IBM-Plex-Serif/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
+$ sudo cp IBM-Plex-Thai/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/</pre>
+
+<h3>Fira Mono</h3>
+<pre>$ git clone https://github.com/mozilla/Fira.git
+$ cd Fira
+$ sudo cp ttf/*ttf /usr/share/fonts/truetype/</pre>
+
+<h3>Font Awesome</h3>
+<pre>$ git clone https://github.com/FortAwesome/Font-Awesome.git
+$ cd Font-Awesome
+$ sudo cp webfonts/*.ttf /usr/share/fonts/truetype/</pre>
+
+<h2>X Window System</h2>
+
+<pre>$ sudo zypper install --no-recommends xorg-x11-server xf86-input-libinput xf86-video-intel xinit xrandr</pre>
+<p>In order to execute X without a display manager, open <code>/etc/permissions.local</code> and uncomment the line</p>
+<pre class="header">/etc/permissions.local</pre>
+<pre class="content">/usr/bin/Xorg  root:root  4711</pre>
+<p>then execute</p>
+<pre>$ sudo chkstat --system --set</pre>
+
+<h2>Keyboard and touchpad configuration</h2>
+
+<h3>Tap for touchpad</h3>
+<p>Add <code>Option "Tapping" "On"</code> to the <i>touchpad</i> section in file
+<code>/etc/X11/xorg.conf.d/40-libinput.conf</code>:</p>
+<pre class="header">/etc/X11/xorg.conf.d/40-libinput.conf</pre>
+<pre class="content">Section "InputClass"
+	Identifier "libinput touchpad catchall"
+	MatchIsTouchpad "on"
+	MatchDevicePath "/dev/input/event*"
+	Driver "libinput"
+	Option "Tapping" "On"
+EndSection</pre>
+<p>If the file does not exist, copy <code>40-libinput.conf</code> from <code>/usr/share/X11/xorg.conf.d/</code>.</p>
+
+<h3>Function keys (MacBook Pro 9.2)</h3>
+<p>The behaviour of <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd> is configured by the <code>fnmode</code> option of the
+<code>hid_apple</code> kernel module via the <code>/etc/modprobe.d/hid_apple.conf</code> file.</p>
+<ul>
+<li>To disable the <kbd>fn</kbd> key, add the following line:
+<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="content">options hid_apple fnmode=0</pre>
+</li>
+<li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd>, add the following
+    line:
+<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="content">options hid_apple fnmode=1</pre>
+</li>
+<li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>F<i>&lt;num&gt;</i></kbd>, add the following line:
+<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="content">options hid_apple fnmode=2</pre>
+</li>
+</ul>
+
+<h3>Optional - X keyboard configuration (MacBook Pro 9.2)</h3>
+<p>Optionally, configure the keyboard for X:</p>
+<pre>$ sudo localectl --no-convert set-x11-keymap <i>&lt;layout&gt;</i> apple_laptop mac</pre>
+<p>where <code><i>&lt;layout&gt;</i></code> is one of the available layouts from</p>
+<pre>$ localectl list-x11-keymap-layouts</pre>
+
+<h2>Window manager</h2>
+
+<h3>dwm</h3>
+<p>Install the required library dependencies:</p>
+<pre>$ sudo zypper install --no-recommends libX11-devel libXft-devel libXinerama-devel</pre>
+<p>Install <a href="https://github.com/icanalesm/dwm">my fork</a> of
+<a href="https://dwm.suckless.org/" rel="nofollow">dwm</a>:</p>
+<pre>$ git clone https://github.com/icanalesm/dwm.git
+$ cd dwm
+$ make
+$ sudo make install</pre>
+<p>To execute <code>dwm</code> with <code>startx</code>, add at the end of <code>~/.xinitrc</code> the following line:
+<pre class="header">~/.xinitrc</pre>
+<pre class="content">exec dwm</pre>
+
+<h2>Terminal emulator</h2>
+
+<h3>st</h3>
+<p>Install <a href="https://github.com/icanalesm/st">my fork</a> of
+<a href="https://st.suckless.org/" rel="nofollow">st</a>:</p>
+<pre>$ git clone https://github.com/icanalesm/st.git
+$ cd st
+$ make
+$ sudo make install</pre>
+
+<h2>Terminal multiplexer</h2>
+
+<h3>tmux</h3>
+<pre>$ sudo zypper install --no-recommends tmux</pre>
+
+<h2>Color calibration</h2>
+
+<h3>xcalib</h3>
+<pre>$ sudo zypper install --no-recommends xcalib</pre>
+
+<h2>Backlight control</h2>
+
+<h3>brightctl</h3>
+<pre>$ git clone https://github.com/icanalesm/brightctl.git
+$ cd brightctl</pre>
+<p>Apply the desired <a href="https://github.com/icanalesm/brightctl#configuration">configuration</a>.</p>
+<p>Compile and install:</p>
+<pre>$ make
+$ sudo make install</pre>
+<p>Configure <code>sudo</code> to allow user <code><i>&lt;user&gt;</i></code> to execute <code>brightctl</code> as
+<i>root</i> without asking for the password:</p>
+<pre>$ sudo visudo -f /etc/sudoers.d/usercmds</pre>
+<p>and add the following lines:</p>
+<pre class="header">/etc/sudoers.d/usercmds</pre>
+<pre class="content">## brightctl commands
+<i>&lt;user&gt;</i> <i>&lt;hostname&gt;</i>=NOPASSWD:/usr/local/bin/brightctl</pre>
+<p>where <code><i>&lt;hostname&gt;</i></code> is the machine's hostname.</p>
+
+<h2>Sound</h2>
+
+<pre>$ sudo zypper install --no-recommends alsa alsa-utils alsa-plugins</pre>
+<p>Execute <code>alsamixer</code> to adjust the required playback controls.</p>
+
+<h3>Configure controller (MacBook Pro 9.2)</h3>
+<p>Add to <code>/etc/modprobe.d/sound.conf</code> the following line:</p>
+<pre class="header">/etc/modprobe.d/sound.conf</pre>
+<pre class="content">options snd_hda_intel model=intel-mac-auto</pre>
+
+<h2>Web browser</h2>
+
+<h3>Firefox</h3>
+<pre>$ sudo zypper install --no-recommends MozillaFirefox</pre>
+
+<h2>Image viewer</h2>
+
+<h3>feh</h3>
+<pre>$ sudo zypper install --no-recommends feh ImageMagick</pre>
+
+<h2>PDF viewer</h2>
+
+<h3>zathura</h3>
+<pre>$ sudo zypper install --no-recommends zathura poppler-data zathura-plugin-pdf-poppler zathura-plugin-ps zathura-plugin-djvu</pre>
+</article>

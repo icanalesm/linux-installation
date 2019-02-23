@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>EFI boot openSUSE Leap 15.0 on MacBook Pro 9.2</title>
+</head>
+
+<article>
+<header>
+	<h1>EFI boot openSUSE Leap 15.0 on MacBook Pro 9.2</h1>
+</header>
+
+<ol>
+<li><a href="#Introduction">Introduction</a></li>
+<li><a href="#Partition_scheme">Partition scheme</a></li>
+<li><a href="#Installation">Installation</a></li>
+<li><a href="#EFIBoot">Make openSUSE bootable from MacBook's boot manager</a></li>
+<li><a href="#References">References</a></li>
+</ol>
+
+<h2 id="Introduction">Introduction</h2>
+
+<p>This guide shows how to perform an installation of <a href="https://www.opensuse.org">openSUSE</a> Leap 15.0 in
+<a href="https://en.wikipedia.org/wiki/Extensible_Firmware_Interface">UEFI</a> mode. The installation will be performed
+on a MacBook Pro 9.2 and will have the following characteristics:</p>
+<ul>
+<li>macOS is installed and booted by default;</li>
+<li>neither <a href="http://refit.sourceforge.net">rEFIt</a> nor <a href="http://www.rodsbooks.com/refind">rEFInd</a>
+    will be used, and</li>
+<li>openSUSE can be booted by pressing and holding <kbd>alt</kbd> after turning on the computer.</li>
+</ul>
+<p>It will be assumed that</p>
+<ul>
+<li>macOS is already installed;</li>
+<li>the EFI partition used to install openSUSE is not the same EFI partition used by macOS, and</li>
+<li>a bootable USB stick with the "Network Image" is used for the installation.</li>
+</ul>
+
+<h2 id="Partition_scheme">Partition scheme</h2>
+
+<p>According to <a href="#ref01">[1]</a>, the MacBook's native EFI bootloader looks for <code>.efi</code> files inside
+all partitions in internal and external drives and shows them as possible boot options if certain conditions are
+satisfied. Particularly, MacBooks can detect an existing macOS installation after checking that</p>
+<ul>
+<li>there is a partition formatted as HFS+;</li>
+<li>the partition contains the partition id <code>af00</code>;</li>
+<li>in the root of that partition, there is a file called <code>mach_kernel</code>, and</li>
+<li>inside that partition, there is a <code>boot.efi</code> file inside <code>/System/Library/CoreServices</code>.</li>
+</ul>
+<p>Also, according to <a href="#ref01">[1]</a>, it is possible to perform the installation with the already existing EFI
+partition used by macOS, but that is out of the scope of this guide.</p>
+
+<p>The following partition scheme will be used:</p>
+<table style="width:90%">
+	<tr><th>Mount point</th><th>Type</th><th>Comments</th></tr>
+	<tr><td>/boot/EFI</td><td>EFI partition</td><td></td></tr>
+	<tr><td>/</td><td>ext4</td><td>root partition</td></tr>
+	<tr><td>/home</td><td>ext4</td><td>home partition</td></tr>
+	<tr><td>swap</td><td>swap</td><td>in a non solid-state drive</td></tr>
+</table> 
+
+<h2 id="Installation">Installation</h2>
+
+Follow either the official
+<a href="https://doc.opensuse.org/documentation/leap/startup/html/book.opensuse.startup/cha.install.html">installation
+steps</a>, or follow <a href="installation.html">my installation procedure</a>. Then continue with this guide.
+
+<h2 id="EFIBoot">Make openSUSE bootable from MacBook's boot manager</h2>
+
+<h3>Install utilities for HFS+ filesystem</h3>
+<pre>$ sudo zypper ar -f http://download.opensuse.org/repositories/home:/malcolmlewis:/openSUSE_General/openSUSE_Leap_15.0/ MalcolmLewis
+$ sudo zypper refresh
+$ sudo zypper install diskdev_cmds</pre>
+
+<h3>Fix EFI partition</h3>
+<p>Find out the partition mounted on <code>/boot/efi</code></p>
+<pre>$ mount | grep /boot/efi</pre>
+<p>and unmount it</p>
+<pre>$ sudo umount /dev/sd<i>&lt;De&gt;</i></pre>
+<p>where <code><i>&lt;De&gt;</i></code> refers to the device identifier and partition number of the EFI partition.</p>
+<p>Update the EFI partition</p>
+<pre>$ sudo gdisk /dev/sd<i>&lt;D&gt;</i></pre>
+<ul>
+<li>Execute <code>p</code> and check that the EFI partition has number <code><i>e</i></code>.</li>
+<li>Execute <code>d</code> and specify partition number <code><i>e</i></code>.</li>
+<li>Execute <code>n</code> and set the same partition number <code><i>e</i></code>. For first sector and last sector set
+the same values that the partition currently has. Finally, set <code>AF00</code> as the filesystem code.</li>
+<li>Execute <code>w</code>.</li>
+</ul>
+<p>Format the EFI partition</p>
+<pre>$ sudo mkfs.hfsplus /dev/sd<i>&lt;De&gt;</i> -v openSUSE</pre>
+<p>where <code><i>&lt;De&gt;</i></code> are the same values as above.</p>
+
+<h3>Update <code>/etc/fstab</code> file</h3>
+<p>Open <code>/etc/fstab</code> and delete the line that refers to <code>/boot/efi</code>, save and close the file.</p>
+<p>Execute</p>
+<pre>$ sudo bash -c 'echo UUID=$(blkid -o value -s UUID /dev/sd<i>&lt;De&gt;</i>) /boot/efi auto defaults 0 0 &gt;&gt; /etc/fstab'</pre>
+<p>where <code><i>&lt;De&gt;</i></code> are the same values as above.</p>
+<p>Mount the EFI partition</p>
+<pre>$ sudo mount /boot/efi</pre>
+
+<h3>Reinstall GRUB</h3>
+<pre>$ sudo mkdir -p /boot/efi/EFI/openSUSE
+$ sudo touch /boot/efi/EFI/openSUSE/mach_kernel
+$ sudo grub2-install --target x86_64-efi --boot-directory=/boot --efi-directory=/boot/efi --bootloader-id="openSUSE"
+$ sudo sed -i 's/GRUB_HIDDEN/#GRUB_HIDDEN/g' /etc/default/grub
+$ sudo grub2-mkconfig -o /boot/grub/grub.cfg</pre>
+<p>Open <code>/boot/efi/EFI/openSUSE/System/Library/CoreServices/SystemVersion.plist</code> and modify the
+<i>ProductName</i> string value to <code>Linux</code> and the <em>ProductVersion</em> string value to
+<code>openSUSELeap15.0</code>.</p>
+<p>Make MacBook's boot manager recognize the openSUSE installation</p>
+<pre>$ sudo mkdir -p /boot/efi/System/Library/CoreServices
+$ sudo touch /boot/efi/mach_kernel
+$ sudo ln /boot/efi/EFI/openSUSE/System/Library/CoreServices/boot.efi /boot/efi/System/Library/CoreServices/boot.efi
+$ sudo cp /boot/efi/EFI/openSUSE/System/Library/CoreServices/SystemVersion.plist /boot/efi/System/Library/CoreServices/</pre>
+<p>The system should now be bootable.</p>
+
+<h3>Customise bootloader icon</h3>
+<p>In order for a custom icon to appear on the MacBook Pro boot manager, copy a <code>.icns</code> file to
+<code>/boot/efi/</code></p>
+<pre>$ sudo cp <i>&lt;file.icns&gt;</i> /boot/efi/.VolumeIcon.icns</pre>
+
+<h3>Prevent macOS from mounting the EFI partition</h3>
+<p>To prevent macOS from automatically mounting the openSUSE EFI partition, boot into macOS and execute</p>
+<pre>$ diskutil info /Volumes/openSUSE | grep "Volume UUID" | awk 'NF&gt;1{print $NF}'</pre>
+<p>copy the UUID value, then execute</p>
+<pre>$ sudo vifs</pre>
+<p>add</p>
+<pre>UUID=<i>&lt;copied UUID value&gt;</i> none hfs rw,noauto</pre>
+<p>in a new line, save and close the file.</p>
+
+<h2 id="References">References</h2>
+<ol>
+<li id="ref01"><a href="https://wiki.archlinux.org/index.php/mac" rel="nofollow">Mac - ArchWiki</a></li>
+<li id="ref02"><a href="https://medium.com/@mmiglier/ubuntu-installation-on-usb-stick-with-pure-efi-boot-mac-compatible-469ad33645c9" rel="nofollow">Ubuntu installation on USB stick with pure EFI boot (Mac compatible)</a></li>
+<li id="ref03"><a href="http://heeris.id.au/2014/ubuntu-plus-mac-pure-efi-boot" rel="nofollow">Ubuntu + Mac: Pure EFI Boot</a></li>
+<li id="ref04"><a href="https://glandium.org/blog/?p=2830" rel="nofollow">Debian EFI mode boot on a Macbook Pro, without rEFIt</a></li>
+<li id="ref05"><a href="http://www.rodsbooks.com/efi-bootloaders" rel="nofollow">Managing EFI Boot Loaders for Linux</a></li>
+<li id="ref06"><a href="https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface" rel="nofollow">Unified Extensible Firmware Interface - ArchWiki</a></li>
+</ol>
+</article>
