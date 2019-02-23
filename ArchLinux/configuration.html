@@ -76,15 +76,15 @@ $ makepkg -si</pre>
 $ sudo systemctl enable tlp-sleep.service
 $ sudo systemctl mask systemd-rfkill.service
 $ sudo systemctl mask systemd-rfkill.socket</pre>
-<p>Configure radio devices in file <code>/etc/defualt/tlp</code>:</p>
-<pre class="header">/etc/defualt/tlp</pre>
+<p>Configure radio devices in file <code>/etc/default/tlp</code>:</p>
+<pre class="header">/etc/default/tlp</pre>
 <pre class="content">DEVICES_TO_DISABLE_ON_STARTUP="bluetooth"
 DEVICES_TO_ENABLE_ON_SHUTDOWN="bluetooth"</pre>
 
 <h2>Power off, reboot, suspend, hibernate</h2>
 
-<p>Configure <code>sudo</code> to allow user <code><i>&lt;user&gt;</i></code> to execute the necessary <i>systemctl</i>
-system commands as <i>root</i> without asking for the password:</p>
+<p>Configure <code>sudo</code> to allow user <code><i>&lt;user&gt;</i></code> to execute the necessary
+<code>systemctl</code> system commands as <i>root</i> without asking for the password:</p>
 <pre>$ sudo visudo -f /etc/sudoers.d/usercmds</pre>
 <p>and add the following lines:</p>
 <pre class="header">/etc/sudoers.d/usercmds</pre>
