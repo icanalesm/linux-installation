@@ -5,12 +5,12 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../css/style.css">
-	<title>EFI boot Arch Linux on MacBook Pro 9.2</title>
+	<title>Arch Linux - EFI boot on MacBook Pro 9.2</title>
 </head>
 
 <article>
 <header>
-	<h1>EFI boot Arch Linux on MacBook Pro 9.2</h1>
+	<h1>Arch Linux - EFI boot on MacBook Pro 9.2</h1>
 </header>
 
 <ol>
@@ -23,21 +23,20 @@
 
 <h2 id="Introduction">Introduction</h2>
 
-<p>This guide shows how to perform an installation of <a href="https://www.archlinux.org">Arch Linux</a> in
-<a href="https://en.wikipedia.org/wiki/Extensible_Firmware_Interface">UEFI</a> mode. The installation will be performed
-on a MacBook Pro 9.2 and will have the following characteristics:</p>
+<p>This guide shows how install <a href="https://www.archlinux.org">Arch Linux</a> in
+<a href="https://en.wikipedia.org/wiki/Extensible_Firmware_Interface">UEFI</a> mode on a MacBook Pro 9.2. The
+installation will have the following characteristics:</p>
 <ul>
 <li>macOS is installed and booted by default;</li>
 <li>neither <a href="http://refit.sourceforge.net">rEFIt</a> nor <a href="http://www.rodsbooks.com/refind">rEFInd</a>
-    will be used, and</li>
+is used, and</li>
 <li>Arch Linux can be booted by pressing and holding <kbd>alt</kbd> after turning on the computer.</li>
 </ul>
 <p>It will be assumed that</p>
 <ul>
 <li>macOS is already installed;</li>
 <li>the EFI partition used to install Arch Linux is not the same EFI partition used by macOS, and</li>
-<li>an <a href="https://wiki.archlinux.org/index.php/USB_flash_installation_media">Arch Linux Installer USB</a> is used
-    for the installation.</li>
+<li>a <a href="https://wiki.archlinux.org/index.php/USB_flash_installation_media">USB installer</a> is used.</li>
 </ul>
 
 <h2 id="Partition_scheme">Partition scheme</h2>
@@ -55,26 +54,26 @@ satisfied. Particularly, MacBooks can detect an existing macOS installation afte
 partition used by macOS, but that is out of the scope of this guide.</p>
 
 <p>The following partition scheme will be used:</p>
-<table style="width:90%">
+<table style="width:90%; margin:auto;">
 	<tr><th>Mount point</th><th>Type</th><th>Comments</th></tr>
-	<tr><td>/boot/EFI</td><td>EFI partition</td><td></td></tr>
-	<tr><td>/</td><td>ext4</td><td>root partition</td></tr>
-	<tr><td>/home</td><td>ext4</td><td>home partition</td></tr>
-	<tr><td>swap</td><td>swap</td><td>in a non solid-state drive</td></tr>
+	<tr><td><code>/boot/EFI</code></td><td>EFI partition</td><td></td></tr>
+	<tr><td><code>/</code></td><td>ext4</td><td>root partition</td></tr>
+	<tr><td><code>/home</code></td><td>ext4</td><td>home partition</td></tr>
+	<tr><td><code>swap</code></td><td>swap</td><td>in a non solid-state drive</td></tr>
 </table> 
 
 <h2 id="Installation">Installation</h2>
 
-Follow either the <a href="https://wiki.archlinux.org/index.php/Installation_guide">ArchWiki's installation guide</a>,
-up to and including the step before the boot loader, or follow
-<a href="installation.html">my installation procedure</a>. Then continue with this guide.
+<p>Follow either the <a href="https://wiki.archlinux.org/index.php/Installation_guide">ArchWiki's installation guide</a>,
+up to and including the step before <b>Boot loader</b>, or <a href="installation.html">my installation guide</a> up to
+and including the step before <b>GRUB</b>. Then continue with this guide.</p>
 
 <h2 id="EFIBoot">Make Arch Linux bootable from MacBook's boot manager</h2>
 
 <h3>Install utilities for HFS+ filesystem</h3>
 <p>Create a user for building and installing the <b>hfsprogs</b> package from
 <a href="https://aur.archlinux.org/">AUR</a></p>
-<pre>$ useradd --create-home <i>&lt;user&gt;</i>
+<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>&lt;user&gt;</i>
 $ passwd <i>&lt;user&gt;</i></pre>
 <p>and switch user</p>
 <pre>$ su <i>&lt;user&gt;</i>
@@ -94,13 +93,13 @@ $ makepg -si</pre>
 <pre>$ umount /dev/sd<i>&lt;De&gt;</i></pre>
 <p>where <code><i>&lt;De&gt;</i></code> refers to the device identifier and partition number of the EFI partition.</p>
 <p>Update the EFI partition</p>
-<pre>$ gdisk /dev/sd<i>&lt;D&gt;</i></pre>
+<pre>$ fdisk /dev/sd<i>&lt;D&gt;</i></pre>
 <ul>
-<li>Execute <code>p</code> and check that the EFI partition has number <code><i>e</i></code>.</li>
-<li>Execute <code>d</code> and specify partition number <code><i>e</i></code>.</li>
-<li>Execute <code>n</code> and set the same partition number <code><i>e</i></code>. For first sector and last sector set
-the same values that the partition currently has. Finally, set <code>AF00</code> as the filesystem code.</li>
-<li>Execute <code>w</code>.</li>
+<li>Type <code>p</code> and look for the number <code><i>e</i></code> of the EFI partition number.</li>
+<li>Type <code>d</code> and specify the partition number <code><i>e</i></code>.</li>
+<li>Type <code>n</code> and specify the partition number <code><i>e</i></code>. For first and last sectors set the same
+values that the partition currently has. Finally, set <code>AF00</code> as the filesystem code.</li>
+<li>Type <code>w</code>.</li>
 </ul>
 <p>Format the EFI partition</p>
 <pre>$ mkfs.hfsplus /dev/sd<i>&lt;De&gt;</i> -v archlinux</pre>
@@ -115,7 +114,8 @@ the same values that the partition currently has. Finally, set <code>AF00</code>
 <pre>$ mount /boot/efi</pre>
 
 <h3>Install GRUB</h3>
-<pre>$ mkdir -p /boot/efi/EFI/archlinux
+<pre>$ pacman -Syu grub efibootmgr
+$ mkdir -p /boot/efi/EFI/archlinux
 $ touch /boot/efi/EFI/archlinux/mach_kernel
 $ grub-install --target x86_64-efi --boot-directory=/boot --efi-directory=/boot/efi --bootloader-id="archlinux"
 $ grub-mkconfig -o /boot/grub/grub.cfg</pre>
@@ -140,7 +140,7 @@ $ cp /boot/efi/EFI/archlinux/System/Library/CoreServices/SystemVersion.plist /bo
 <p>Exit the chroot environment by executing <code>exit</code> or pressing <kbd>Ctrl</kbd>+<kbd>D</kbd>.</p>
 <p>Optionally, unmount all the partitions</p>
 <pre>$ umount -R /mnt</pre>
-<p>Finally, restart the machine by executing <code>reboot</code>.</p>
+<p>Restart the machine by executing <code>reboot</code>.</p>
 
 <h3>Prevent macOS from mounting the EFI partition</h3>
 <p>To prevent macOS from automatically mounting the Arch Linux EFI partition, boot into macOS and execute</p>
