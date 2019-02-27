@@ -5,15 +5,35 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../css/style.css">
-	<title>openSUSE Leap 15.0 configuration</title>
+	<title>openSUSE Leap 15.0 - Configuration</title>
 </head>
 
 <article>
 <header>
-	<h1>openSUSE Leap 15.0 configuration</h1>
+	<h1>openSUSE Leap 15.0 - Configuration</h1>
 </header>
 
-<p>This guide shows how to configure <a href="installation.html">my minimal installation of openSUSE Leap 15.0</a>.</p>
+<p>This guide shows how to configure my minimal installation of openSUSE Leap 15.0.</p>
+
+<h2>Manage users</h2>
+
+<pre>$ zypper install --no-recommends sudo</pre>
+<p>Add a new user and continue with the following sections using this new user.</p>
+<h3>Add user</h3>
+<p>Create user <code><i>&lt;user&gt;</i></code>:</p>
+<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>&lt;user&gt;</i>
+$ passwd <i>&lt;user&gt;</i></pre>
+<p>Configure privileges for <code><i>&lt;user&gt;</i></code> in <code>/etc/sudoers</code> using <code>visudo</code>:</p>
+<pre>$ visudo</pre>
+<p>then add/uncomment <code>Defaults targetpw</code> and add permissions for <code><i>&lt;user&gt;</i></code>:</p>
+<pre class="header">/etc/sudoers</pre>
+<pre class="content">Defaults targetpw
+...
+<i>&lt;user&gt;</i> ALL=(ALL) ALL</pre>
+
+<h2>Manage packages</h2>
+<p>Following the <a href="packages.html">list of packages</a>, install the additional packages:</p>
+<pre>$ sudo zypper install --no-recommends <i>&lt;package<sub>1</sub>&gt;</i> ... <i>&lt;package<sub>n</sub>&gt;</i></pre>
 
 <h2>Network manager</h2>
 
@@ -91,13 +111,7 @@ DEVICES_TO_ENABLE_ON_SHUTDOWN="bluetooth"</pre>
 <h3>IBM Plex</h3>
 <pre>$ git clone https://github.com/IBM/plex.git
 $ cd plex
-$ sudo cp IBM-Plex-Devanagari/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
-$ sudo cp IBM-Plex-Mono/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
-$ sudo cp IBM-Plex-Sans/fonts/complete/ttf/*.ttf  /usr/share/fonts/truetype/
-$ sudo cp IBM-Plex-Sans-Condensed/fonts/complete/ttf/*.ttf  /usr/share/fonts/truetype/
-$ sudo cp IBM-Plex-Sans-Hebrew/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
-$ sudo cp IBM-Plex-Serif/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/
-$ sudo cp IBM-Plex-Thai/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/</pre>
+$ sudo cp IBM-Plex-*/fonts/complete/ttf/*.ttf /usr/share/fonts/truetype/</pre>
 
 <h3>Fira Mono</h3>
 <pre>$ git clone https://github.com/mozilla/Fira.git
@@ -112,11 +126,6 @@ $ sudo cp webfonts/*.ttf /usr/share/fonts/truetype/</pre>
 <h2>X Window System</h2>
 
 <pre>$ sudo zypper install --no-recommends xorg-x11-server xf86-input-libinput xf86-video-intel xinit xrandr</pre>
-<p>In order to execute X without a display manager, open <code>/etc/permissions.local</code> and uncomment the line</p>
-<pre class="header">/etc/permissions.local</pre>
-<pre class="content">/usr/bin/Xorg  root:root  4711</pre>
-<p>then execute</p>
-<pre>$ sudo chkstat --system --set</pre>
 
 <h2>Keyboard and touchpad configuration</h2>
 

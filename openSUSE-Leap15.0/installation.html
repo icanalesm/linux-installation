@@ -5,88 +5,87 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../css/style.css">
-	<title>openSUSE Leap 15.0 installation procedure</title>
+	<title>openSUSE Leap 15.0 - General installation procedure</title>
 </head>
 
 <article>
 <header>
-	<h1>openSUSE Leap 15.0 installation procedure</h1>
+	<h1>openSUSE Leap 15.0 - General installation procedure</h1>
 </header>
 
-<p><a href="https://doc.opensuse.org/">openSUSE documentation</a> has detailed
-<a href="https://doc.opensuse.org/documentation/leap/startup/html/book.opensuse.startup/cha.install.html">installation
-steps</a>. When some of the instructions here do not work, check openSUSE documentation.</p>
-
 <ol>
+<li><a href="#Introduction">Introduction</a></li>
 <li><a href="#Preinstallation">Pre-installation</a></li>
 <li><a href="#Installation">Installation</a></li>
 <li><a href="#References">References</a></li>
 </ol>
 
+<h2 id="Introduction">Introduction</h2>
+<p>This guide shows how to install <a href="https://www.opensuse.org/">openSUSE</a> in
+<a href="https://en.wikipedia.org/wiki/Extensible_Firmware_Interface">UEFI</a> mode. It will be assumed that a bootable
+USB installer with the "Network Image" is used for the installation. When some of the instructions here do not work,
+check the <a href="https://doc.opensuse.org">openSUSE documentation</a>.</p>
+
 <h2 id="Preinstallation">Pre-installation</h2>
 
 <h3>Partition scheme</h3>
-<p>Decide a partition scheme. For example, the following partition scheme can be used for installing openSUSE Leap 15.0
-in UEFI mode:</p>
-<table style="width:90%">
-	<tr><th>Mount point</th><th>Type</th><th>Comments</th></tr>
-	<tr><td>/boot/EFI</td><td>EFI partition</td><td></td></tr>
-	<tr><td>/</td><td>ext4</td><td>root partition</td></tr>
-	<tr><td>/home</td><td>ext4</td><td>home partition</td></tr>
-	<tr><td>swap</td><td>swap</td><td>in a non solid-state drive</td></tr>
-</table>
+<p>The following partition scheme will be used for installing openSUSE in UEFI mode:</p>
+<table style="width:90%; margin:auto;">
+	<tbody><tr><th>Mount point</th><th>Type</th><th>Comments</th></tr>
+	<tr><td><code>/boot/EFI</code></td><td>EFI partition</td><td></td></tr>
+	<tr><td><code>/</code></td><td>ext4</td><td>root partition</td></tr>
+	<tr><td><code>/home</code></td><td>ext4</td><td>home partition</td></tr>
+	<tr><td><code>swap</code></td><td>swap</td><td>in a non solid-state drive</td></tr>
+</tbody></table>
 
 <h2 id="Installation">Installation</h2>
 
 <h3>General installation procedure</h3>
 <ol>
-<li><p>Power on the computer and boot from the installation USB.</p></li>
-<li><p>Select "Install".</p></li>
+<li><p>Power on the computer and boot from the USB installer.</p></li>
+<li><p>Select "Installation".</p></li>
 <li><p>Set language and keyboard layout.</p></li>
-<li><p>When setting the user interface, first update the online repositories by clicking "Configure Online Repositories"
-and selecting</p>
+<li><p>When selecting the user interface, first update the online repositories by clicking "Configure Online
+Repositories" and selecting</p>
 	<ul>
 	<li>"Main Repository (OSS)",</li>
 	<li>"Main Update Repository",</li>
 	<li>"Main Repository (Non-OSS)" and</li>
-	<li>"Main Update Repository (Non-OSS)".</li>
+	<li>"Main Update Repository (Non-OSS)."</li>
 	</ul>
-<p>Then select any user interface. The packages to install will be selected right before starting the actual
+<p>Then select any user interface. The packages to install will be selected later before starting the actual
 instalaltion.</p>
 </li>
-<li><p>Set the partition scheme. Particularly, an EFI System Partition must be present in the partition scheme.</p></li>
+<li><p>Partition the disks according to the partition scheme above.</p></li>
 <li><p>Set clock and time zone.</p></li>
-<li><p>Create users.</p></li>
+<li><p>Skip user creation, set only the password for <i>root</i>.</p></li>
 <li><p>In the "Installation Settings" screen, disable firewall and SSH. Then click "Software" to specify the
 <a href="packages.html">list of packages</a> to install.</p>
 </li>
 <li><p>Confirm and start the installation.</p></li>
 </ol>
-<p>When the installation finishes, the computer should restart and boot openSUSE. If that is not the case, the
+<p>When the installation finishes, the computer restarts and should boot openSUSE. If that is not the case, the
 instructions in <a href="#ref01">[1]</a> or <a href="#ref02">[2]</a> might be helpful to boot into the new system.</p>
 
+<h3>Install required packages</h3>
+<pre>$ zypper install --no-recommends iputils timezone vim</pre>
+
 <h3>Keyboard layout</h3>
-<p>Set keyboard layout</p>
-<pre>$ sudo localectl set-keymap <i>&lt;map&gt;</i></pre>
+<pre>$ localectl set-keymap <i>&lt;map&gt;</i></pre>
 <p>where <code><i>&lt;map&gt;</i></code> is one of the available keyboard mappings from</p>
 <pre>$ localectl list-keymaps</pre>
 
 <h3>Time zone</h3>
-<p>Install the <code>timezone</code> package, which contains the configuration files that describe the available
-timezones</p>
-<pre>$ sudo zypper install timezone</pre>
-<p>Set the time zone</p>
-<pre>$ sudo timedatectl set-timezone <i>&lt;timezone&gt;</i></pre>
+<pre>$ timedatectl set-timezone <i>&lt;timezone&gt;</i></pre>
 <p>where <code><i>&lt;timezone&gt;</i></code> is one of the available timezones from</p>
 <pre>$ timedatectl list-timezones</pre>
 
 <h3>Locale</h3>
-<p>Set the locale</p>
-<pre>$ sudo localectl set-locale LANG=<i>&lt;localisation&gt;</i></pre>
-<p>where <code><i>&lt;localisation&gt;</i></code> is one of the available localisations from</p>
-<pre>$ localectl list-locales</pre>
+<p>Set the <a href="http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names"><code>LANG</code></a> variable
+</p>
+<pre>$ localectl set-locale LANG=<i>&lt;localisation&gt;</i></pre>
 
-<h3>Hostname</h3>
+<h3>Network configuration</h3>
 <p>Open <code>/etc/hostname</code> and replace the default hostname with the desired hostname
 <code><i>&lt;hostname&gt;</i></code></p>
 <pre class="header">/etc/hostname</pre>
