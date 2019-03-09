@@ -222,7 +222,9 @@ $ sudo make install</pre>
 <h2>Sound</h2>
 
 <pre>$ sudo pacman -Syu alsa-lib alsa-utils alsa-plugins</pre>
-<p>Execute <code>alsamixer</code> to adjust the required playback controls.</p>
+<p>Execute <code>alsamixer</code> to adjust the playback controls.</p>
+<p>Create <code>/var/lib/alsa/asound.state</code> for <code>alsa-restore.service</code>:</p>
+<pre>$ sudo alsactl store</pre>
 
 <h3>Configure controller (MacBook Pro 9.2)</h3>
 <p>Add to <code>/etc/modprobe.d/sound.conf</code> the following line:</p>
