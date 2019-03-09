@@ -101,8 +101,8 @@ $ sudo systemctl mask systemd-rfkill.service
 $ sudo systemctl mask systemd-rfkill.socket</pre>
 <p>Configure radio devices in file <code>/etc/default/tlp</code>:</p>
 <pre class="header">/etc/default/tlp</pre>
-<pre class="content">DEVICES_TO_DISABLE_ON_STARTUP="bluetooth"
-DEVICES_TO_ENABLE_ON_SHUTDOWN="bluetooth"</pre>
+<pre class="content">USB_BLACKLIST_PHONE=1
+RESTORE_DEVICE_STATE_ON_STARTUP=1</pre>
 
 <h2>Power off, reboot, suspend, hibernate</h2>
 
