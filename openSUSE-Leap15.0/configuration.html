@@ -85,15 +85,22 @@ $ sudo install_bcm43xx_firmware</pre>
 
 <h3>TLP</h3>
 <pre>$ sudo zypper install --no-recommends ethtool smartmontools tlp tlp-rdw</pre>
-<p>Enable services required by <code>tlp</code> and mask <code>rfkill</code> service and socket to avoid conflicts:</p>
+<p>Enable services required by <code>tlp</code>:</p>
 <pre>$ sudo systemctl enable tlp.service
-$ sudo systemctl enable tlp-sleep.service
-$ sudo systemctl mask systemd-rfkill.service
-$ sudo systemctl mask systemd-rfkill.socket</pre>
-<p>Configure radio devices in file <code>/etc/default/tlp</code>:</p>
+$ sudo systemctl enable tlp-sleep.service</pre>
+<p>Configure TLP via <code>/etc/default/tlp</code>:</p>
+<ul>
+<li>Exclude smartphones from autosuspend (i.e. enable charging):
 <pre class="header">/etc/default/tlp</pre>
-<pre class="content">USB_BLACKLIST_PHONE=1
-RESTORE_DEVICE_STATE_ON_STARTUP=1</pre>
+<pre class="content">USB_BLACKLIST_PHONE=1</pre>
+</li>
+<li>Use <code>systemd-rfkill.service</code> and <code>systemd-rfkill.socket</code> to restore state of radio devices:
+<pre class="header">/etc/default/tlp</pre>
+<pre class="content">RESTORE_DEVICE_STATE_ON_STARTUP=0
+#DEVICES_TO_DISABLE_ON_*=...
+#DEVICES_TO_ENABLE_ON_*=...</pre>
+</li>
+</ul>
 
 <h2>Power off, reboot, suspend, hibernate</h2>
 
