@@ -13,27 +13,12 @@
 	<h1>Arch Linux - Configuration</h1>
 </header>
 
-<p>This guide shows how to configure my minimal installation of Arch Linux.</p>
+<p>This guide shows how to configure my minimal installation of Arch Linux. The configuration should be made with an
+unprivileged user.</p>
 <p><b>WARNING</b>: Put special attention when installing packages from
 <a href="https://aur.archlinux.org/" rel="nofollow">AUR</a>. Carefully check the
 <a href="https://wiki.archlinux.org/index.php/PKGBUILD">PKGBUILD</a>, any <i>.install</i> files, and any other files in
 the package for malicious or dangerous commands.</p>
-
-<h2>Manage users</h2>
-
-<p>Add a new user and continue with the following sections using this new user.</p>
-<h3>Add user</h3>
-<p>Create user <code><i>&lt;user&gt;</i></code>:</p>
-<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>&lt;user&gt;</i>
-$ passwd <i>&lt;user&gt;</i></pre>
-<p>Configure privileges for <code><i>&lt;user&gt;</i></code> in <code>/etc/sudoers</code> using <code>visudo</code>:</p>
-<pre>$ visudo</pre>
-<p>then add/uncomment <code>Defaults targetpw</code> and add permissions for <code><i>&lt;user&gt;</i></code>:</p>
-<pre class="header">/etc/sudoers</pre>
-<pre class="content">...
-Defaults targetpw
-...
-<i>&lt;user&gt;</i> ALL=(ALL) ALL</pre>
 
 <h2>Network manager</h2>
 

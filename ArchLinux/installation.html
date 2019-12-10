@@ -165,6 +165,20 @@ Finally, verify that there is a working Internet connection</p>
 <h3>Set root password</h3>
 <pre>$ passwd</pre>
 
+<h3>Manage users</h3>
+<p>Create user <code><i>&lt;user&gt;</i></code></p>
+<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>&lt;user&gt;</i>
+$ passwd <i>&lt;user&gt;</i></pre>
+<p>Open <code>/etc/sudoers</code> using <code>visudo</code></p>
+<pre>$ EDITOR=vim visudo</pre>
+<p>and configure privileges for <code><i>&lt;user&gt;</i></code> by uncommenting <code>Defaults targetpw</code> and
+adding permissions</p>
+<pre class="header">/etc/sudoers</pre>
+<pre class="content">...
+Defaults targetpw
+...
+<i>&lt;user&gt;</i> ALL=(ALL) ALL</pre>
+
 <h3>Boot loader</h3>
 Install a capable <a href="https://wiki.archlinux.org/index.php/Arch_boot_process#Boot_loader">boot loader</a> (see the
 <a href="../index.html">special installation steps</a>).

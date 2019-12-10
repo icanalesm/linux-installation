@@ -68,11 +68,8 @@ and including the step before <b>Boot loader</b>. Then continue with this guide.
 <h2 id="EFIBoot">Make Arch Linux bootable from MacBook's boot manager</h2>
 
 <h3>Install utilities for HFS+ filesystem</h3>
-<p>Create a user for building and installing the <b>hfsprogs</b> package from
-<a href="https://aur.archlinux.org/">AUR</a></p>
-<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>&lt;user&gt;</i>
-$ passwd <i>&lt;user&gt;</i></pre>
-<p>and switch user</p>
+<p>Switch to an unprivileged user <code><i>&lt;user&gt;</i></code> for building and installing the <b>hfsprogs</b>
+package from <a href="https://aur.archlinux.org/">AUR</a></p>
 <pre>$ su <i>&lt;user&gt;</i>
 $ cd ~</pre>
 <p>Install the <b>hfsprogs</b> package</p>
