@@ -21,7 +21,6 @@ the package for malicious or dangerous commands.</p>
 
 <h2>Manage users</h2>
 
-<pre>$ pacman -Syu sudo</pre>
 <p>Add a new user and continue with the following sections using this new user.</p>
 <h3>Add user</h3>
 <p>Create user <code><i>&lt;user&gt;</i></code>:</p>
@@ -31,29 +30,21 @@ $ passwd <i>&lt;user&gt;</i></pre>
 <pre>$ visudo</pre>
 <p>then add/uncomment <code>Defaults targetpw</code> and add permissions for <code><i>&lt;user&gt;</i></code>:</p>
 <pre class="header">/etc/sudoers</pre>
-<pre class="content">Defaults targetpw
+<pre class="content">...
+Defaults targetpw
 ...
 <i>&lt;user&gt;</i> ALL=(ALL) ALL</pre>
-
-<h2>Manage packages</h2>
-<p>Following the <a href="packages.html">list of packages</a>, remove packages from groups <b>base</b> and
-<b>base-devel</b>:</p>
-<pre>$ sudo pacman -Rs <i>&lt;package<sub>1</sub>&gt;</i> ... <i>&lt;package<sub>n</sub>&gt;</i></pre>
-<p>and install the additional packages:</p>
-<pre>$ sudo pacman -Syu <i>&lt;package<sub>1</sub>&gt;</i> ... <i>&lt;package<sub>n</sub>&gt;</i></pre>
 
 <h2>Network manager</h2>
 
 <h3>NetworkManager</h3>
-<pre>$ sudo pacman -Syu networkmanager
-$ sudo systemctl unmask NetworkManager.service
+<pre>$ sudo systemctl unmask NetworkManager.service
 $ sudo systemctl enable --now NetworkManager.service</pre>
 
 <h2>Firewall</h2>
 
 <h3>firewalld</h3>
-<pre>$ sudo pacman -Syu firewalld
-$ sudo systemctl unmask firewalld.service
+<pre>$ sudo systemctl unmask firewalld.service
 $ sudo systemctl enable --now firewalld.service</pre>
 
 <h2>Wi-Fi</h2>
@@ -135,7 +126,7 @@ $ sudo systemctl enable tlp-sleep.service</pre>
 
 <h2>X Window System</h2>
 
-<pre>$ sudo pacman -Syu xorg-server xf86-input-libinput xorg-xinit xorg-xrandr</pre>
+<pre>$ sudo pacman -Syu xorg-server xorg-xinit xorg-xrandr</pre>
 
 <h2>Keyboard and touchpad configuration</h2>
 

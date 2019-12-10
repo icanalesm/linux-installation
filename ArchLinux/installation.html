@@ -114,8 +114,8 @@ explained above.</p>
 downloading a package. Edit the file to assign the desired priority (e.g. prefer mirrors geographically closer.) This
 file will be copied to the new system.</p>
 
-<h3>Install initial package groups</h3>
-<pre>$ pacstrap /mnt base base-devel</pre>
+<h3>Install initial packages</h3>
+<pre>$ pacstrap /mnt base linux linux-firmware e2fsprogs man-db man-pages openssh unzip vim wget networkmanager firewalld base-devel git </pre>
 
 <h3>Generate <code>/etc/fstab</code> file</h3>
 <pre>$ genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</pre>
