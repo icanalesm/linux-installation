@@ -165,10 +165,9 @@ Finally, verify that there is a working Internet connection</p>
 <h3>Set root password</h3>
 <pre>$ passwd</pre>
 
-<h3>GRUB</h3>
-<pre>$ pacman -Syu grub efibootmgr
-$ grub-install --target x86_64-efi --efi-directory=/boot/efi --bootloader-id="archlinux"
-$ grub-mkconfig -o /boot/grub/grub.cfg</pre>
+<h3>Boot loader</h3>
+Install a capable <a href="https://wiki.archlinux.org/index.php/Arch_boot_process#Boot_loader">boot loader</a> (see the
+<a href="../index.html">special installation steps</a>).
 
 <h3>Reboot</h3>
 <p>Exit the chroot environment by executing <code>exit</code> or pressing <kbd>Ctrl</kbd>+<kbd>D</kbd>.</p>
