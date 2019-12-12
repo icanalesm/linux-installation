@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>Arch Linux - MacBook Pro 9.2: Configuration</title>
+</head>
+
+<article>
+<header>
+	<h1>Arch Linux - MacBook Pro 9.2<br />Configuration</h1>
+</header>
+
+<p>This guide shows how to configure my minimal installation of Arch Linux. The configuration should be made with an
+unprivileged user.</p>
+<p><b>WARNING</b>: Put special attention when installing packages from
+<a href="https://aur.archlinux.org/" rel="nofollow">AUR</a>. Carefully check the
+<a href="https://wiki.archlinux.org/index.php/PKGBUILD">PKGBUILD</a>, any <i>.install</i> files, and any other files in
+the package for malicious or dangerous commands.</p>
+
+<h2>Wi-Fi</h2>
+
+<h3>Broadcom 4331</h3>
+<p>Install either the wl-driver (option 1) or firmware for b43 driver (option 2).</p>
+<ul>
+<li>
+<p>Option 1 (Recommended)</p>
+<p>Install broadcom-wl-dkms wireless driver:</p>
+<pre>$ sudo pacman -Syu linux-headers broadcom-wl-dkms</pre>
+</li>
+<li>
+<p>Option 2</p>
+<p>Install firmware for b43 wireless driver:</p>
+<pre>$ git clone https://aur.archlinux.org/b43-firmware.git
+$ cd b43-firmware
+$ makepkg -si</pre>
+</li>
+</ul>
+
+<h2>Keyboard and touchpad configuration</h2>
+
+<h3>Function keys</h3>
+<p>The behaviour of <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd> is configured by the <code>fnmode</code> option of the
+<code>hid_apple</code> kernel module via the <code>/etc/modprobe.d/hid_apple.conf</code> file.</p>
+<ul>
+<li>To disable the <kbd>fn</kbd> key, add the following line:
+<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="content">options hid_apple fnmode=0</pre>
+</li>
+<li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd>, add the following
+    line:
+<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="content">options hid_apple fnmode=1</pre>
+</li>
+<li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>F<i>&lt;num&gt;</i></kbd>, add the following line:
+<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="content">options hid_apple fnmode=2</pre>
+</li>
+</ul>
+
+<h2>Sound</h2>
+
+<h3>Configure controller</h3>
+<p>Add to <code>/etc/modprobe.d/sound.conf</code> the following line:</p>
+<pre class="header">/etc/modprobe.d/sound.conf</pre>
+<pre class="content">options snd_hda_intel model=mbp81</pre>
+
+</article>

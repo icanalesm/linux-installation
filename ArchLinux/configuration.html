@@ -32,25 +32,6 @@ $ sudo systemctl enable --now NetworkManager.service</pre>
 <pre>$ sudo systemctl unmask firewalld.service
 $ sudo systemctl enable --now firewalld.service</pre>
 
-<h2>Wi-Fi</h2>
-
-<h3>Broadcom 4331 (MacBook Pro 9.2)</h3>
-<p>Install either the wl-driver (option 1) or firmware for b43 driver (option 2).</p>
-<ul>
-<li>
-<p>Option 1 (Recommended)</p>
-<p>Install broadcom-wl-dkms wireless driver:</p>
-<pre>$ sudo pacman -Syu linux-headers broadcom-wl-dkms</pre>
-</li>
-<li>
-<p>Option 2</p>
-<p>Install firmware for b43 wireless driver:</p>
-<pre>$ git clone https://aur.archlinux.org/b43-firmware.git
-$ cd b43-firmware
-$ makepkg -si</pre>
-</li>
-</ul>
-
 <h2>NTP</h2>
 
 <h3>chrony</h3>
@@ -128,25 +109,6 @@ $ sudo systemctl enable tlp-sleep.service</pre>
 EndSection</pre>
 <p>If the file does not exist, copy <code>40-libinput.conf</code> from <code>/usr/share/X11/xorg.conf.d/</code>.</p>
 
-<h3>Function keys (MacBook Pro 9.2)</h3>
-<p>The behaviour of <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd> is configured by the <code>fnmode</code> option of the
-<code>hid_apple</code> kernel module via the <code>/etc/modprobe.d/hid_apple.conf</code> file.</p>
-<ul>
-<li>To disable the <kbd>fn</kbd> key, add the following line:
-<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
-<pre class="content">options hid_apple fnmode=0</pre>
-</li>
-<li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd>, add the following
-    line:
-<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
-<pre class="content">options hid_apple fnmode=1</pre>
-</li>
-<li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>F<i>&lt;num&gt;</i></kbd>, add the following line:
-<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
-<pre class="content">options hid_apple fnmode=2</pre>
-</li>
-</ul>
-
 <h2>Window manager</h2>
 
 <h3>dwm</h3>
@@ -208,11 +170,6 @@ $ sudo make install</pre>
 <p>Execute <code>alsamixer</code> to adjust the playback controls.</p>
 <p>Create <code>/var/lib/alsa/asound.state</code> for <code>alsa-restore.service</code>:</p>
 <pre>$ sudo alsactl store</pre>
-
-<h3>Configure controller (MacBook Pro 9.2)</h3>
-<p>Add to <code>/etc/modprobe.d/sound.conf</code> the following line:</p>
-<pre class="header">/etc/modprobe.d/sound.conf</pre>
-<pre class="content">options snd_hda_intel model=mbp81</pre>
 
 <h2>Web browser</h2>
 
