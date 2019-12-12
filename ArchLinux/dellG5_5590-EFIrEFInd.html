@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>Arch Linux - Dell G5 5590: EFI boot using rEFInd</title>
+</head>
+
+<article>
+<header>
+	<h1>Arch Linux - Dell G5 5590<br />EFI boot using rEFInd</h1>
+</header>
+
+<ol>
+<li><a href="#Introduction">Introduction</a></li>
+<li><a href="#EFIBoot">Make Arch Linux bootable using rEFInd</a></li>
+</ol>
+
+<h2 id="Introduction">Introduction</h2>
+
+<p>This guide shows how to install <a href="https://www.archlinux.org">Arch Linux</a> in
+<a href="https://en.wikipedia.org/wiki/Extensible_Firmware_Interface">UEFI</a> mode on a Dell G5 5590. The installation
+will have the following characteristics:</p>
+<ul>
+<li>the computer has Linux and Windows installed, and</li>
+<li><a href="http://www.rodsbooks.com/refind">rEFInd</a> is used as boot manager.</li>
+</ul>
+<p>It will be assumed that</p>
+<ul>
+<li>Windows is already installed;</li>
+<li>the EFI partition used to install Arch Linux is the same EFI partition used by Windows, and</li>
+<li>a <a href="https://wiki.archlinux.org/index.php/USB_flash_installation_media">USB installer</a> is used.</li>
+</ul>
+
+<h3 id="Partition_scheme">Partition scheme</h3>
+<p>The following partition scheme will be used:</p>
+<table style="width:90%; margin:auto;">
+	<tr><th>Mount point</th><th>Type</th><th>Comments</th></tr>
+	<tr><td><code>/boot/EFI</code></td><td>EFI partition</td><td></td></tr>
+	<tr><td><code>/</code></td><td>ext4</td><td>root partition</td></tr>
+	<tr><td><code>/home</code></td><td>ext4</td><td>home partition</td></tr>
+	<tr><td><code>swap</code></td><td>swap</td><td>in a non solid-state drive</td></tr>
+</table>
+
+<h3 id="Installation">Installation</h3>
+<p>Follow either the <a href="https://wiki.archlinux.org/index.php/Installation_guide">ArchWiki's installation guide</a>
+or <a href="installation.html">my installation guide</a> up to and including the step before <b>Boot loader</b>,
+considering the following:</p>
+<ul>
+<li>When partitioning the disks, do not create a new EFI partition.</li>
+<li>Using <code>fdisk</code>, find the EFI partition created for the Windows installation. This will be the EFI
+    partition for Arch Linux.</li>
+<li>When formatting the partitions, do not format the EFI partition.</li>
+<li>When mounting the file systems, mount the EFI partition in <code>/mnt/boot/efi</code>.</li>
+</ul>
+<p>Then continue with this guide.</p>
+
+<h2 id="EFIBoot">Make Arch Linux bootable using rEFInd</h2>
+
+<p>Switch to an unprivileged user <code><i>&lt;user&gt;</i></code></p>
+<pre>$ su <i>&lt;user&gt;</i>
+$ cd ~</pre>
+
+<h3>Manual installation of rEFInd</h3>
+<p>Get the latest version of rEFInd, decompress the file and change directory to
+<code>refind-<i>&lt;version&gt;</i></code>. Then execute</p>
+<pre>$ sudo cp -r refind /boot/efi/EFI/
+$ cd /boot/efi/EFI/refind
+$ sudo rm refind_ia32.efi refind_aa64.efi
+$ sudo rm -r drivers_ia32 drivers_aa64 tools_ia32 tools_aa64
+$ mv refind.conf-sample refind.conf</pre>
+
+<h3>Make rEFInd the default boot option</h3>
+<p>Restart the computer and access the BIOS setup. Under "Settings - General - Boot Sequence" do the following:</p>
+<ul>
+<li>Select "Add Boot Option".</li>
+<li>Set the value <i>rEFInd</i> in "Boot Option Name".</li>
+<li>Select the file to boot. From the drop down menu "File System", find the one that has the directory <i>refind</i>
+	and select the file <i>refind_x64.efi</i>.</li>
+<li>In "Boot Sequence", select <i>rEFInd</i> and use the arrows to place this entry at the top of the list.</li>
+<li>Save the canges and exit the BIOS setup.</li>
+</ul>
+
+</article>
