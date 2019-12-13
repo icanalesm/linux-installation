@@ -20,6 +20,22 @@ unprivileged user.</p>
 <a href="https://wiki.archlinux.org/index.php/PKGBUILD">PKGBUILD</a>, any <i>.install</i> files, and any other files in
 the package for malicious or dangerous commands.</p>
 
+<h2>Swap</h2>
+
+<h3>Swap file</h3>
+<p>If no swap partition is used, create a swap file</p>
+<pre>$ sudo fallocate -l 16G /swapfile
+$ sudo chmod 600 /swapfile
+$ sudo mkswap /swapfile
+$ sudo swapon /swapfile</pre>
+<p>Update <code>/etc/fstab</code></p>
+<pre class="header">/etc/fstab</pre>
+<pre class="content">...
+/swapfile none swap defaults 0 0</pre>
+<p>Update swappiness</p>
+<pre class="header">/etc/sysctl.d/99-swappiness.conf</pre>
+<pre class="content">vm.swappiness=5</pre>
+
 <h2>Network manager</h2>
 
 <h3>NetworkManager</h3>
