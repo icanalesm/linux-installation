@@ -52,6 +52,13 @@ $ sudo systemctl enable --now firewalld.service</pre>
 
 <h3>chrony</h3>
 <pre>$ sudo pacman -Syu chrony</pre>
+<p>Apply the following configuration in <code>/etc/chrony.conf</code></p>
+<pre class="header">/etc/chrony.conf</pre>
+<pre class="content">server 0.pool.ntp.org iburst
+server 1.pool.ntp.org iburst
+server 2.pool.ntp.org iburst
+server 3.pool.ntp.org iburst
+</pre>
 <p><code>systemd-timesyncd.service</code> is in conflict with <code>chronyd.service</code>, so disable it first:</p>
 <pre>$ sudo systemctl disable systemd-timesyncd.service</pre>
 <p>and then enable <code>chronyd.service</code>:</p>
