@@ -31,8 +31,7 @@ enable the required services</p>
 <pre>$ sudo systemctl enable --now nvidia-suspend.service
 $ sudo systemctl enable --now nvidia-hibernate.service
 $ sudo systemctl enable --now nvidia-resume.service</pre>
-<p>Set the default suspend mode to <i>deep</i> using the kernel command line parameter <code>mem_sleep_default</code>,
-i.e. <code>mem_sleep_default=deep</code>.</p>
+<p>Set the kernel parameter <code>mem_sleep_default</code> to <i>deep</i>, i.e. <code>mem_sleep_default=deep</code>.</p>
 <p>To avoid a long waiting time when resuming (see this
 <a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1850238">bug report</a>), blacklist the kernel module
 <code>ucsi_ccg</code></p>
