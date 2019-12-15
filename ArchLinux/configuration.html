@@ -108,17 +108,6 @@ HOOKS=(base udev autodetect modconf block filesystems resume keyboard fsck)
 <pre>$ sudo mkinitcpio -p linux</pre>
 <p>The kernel parameters will only take effect after rebooting.</p>
 
-<h2>Power off, reboot, suspend, hibernate</h2>
-
-<p>Configure <code>sudo</code> to allow user <code><i>&lt;user&gt;</i></code> to execute the necessary
-<code>systemctl</code> system commands as <i>root</i> without asking for the password:</p>
-<pre>$ sudo visudo -f /etc/sudoers.d/usercmds</pre>
-<p>and add the following lines:</p>
-<pre class="header">/etc/sudoers.d/usercmds</pre>
-<pre class="content">## systemctl system commands
-<i>&lt;user&gt;</i> <i>&lt;hostname&gt;</i>=NOPASSWD:/usr/bin/systemctl poweroff,/usr/bin/systemctl reboot,/usr/bin/systemctl suspend,/usr/bin/systemctl hibernate</pre>
-<p>where <code><i>&lt;hostname&gt;</i></code> is the machine's hostname.</p>
-
 <h2>Fonts</h2>
 
 <h3>IBM Plex</h3>
