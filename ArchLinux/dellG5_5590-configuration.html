@@ -20,12 +20,29 @@ unprivileged user.</p>
 <a href="https://wiki.archlinux.org/index.php/PKGBUILD">PKGBUILD</a>, any <i>.install</i> files, and any other files in
 the package for malicious or dangerous commands.</p>
 
-<h2>X Window System</h2>
+<h2>Graphics card - Nvidia RTX 2060</h2>
 
 <pre>$ sudo pacman -Syu nvidia nvidia-settings</pre>
-<p>Configure the X Server as explained in the
-<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.36/README/primerenderoffload.html">official documentation</a>
-</p>
+
+<h3>Power management</h3>
+<p>As explained in the
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.36/README/powermanagement.html">official documentation</a>,
+enable the required services</p>
+<pre>$ sudo systemctl enable --now nvidia-suspend.service
+$ sudo systemctl enable --now nvidia-hibernate.service
+$ sudo systemctl enable --now nvidia-resume.service</pre>
+<p>Set the default suspend mode to <i>deep</i> using the kernel command line parameter <code>mem_sleep_default</code>,
+i.e. <code>mem_sleep_default=deep</code>.</p>
+<p>To avoid a long waiting time when resuming (see this
+<a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1850238">bug report</a>), blacklist the kernel module
+<code>ucsi_ccg</code></p>
+<pre class="header">/etc/modprobe.d/dell.conf</pre>
+<pre class="content">blacklist ucsi_ccg</pre>
+
+<h3>X Window System</h3>
+<p>As explained in the
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.36/README/primerenderoffload.html">official documentation</a>,
+configure the X Server</p>
 <pre class="header">/etc/X11/xorg.conf</pre>
 <pre class="content">Section "ServerLayout"
         Identifier "layout"
@@ -51,5 +68,13 @@ Section "Device"
 EndSection
 </pre>
 <p>To get the appropriate <code>BusID</code> for the iGPU and dGPU devices, execute <code>lspci | grep VGA</code>.</p>
+
+<h2>Keyboard and touchpad configuration</h2>
+
+<p>Execute <code>lsmod | grep psmouse</code> to check whether <code>psmouse</code> is loaded. If it is loaded, blacklist
+it</p>
+<pre class="header">/etc/modprobe.d/dell.conf</pre>
+<pre class="content">...
+blacklist psmouse</pre>
 
 </article>
