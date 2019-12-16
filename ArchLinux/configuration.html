@@ -108,6 +108,16 @@ HOOKS=(base udev autodetect modconf block filesystems resume keyboard fsck)
 <pre>$ sudo mkinitcpio -p linux</pre>
 <p>The kernel parameters will only take effect after rebooting.</p>
 
+<h2>Miscellaneous</h2>
+
+<h3>Kernel parameters</h3>
+<p>Silent boot</p>
+<pre>quiet</pre>
+
+<h3>Mount options</h3>
+<p>In <code>/etc/fstab</code>, change <code>relatime</code> to <code>noatime</code> for all filesystems which have the
+<code>relatime</code> option.</p>
+
 <h2>Fonts</h2>
 
 <h3>IBM Plex</h3>
