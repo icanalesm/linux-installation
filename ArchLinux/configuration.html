@@ -111,8 +111,16 @@ HOOKS=(base udev autodetect modconf block filesystems resume keyboard fsck)
 <h2>Miscellaneous</h2>
 
 <h3>Kernel parameters</h3>
-<p>Silent boot</p>
-<pre>quiet</pre>
+<ul>
+	<li>
+	<p><b>fsck.</b> Specify <code>rw</code> instead of <code>ro</code> (view
+	<a href="https://bbs.archlinux.org/viewtopic.php?pid=1303683#p1303683">this</a>).</p>
+	</li>
+	<li>
+	<p><b>Silent boot.</b> Add the following kernel parameters</p>
+	<pre>quiet loglevel=3 udev.log_priority=3</pre>
+	</li>
+</ul>
 
 <h3>Mount options</h3>
 <p>In <code>/etc/fstab</code>, change <code>relatime</code> to <code>noatime</code> for all filesystems which have the
