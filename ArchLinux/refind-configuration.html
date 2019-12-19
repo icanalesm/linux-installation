@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>rEFInd - Configuration</title>
+</head>
+
+<article>
+<header>
+	<h1>rEFInd - Configuration</h1>
+</header>
+
+<p>Get rEFInd themes</p>
+<pre>$ git clone https://github.com/bobafetthotmail/refind-theme-regular.git
+$ git clone https://github.com/htower/refind-theme-regular-black.git
+$ sudo mkdir -p /boot/efi/EFI/refind/refind-theme-regular/icons
+$ sudo cp refind-theme-regular/icons/256-96/* /boot/efi/EFI/refind/refind-theme-regular/icons
+$ sudo cp refind-theme-regular-black/icons/256-96/bg.png /boot/efi/EFI/refind/refind-theme-regular/icons/bg_black.png
+$ sudo cp refind-theme-regular-black/icons/256-96/selection-big.png /boot/efi/EFI/refind/refind-theme-regular/icons/selection_black-big.png
+$ sudo cp refind-theme-regular-black/icons/256-96/selection-small.png /boot/efi/EFI/refind/refind-theme-regular/icons/selection_black-small.png
+</pre>
+<p>Comment all configuration values in <code>/boot/efi/EFI/refind/refind.conf</code> and specify the configuration file
+to include</p>
+<pre class="header">/boot/efi/EFI/refind/refind.conf</pre>
+<pre class="content">...
+include myconf.conf
+...</pre>
+<p>Create the configuration file <code>/boot/efi/EFI/refind/myconf.conf</code></p>
+<pre class="header">/boot/efi/EFI/refind/myconf.conf</pre>
+<pre class="content">#
+# myconf.conf
+# Configuration file for the rEFInd boot menu
+#
+
+timeout 20
+use_nvram false
+hideui hints
+use_graphics_for linux,osx,windows
+showtools shell, gdisk, memtest, mok_tool, apple_recovery, windows_recovery, hidden_tags, firmware, reboot, exit
+
+icons_dir refind-theme-regular/icons
+big_icon_size 256
+small_icon_size 96
+banner refind-theme-regular/icons/bg_black.png
+selection_big refind-theme-regular/icons/selection_black-big.png
+selection_small refind-theme-regular/icons/selection_black-small.png</pre>
+
+</article>
