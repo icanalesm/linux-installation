@@ -13,14 +13,73 @@
 	<h1>Arch Linux - Configuration</h1>
 </header>
 
-<p>This guide shows how to configure my minimal installation of Arch Linux. The configuration should be made with an
+<p>This guide shows how to configure <a href="../index.html">my installation of Arch Linux</a>. It will be assumed that
+all the configuration, except <a href="#CreateUnprivilegedUser">Create unprivileged user</a>, is done with an
 unprivileged user.</p>
 <p><b>WARNING</b>: Put special attention when installing packages from
 <a href="https://aur.archlinux.org/" rel="nofollow">AUR</a>. Carefully check the
 <a href="https://wiki.archlinux.org/index.php/PKGBUILD">PKGBUILD</a>, any <i>.install</i> files, and any other files in
 the package for malicious or dangerous commands.</p>
 
-<h2>Network manager</h2>
+<h2 id="CreateUnprivilegedUser">Create unprivileged user</h2>
+<p>Create user <code><i>&lt;user&gt;</i></code></p>
+<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>&lt;user&gt;</i>
+$ passwd <i>&lt;user&gt;</i></pre>
+<p>Open <code>/etc/sudoers</code> using <code>visudo</code></p>
+<pre>$ EDITOR=vim visudo</pre>
+<p>and configure privileges for <code><i>&lt;user&gt;</i></code> by uncommenting <code>Defaults targetpw</code> and
+adding permissions</p>
+<pre class="header">/etc/sudoers</pre>
+<pre class="content">...
+Defaults targetpw
+...
+<i>&lt;user&gt;</i> ALL=(ALL) ALL</pre>
+
+<h2>Time zone</h2>
+<pre>$ sudo ln -sf /usr/share/zoneinfo/<i>&lt;Region&gt;</i>/<i>&lt;City&gt;</i> /etc/localtime</pre>
+<p>where <code><i>&lt;Region&gt;</i></code> is one of the available options from</p>
+<pre>$ sudo ls /usr/share/zoneinfo</pre>
+<p>and <code><i>&lt;City&gt;</i></code> is one of the available options from</p>
+<pre>$ sudo ls /usr/share/zoneinfo/<i>&lt;Region&gt;</i></pre>
+<p>Then, generate <code>/etc/adjtime</code></p>
+<pre>$ sudo hwclock --systohc</pre>
+
+<h2>Locale</h2>
+<p>Open <code>/etc/locale.gen</code>, uncomment the desired localisation(s), and generate them with</p>
+<pre>$ sudo locale-gen</pre>
+<p>Create <code>/etc/locale.conf</code> and add lines setting the variables
+<a href="http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names"><code>LANG</code></a> and
+<a href="http://www.gnu.org/software/gettext/manual/gettext.html#The-LANGUAGE-variable"><code>LANGUAGE</code></a> to
+the desired values</p>
+<pre class="header">/etc/locale.conf</pre>
+<pre class="content">LANG=<i>&lt;localisation&gt;</i>
+LANGUAGE=<i>&lt;list_languages&gt;</i></pre>
+
+<h2>Linux console</h2>
+<p>Make the desired
+<a href="https://wiki.archlinux.org/index.php/Linux_console/Keyboard_configuration#Keymaps">keymap</a> persistent by
+setting <code>KEYMAP</code> in <code>/etc/vconsole.conf</code></p>
+<pre class="header">/etc/vconsole.conf</pre>
+<pre class="content">KEYMAP=<i>&lt;map&gt;</i></pre>
+<p>Make the desired <a href="https://wiki.archlinux.org/index.php/Linux_console#Fonts">font</a> persistent by setting
+<code>FONT</code> in <code>/etc/vconsole.conf</code></p>
+<pre class="header">/etc/vconsole.conf</pre>
+<pre class="content">FONT=<i>&lt;font&gt;</i></pre>
+
+<h2>Network configuration</h2>
+
+<h3>Hostname</h3>
+<p>Create <code>/etc/hostname</code> and add a line with the desired hostname <code><i>&lt;hostname&gt;</i></code></p>
+<pre class="header">/etc/hostname</pre>
+<pre class="content"><i>&lt;hostname&gt;</i></pre>
+
+<h3>Local hostname resolution</h3>
+<p>Create <code>/etc/hosts</code> and add matching entries</p>
+<pre class="header">/etc/hosts</pre>
+<pre class="content">127.0.0.1    localhost
+127.0.1.1    <i>&lt;hostname&gt;</i>.localdomain    <i>&lt;hostname&gt;</i>
+::1          localhost</pre>
+<p>If the system has a permanent IP address, it should be used instead of <code>127.0.1.1</code>.</p>
 
 <h3>NetworkManager</h3>
 <pre>$ sudo systemctl unmask NetworkManager.service
@@ -58,7 +117,7 @@ $ makepkg -si</pre>
 
 <h3>TLP</h3>
 <pre>$ sudo pacman -Syu ethtool smartmontools tlp tlp-rdw</pre>
-<p>Enable services required by <code>tlp</code>:</p>
+<p>Enable the services required by <code>tlp</code>:</p>
 <pre>$ sudo systemctl enable tlp.service
 $ sudo systemctl enable tlp-sleep.service</pre>
 <p>Configure TLP via <code>/etc/default/tlp</code>:</p>
@@ -98,33 +157,31 @@ $ sudo swapon /swapfile</pre>
 <pre>$ sudo filefrag -v /swapfile</pre>
 <p><code><i>&lt;offset&gt;</i></code> corresponds to the value located in the first row of the
 <code>physical_offset</code> column.</p>
-<p>Update <code>/etc/mkinitcpio.conf</code> by adding the <code>resume</code> hook after the <code>udev</code> hook,
-for example</p>
+<p>Update <code>/etc/mkinitcpio.conf</code> by adding the <code>resume</code> hook after the <code>udev</code> hook</p>
 <pre class="header">/etc/mkinitcpio.conf</pre>
 <pre class="content">...
-HOOKS=(base udev autodetect modconf block filesystems resume keyboard fsck)
+HOOKS=(base udev ... resume ...)
 ...</pre>
-<p>Regenerate the initramfs for these changes to take effect</p>
+<p>Regenerate the initramfs</p>
 <pre>$ sudo mkinitcpio -p linux</pre>
-<p>The kernel parameters will only take effect after rebooting.</p>
 
 <h2>Miscellaneous</h2>
 
 <h3>Kernel parameters</h3>
 <ul>
-	<li>
+<li>
 	<p><b>fsck.</b> Specify <code>rw</code> instead of <code>ro</code> (view
 	<a href="https://bbs.archlinux.org/viewtopic.php?pid=1303683#p1303683">this</a>).</p>
-	</li>
-	<li>
+</li>
+<li>
 	<p><b>Silent boot.</b> Add the following kernel parameters</p>
 	<pre>quiet loglevel=3 udev.log_priority=3</pre>
-	</li>
+</li>
 </ul>
 
 <h3>Mount options</h3>
-<p>In <code>/etc/fstab</code>, change <code>relatime</code> to <code>noatime</code> for all filesystems which have the
-<code>relatime</code> option.</p>
+<p>In <code>/etc/fstab</code>, change <code>relatime</code> to <code>noatime</code> for the root and home
+filesystems.</p>
 
 <h2>Fonts</h2>
 

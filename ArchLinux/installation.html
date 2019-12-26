@@ -5,18 +5,19 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../css/style.css">
-	<title>Arch Linux - General installation procedure</title>
+	<title>Arch Linux - Installation procedure</title>
 </head>
 
 <article>
 <header>
-	<h1>Arch Linux - General installation procedure</h1>
+	<h1>Arch Linux - Installation procedure</h1>
 </header>
 
 <ol>
 <li><a href="#Introduction">Introduction</a></li>
 <li><a href="#Preinstallation">Pre-installation</a></li>
 <li><a href="#Installation">Installation</a></li>
+<li><a href="#Postinstallation">Post-installation</a></li>
 </ol>
 
 <h2 id="Introduction">Introduction</h2>
@@ -24,9 +25,17 @@
 <p>This guide shows how to install <a href="https://www.archlinux.org">Arch Linux</a> in
 <a href="https://en.wikipedia.org/wiki/Extensible_Firmware_Interface">UEFI</a> mode. It will be assumed that a
 <a href="https://wiki.archlinux.org/index.php/USB_flash_installation_media">USB installer</a> is used. The instructions
-here are heavily based on
-<a href="https://wiki.archlinux.org/index.php/Installation_guide"> ArchWiki's installation guide</a>. When some of the
-instructions here do not work, check ArchWiki.</p>
+here are based on ArchWiki's <a href="https://wiki.archlinux.org/index.php/Installation_guide">installation guide</a>.
+When some of the instructions here do not work, check ArchWiki.</p>
+
+<h3 id="Partition_scheme">Partition scheme</h3>
+<p>The following partition scheme will be used:</p>
+<table style="width:90%; margin:auto;">
+	<tr><th>Mount point</th><th>Type</th><th>Comments</th></tr>
+	<tr><td><code>/</code></td><td>ext4</td><td></td></tr>
+	<tr><td><code>/boot</code></td><td>EFI partition</td><td></td></tr>
+	<tr><td><code>/home</code></td><td>ext4</td><td></td></tr>
+</table>
 
 <h2 id="Preinstallation">Pre-installation</h2>
 
@@ -50,68 +59,62 @@ instructions here do not work, check ArchWiki.</p>
 <pre>$ timedatectl set-ntp true</pre>
 
 <h3>Partition the disks</h3>
-<p>The following partition scheme will be used for installing Arch Linux in UEFI mode:</p>
-<table style="width:90%; margin:auto;">
-	<tr><th>Mount point</th><th>Type</th><th>Comments</th></tr>
-	<tr><td><code>/boot/EFI</code></td><td>EFI partition</td><td></td></tr>
-	<tr><td><code>/</code></td><td>ext4</td><td>root partition</td></tr>
-	<tr><td><code>/home</code></td><td>ext4</td><td>home partition</td></tr>
-	<tr><td><code>swap</code></td><td>swap</td><td>in a non solid-state drive</td></tr>
-</table>
-<p>Execute
-<pre>$ fdisk /dev/sd<i>&lt;D&gt;</i></pre>
-<p>where <code><i>&lt;D&gt;</i></code> is the devide identifier of the device to partition.</p>
+<p>If required, manage the partitions on the disks. Execute</p>
+<pre>$ fdisk /dev/<i>&lt;dev&gt;</i></pre>
+<p>where <code><i>&lt;dev&gt;</i></code> is the device identifier of the disk to partition (for example:
+<code>sda</code>, <code>nvme0n1</code>).</p>
 <h4>Create a new partition table</h4>
-<p>Creating a new GUID Partition Table (GPT) on a disk with data on it will erase all the data on the disk.</p>
-<p>If a new GPT is desired, on <code>fdisk</code>'s prompt type <code>g</code> to create it.</p>
-<h4>Create the new partitions</h4>
-<p>To create a new partition, on <code>fdisk</code>'s prompt:</p>
+<p>If needed, create a new GUID Partition Table (GPT). Creating a GPT on a disk with data on it will erase all the data
+on the disk.</p>
+<p>To create a new GPT, on <code>fdisk</code>'s prompt type <code>g</code> to create it.</p>
+<h4>Manage partitions</h4>
 <ul>
-<li>Type <code>n</code>;</li>
-<li>Specify the partition number;</li>
-<li>Specify the first sector. It is advisable to use the default value;</li>
-<li>Specify the last sector. It is advisable to specify it by using <code>+<i>&lt;size&gt;</i>[K|M|G|T]</code>.</li>
-</ul>
-<p>To list the partitions, on <code>fdisk</code>'s prompt type <code>p</code>.</p>
-<p>To change the partition type, on <code>fdisk</code>'s prompt:
-<ul>
-<li>Type <code>t</code>;</li>
-<li>Specify the partition number;</li>
-<li>Specify the partition type. Type <code>L</code> to list all possible values.</li>
+<li>To create a new partition, on <code>fdisk</code>'s prompt:
+	<ul>
+	<li>Type <code>n</code>;</li>
+	<li>Specify the partition number;</li>
+	<li>Specify the first sector. It is advisable to use the default value;</li>
+	<li>Specify the last sector. It is advisable to specify it by using <code>+<i>&lt;size&gt;</i>[K|M|G|T]</code>.</li>
+	</ul>
+</li>
+<li>To change the partition type, on <code>fdisk</code>'s prompt:
+	<ul>
+	<li>Type <code>t</code>;</li>
+	<li>Specify the partition number;</li>
+	<li>Specify the partition type. (type <code>L</code> to list all possible values.)</li>
+	</ul>
+</li>
+<li>To list the partitions, on <code>fdisk</code>'s prompt type <code>p</code>.</li>
 </ul>
 <h4>Write changes to disk</h4>
 <p>To write the changes to disk, on <code>fdisk</code>'s prompt type <code>w</code>.</p>
 
 <h3>Format the partitions</h3>
 <p>Format the partitions by executing</p>
-<pre>$ mkfs.fat -F32 /dev/sd<i>&lt;De&gt;</i>
-$ mkfs.ext4 /dev/sd<i>&lt;Dr&gt;</i>
-$ mkfs.ext4 /dev/sd<i>&lt;Dh&gt;</i></pre>
-<p>where <code><i>&lt;De&gt;</i></code>, <code><i>&lt;Dr&gt;</i></code> and <code><i>&lt;Dh&gt;</i></code> refer to the
-device identifier and partition number of the EFI, root and home partitions, respectively. The value
-<code><i>D</i></code> is different for different devices, so change it according to the device corresponding to each
-partition.</p>
-<p>If a swap partition was created, initialise it with <code>mkswap</code></p>
-<pre>$ mkswap /dev/sd<i>&lt;Ds&gt;</i>
-$ swapon /dev/sd<i>&lt;Ds&gt;</i></pre>
-<p>where <code><i>&lt;Ds&gt;</i></code> refers to the device identifier and partition number of the swap partition.</p>
+<pre>$ mkfs.fat -F32 /dev/<i>&lt;devpart_EFI&gt;</i>
+$ mkfs.ext4 /dev/<i>&lt;devpart_root&gt;</i>
+$ mkfs.ext4 /dev/<i>&lt;devpart_home&gt;</i></pre>
+<p>where <code><i>&lt;devpart_EFI&gt;</i></code>, <code><i>&lt;devpart_root&gt;</i></code> and
+<code><i>&lt;devpart_home&gt;</i></code> refer to the device identifier and partition number of the EFI, root and home
+partitions, respectively (for example <code>/dev/sda1</code> or <code>/dev/nvme0n1p1</code>).</p>
 
 <h3>Mount the file systems</h3>
-<p>Mount the root partition under <code>/mnt</code>, and the EFI and home partitions under the root partition</p>
-<pre>$ mount /dev/sd<i>&lt;Dr&gt;</i> /mnt
-$ mkdir -p /mnt/boot/efi
-$ mount /dev/sd<i>&lt;De&gt;</i> /mnt/boot/efi
+<p>Mount the root partition under <code>/mnt</code>, and the EFI and home partitions under the corresponding mounting
+points in the root partition</p>
+<pre>$ mount /dev/<i>&lt;devpart_root&gt;</i> /mnt
+$ mkdir /mnt/boot
 $ mkdir /mnt/home
-$ mount /dev/sd<i>&lt;Dh&gt;</i> /mnt/home</pre>
-<p>where <code><i>&lt;De&gt;</i></code>, <code><i>&lt;Dr&gt;</i></code> and <code><i>&lt;Dh&gt;</i></code> are as
-explained above.</p>
+$ mount /dev/<i>&lt;devpart_EFI&gt;</i> /mnt/boot
+$ mount /dev/<i>&lt;devpart_home&gt;</i> /mnt/home</pre>
+<p>where <code><i>&lt;devpart_EFI&gt;</i></code>, <code><i>&lt;devpart_root&gt;</i></code> and
+<code><i>&lt;devpart_home&gt;</i></code> are as explained above.</p>
 
 <h2 id="Installation">Installation</h2>
 
 <h3>Select the mirrors</h3>
 <p>Packages to be installed must be downloaded from mirror servers, which are defined in
 <code>/etc/pacman.d/mirrorlist</code>. The higher a mirror is placed in this file, the more priority it is given when
-downloading a package. Edit the file to assign the desired priority (e.g. prefer mirrors geographically closer.) This
+downloading a package. Edit the file to assign the desired priority (e.g. prefer mirrors geographically closer). This
 file will be copied to the new system.</p>
 
 <h3>Install initial packages</h3>
@@ -123,70 +126,22 @@ file will be copied to the new system.</p>
 <h3>Change root into the new system</h3>
 <pre>$ arch-chroot /mnt</pre>
 
-<h3>Time zone</h3>
-<pre>$ ln -sf /usr/share/zoneinfo/<i>&lt;Region&gt;</i>/<i>&lt;City&gt;</i> /etc/localtime</pre>
-<p>where <code><i>&lt;Region&gt;</i></code> is one of the available options from</p>
-<pre>$ ls /usr/share/zoneinfo</pre>
-<p>and <code><i>&lt;City&gt;</i></code> is one of the available options from</p>
-<pre>$ ls /usr/share/zoneinfo/<i>&lt;Region&gt;</i></pre>
-<p>Then, generate <code>/etc/adjtime</code></p>
-<pre>$ hwclock --systohc</pre>
-
-<h3>Locale</h3>
-<p>Open <code>/etc/locale.gen</code>, uncomment the desired localisation(s), and generate them with</p>
-<pre>$ locale-gen</pre>
-<p>Create <code>/etc/locale.conf</code> and add lines setting the variables
-<a href="http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names"><code>LANG</code></a> and
-<a href="http://www.gnu.org/software/gettext/manual/gettext.html#The-LANGUAGE-variable"><code>LANGUAGE</code></a> to
-the desired values</p>
-<pre class="header">/etc/locale.conf</pre>
-<pre class="content">LANG=<i>&lt;localisation&gt;</i>
-LANGUAGE=<i>&lt;list_languages&gt;</i></pre>
-<p>Make keyboard layout persistent by creating <code>/etc/vconsole.conf</code> and adding a line setting the variable
-<code>KEYMAP</code> to the desired layout (see <a href="packages.html">Set keyboard layout</a> above)</p>
-<pre class="header">/etc/vconsole.conf</pre>
-<pre class="content">KEYMAP=<i>&lt;map&gt;</i></pre>
-
-<h3>Network configuration</h3>
-<p>Create <code>/etc/hostname</code> and add a line with the desired hostname <code><i>&lt;hostname&gt;</i></code></p>
-<pre class="header">/etc/hostname</pre>
-<pre class="content"><i>&lt;hostname&gt;</i></pre>
-<p>Create <code>/etc/hosts</code> and add matching entries</p>
-<pre class="header">/etc/hosts</pre>
-<pre class="content">127.0.0.1    localhost
-127.0.1.1    <i>&lt;hostname&gt;</i>.localdomain    <i>&lt;hostname&gt;</i>
-::1          localhost</pre>
-<p>If the system has a permanent IP address, it should be used instead of <code>127.0.1.1</code>.</p>
-<p>Complete the network configuration for the newly installed environment as described in
-<a href="https://wiki.archlinux.org/index.php/Network_configuration" rel="nofollow">ArchWiki's Network configuration</a>.
-Finally, verify that there is a working Internet connection</p>
-<pre>$ ping archlinux.org</pre>
-
 <h3>Set root password</h3>
 <pre>$ passwd</pre>
 
-<h3>Create unprivileged user</h3>
-<p>Create user <code><i>&lt;user&gt;</i></code></p>
-<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>&lt;user&gt;</i>
-$ passwd <i>&lt;user&gt;</i></pre>
-<p>Open <code>/etc/sudoers</code> using <code>visudo</code></p>
-<pre>$ EDITOR=vim visudo</pre>
-<p>and configure privileges for <code><i>&lt;user&gt;</i></code> by uncommenting <code>Defaults targetpw</code> and
-adding permissions</p>
-<pre class="header">/etc/sudoers</pre>
-<pre class="content">...
-Defaults targetpw
-...
-<i>&lt;user&gt;</i> ALL=(ALL) ALL</pre>
-
 <h3>Boot loader</h3>
-Install a capable <a href="https://wiki.archlinux.org/index.php/Arch_boot_process#Boot_loader">boot loader</a> (see the
-<a href="../index.html">special installation steps</a>).
+<p>Install a <a href="https://wiki.archlinux.org/index.php/Arch_boot_process#Boot_loader">boot loader</a> (see
+<a href="../index.html">Boot loader installation</a>).</p>
 
 <h3>Reboot</h3>
 <p>Exit the chroot environment by executing <code>exit</code> or pressing <kbd>Ctrl</kbd>+<kbd>D</kbd>.</p>
 <p>Optionally, unmount all the partitions</p>
 <pre>$ umount -R /mnt</pre>
 <p>Restart the machine by executing <code>reboot</code>.</p>
+
+<h2 id="Postinstallation">Post-installation</h2>
+
+<p>Continue with the <a href="configuration.html">configuration</a>. Also, take a look at the different
+<a href="../index.html">special configuration sections</a>.</p>
 
 </article>
