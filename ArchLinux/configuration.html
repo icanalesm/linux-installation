@@ -120,19 +120,21 @@ $ makepkg -si</pre>
 <p>Enable the services required by <code>tlp</code>:</p>
 <pre>$ sudo systemctl enable tlp.service
 $ sudo systemctl enable tlp-sleep.service</pre>
-<p>Configure TLP via <code>/etc/default/tlp</code>:</p>
+<p>Configure TLP via <code>/etc/tlp.d/01-myconf.conf</code>:</p>
 <ul>
-<li>Exclude smartphones from autosuspend (i.e. enable charging):
-<pre class="header">/etc/default/tlp</pre>
-<pre class="content">USB_BLACKLIST_PHONE=1</pre>
-</li>
-<li>Use <code>systemd-rfkill.service</code> and <code>systemd-rfkill.socket</code> to restore state of radio devices:
-<pre class="header">/etc/default/tlp</pre>
-<pre class="content">RESTORE_DEVICE_STATE_ON_STARTUP=0
-#DEVICES_TO_DISABLE_ON_*=...
-#DEVICES_TO_ENABLE_ON_*=...</pre>
-</li>
+<li>Exclude smartphones from autosuspend (i.e. enable charging)</li>
+<li>Use <code>systemd-rfkill.service</code> and <code>systemd-rfkill.socket</code> to restore state of radio devices</li>
 </ul>
+<pre class="header">/etc/tlp.d/01-myconf.conf</pre>
+<pre class="content">TLP_DEFAULT_MODE=AC
+CPU_SCALING_GOVERNOR_ON_AC=powersave
+CPU_SCALING_GOVERNOR_ON_BAT=powersave
+CPU_BOOST_ON_AC=1
+CPU_BOOST_ON_BAT=0
+DISK_DEVICES="<i>&lt;dev1&gt;</i> ... <i>&lt;devn&gt;</i>"
+USB_BLACKLIST_PHONE=1
+USB_AUTOSUSPEND_DISABLE_ON_SHUTDOWN=1
+</pre>
 
 <h3>Hibernation using swap file</h3>
 <p>Create a swap file</p>
