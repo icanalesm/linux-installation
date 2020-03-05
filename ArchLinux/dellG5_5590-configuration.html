@@ -26,21 +26,23 @@ the package for malicious or dangerous commands.</p>
 
 <h3>Power management</h3>
 <p>As explained in the
-<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.36/README/powermanagement.html">official documentation</a>,
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.64/README/powermanagement.html">official documentation</a>,
 enable the required services</p>
 <pre>$ sudo systemctl enable --now nvidia-suspend.service
 $ sudo systemctl enable --now nvidia-hibernate.service
 $ sudo systemctl enable --now nvidia-resume.service</pre>
 <p>Set the kernel parameter <code>mem_sleep_default</code> to <i>deep</i>, i.e. <code>mem_sleep_default=deep</code>.</p>
-<p>To avoid a long waiting time when resuming (see this
+<p>If there is a long waiting time when resuming (see this
 <a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1850238">bug report</a>), blacklist the kernel module
 <code>ucsi_ccg</code></p>
 <pre class="header">/etc/modprobe.d/dell.conf</pre>
 <pre class="content">blacklist ucsi_ccg</pre>
 
 <h3>X Window System</h3>
+
+<h4>PRIME Render Offload</h4>
 <p>As explained in the
-<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.36/README/primerenderoffload.html">official documentation</a>,
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.64/README/primerenderoffload.html">official documentation</a>,
 configure the X Server</p>
 <pre class="header">/etc/X11/xorg.conf.d/20-nvidia.conf</pre>
 <pre class="content">Section "ServerLayout"
@@ -49,7 +51,7 @@ configure the X Server</p>
 EndSection
 </pre>
 <p>If automatic configuration does not work, explicitly configure the iGPU and dGPU devices (as explained in the
-<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.36/README/primerenderoffload.html">official documentation</a>
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.64/README/primerenderoffload.html">official documentation</a>
 as well):</p>
 <pre class="header">/etc/X11/xorg.conf.d/20-nvidia.conf</pre>
 <pre class="content">Section "ServerLayout"
@@ -64,18 +66,62 @@ Section "Device"
         BusID          "PCI:0:2:0"
 EndSection
 
-Section "Screen"
-        Identifier     "iGPU"
-        Device         "iGPU"
-EndSection
-
 Section "Device"
         Identifier     "dGPU"
         Driver         "nvidia"
         BusID          "PCI:1:0:0"
 EndSection
+
+Section "Screen"
+        Identifier     "iGPU"
+        Device         "iGPU"
+EndSection
 </pre>
 <p>To get the appropriate <code>BusID</code> for the iGPU and dGPU devices, execute <code>lspci | grep VGA</code>.</p>
+
+<h4>Offloading Graphics Display</h4>
+<p>As explained in the
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/440.64/README/randr14.html">official documentation</a>,
+configure the X Server</p>
+<pre class="header">/etc/X11/xorg.conf.d/20-nvidia.conf</pre>
+<pre class="content">Section "ServerLayout"
+	Identifier     "layout"
+	Screen      0  "dGPU"
+	Inactive       "iGPU"
+EndSection
+
+Section "Device"
+	Identifier     "iGPU"
+	Driver         "modesetting"
+	BusID          "PCI:0:2:0"
+EndSection
+
+Section "Device"
+	Identifier     "dGPU"
+	Driver         "nvidia"
+	BusID          "PCI:1:0:0"
+EndSection
+
+Section "Screen"
+	Identifier     "dGPU"
+	Device         "dGPU"
+	Option         "AllowEmptyInitialConfiguration"
+	Option         "DPI" "96x96"
+EndSection
+
+Section "Screen"
+	Identifier     "iGPU"
+	Device         "iGPU"
+EndSection
+</pre>
+<p>To get the appropriate <code>BusID</code> for the iGPU and dGPU devices, execute <code>lspci | grep VGA</code>.</p>
+<p>Update <code>~/.xinitrc</code></p>
+<pre class="header">~/.xinitrc</pre>
+<pre class="content">...
+xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto
+...
+</pre>
 
 <h2>Keyboard and touchpad configuration</h2>
 
