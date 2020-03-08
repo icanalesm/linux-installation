@@ -88,7 +88,8 @@ $ sudo systemctl enable --now NetworkManager.service</pre>
 <h2>Firewall</h2>
 
 <h3>firewalld</h3>
-<pre>$ sudo systemctl unmask firewalld.service
+<pre>$ sudo systemctl enable nftables.service
+$ sudo systemctl unmask firewalld.service
 $ sudo systemctl enable --now firewalld.service</pre>
 
 <h2>NTP</h2>
