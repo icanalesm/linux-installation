@@ -103,10 +103,10 @@ server 1.pool.ntp.org iburst
 server 2.pool.ntp.org iburst
 server 3.pool.ntp.org iburst
 </pre>
-<p><code>systemd-timesyncd.service</code> is in conflict with <code>chronyd.service</code>, so disable it first:</p>
-<pre>$ sudo systemctl disable systemd-timesyncd.service</pre>
-<p>and then enable <code>chronyd.service</code>:</p>
-<pre>$ sudo systemctl enable chronyd.service</pre>
+<p><code>systemd-timesyncd.service</code> is in conflict with <code>chronyd.service</code>, so disable it first and
+then enable <code>chronyd.service</code>:</p>
+<pre>$ sudo systemctl disable systemd-timesyncd.service
+$ sudo systemctl enable chronyd.service</pre>
 <p>Enable NetworkManager's dispatcher to inform chrony when the network status has changed:</p>
 <pre>$ sudo systemctl enable NetworkManager-dispatcher.service</pre>
 <p>Install the dispatcher script:</p>
