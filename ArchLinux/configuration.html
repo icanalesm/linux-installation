@@ -277,7 +277,7 @@ $ sudo make install</pre>
 
 <h2>Sound</h2>
 
-<pre>$ sudo pacman -Syu alsa-lib alsa-utils alsa-plugins</pre>
+<pre>$ sudo pacman -Syu alsa-utils pulseaudio pulseaudio-alsa pavucontrol</pre>
 <p>Execute <code>alsamixer</code> to adjust the playback controls.</p>
 <p>Create <code>/var/lib/alsa/asound.state</code> for <code>alsa-restore.service</code>:</p>
 <pre>$ sudo alsactl store</pre>
