@@ -139,7 +139,7 @@ USB_AUTOSUSPEND_DISABLE_ON_SHUTDOWN=1
 
 <h3>Hibernation using swap file</h3>
 <p>Create a swap file</p>
-<pre>$ sudo fallocate -l <i>&lt;size&gt;</i>G /swapfile
+<pre>$ sudo dd if=/dev/zero of=/swapfile bs=1M count=<i>&lt;size_in_MiB&gt;</i> status=progress
 $ sudo chmod 600 /swapfile
 $ sudo mkswap /swapfile
 $ sudo swapon /swapfile</pre>
@@ -153,13 +153,14 @@ $ sudo swapon /swapfile</pre>
 <p>Set the required kernel parameters:</p>
 <ul>
 	<li><code>resume=UUID=<i>&lt;partition_UUID&gt;</i></code>, and</li>
-	<li><code>resume_offset=<i>&lt;offset&gt;</i></code>,</li>
+	<li><code>resume_offset=<i>&lt;offset&gt;</i></code>.</li>
 </ul>
-<p>where <code><i>&lt;partition_UUID&gt;</i></code> is the UUID of the volume where the swap file resides and
-<code><i>&lt;offset&gt;</i></code> can be obtained by executing<p>
+<p><code><i>&lt;partition_UUID&gt;</i></code> is the UUID of the volume where the swap file resides (if the swapfile is
+in an encrypted device, <code><i>&lt;partition_UUID&gt;</i></code> must point to the unlocked device that contains the
+file system with the swap file). <code><i>&lt;offset&gt;</i></code> can be obtained by executing<p>
 <pre>$ sudo filefrag -v /swapfile</pre>
-<p><code><i>&lt;offset&gt;</i></code> corresponds to the value located in the first row of the
-<code>physical_offset</code> column.</p>
+<p><code><i>&lt;offset&gt;</i></code> corresponds to the first value in the first row under the
+<code>physical_offset</code> information.</p>
 <p>Update <code>/etc/mkinitcpio.conf</code> by adding the <code>resume</code> hook after the <code>udev</code> hook</p>
 <pre class="header">/etc/mkinitcpio.conf</pre>
 <pre class="content">...
