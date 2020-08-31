@@ -46,6 +46,8 @@ Defaults targetpw
 <h3>NetworkManager</h3>
 <pre>$ sudo systemctl unmask NetworkManager.service
 $ sudo systemctl enable --now NetworkManager.service</pre>
+<p>Enable NetworkManager's dispatcher</p>
+<pre>$ sudo systemctl enable NetworkManager-dispatcher.service</pre>
 
 <h2>Firewall</h2>
 
@@ -69,8 +71,6 @@ server 3.pool.ntp.org iburst
 then enable <code>chronyd.service</code>:</p>
 <pre>$ sudo systemctl disable systemd-timesyncd.service
 $ sudo systemctl enable chronyd.service</pre>
-<p>Enable NetworkManager's dispatcher to inform chrony when the network status has changed:</p>
-<pre>$ sudo systemctl enable NetworkManager-dispatcher.service</pre>
 <p>Install the dispatcher script:</p>
 <pre>$ git clone https://aur.archlinux.org/networkmanager-dispatcher-chrony.git
 $ cd networkmanager-dispatcher-chrony/
