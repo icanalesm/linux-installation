@@ -35,51 +35,13 @@ Defaults targetpw
 ...
 <i>&lt;user&gt;</i> ALL=(ALL) ALL</pre>
 
-<h2>Time zone</h2>
-<pre>$ sudo ln -sf /usr/share/zoneinfo/<i>&lt;Region&gt;</i>/<i>&lt;City&gt;</i> /etc/localtime</pre>
-<p>where <code><i>&lt;Region&gt;</i></code> is one of the available options from</p>
-<pre>$ sudo ls /usr/share/zoneinfo</pre>
-<p>and <code><i>&lt;City&gt;</i></code> is one of the available options from</p>
-<pre>$ sudo ls /usr/share/zoneinfo/<i>&lt;Region&gt;</i></pre>
-<p>Then, generate <code>/etc/adjtime</code></p>
-<pre>$ sudo hwclock --systohc</pre>
-
-<h2>Locale</h2>
-<p>Open <code>/etc/locale.gen</code>, uncomment the desired localisation(s), and generate them with</p>
-<pre>$ sudo locale-gen</pre>
-<p>Create <code>/etc/locale.conf</code> and add lines setting the variables
-<a href="http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names"><code>LANG</code></a> and
-<a href="http://www.gnu.org/software/gettext/manual/gettext.html#The-LANGUAGE-variable"><code>LANGUAGE</code></a> to
-the desired values</p>
-<pre class="header">/etc/locale.conf</pre>
-<pre class="content">LANG=<i>&lt;localisation&gt;</i>
-LANGUAGE=<i>&lt;list_languages&gt;</i></pre>
-
 <h2>Linux console</h2>
-<p>Make the desired
-<a href="https://wiki.archlinux.org/index.php/Linux_console/Keyboard_configuration#Keymaps">keymap</a> persistent by
-setting <code>KEYMAP</code> in <code>/etc/vconsole.conf</code></p>
-<pre class="header">/etc/vconsole.conf</pre>
-<pre class="content">KEYMAP=<i>&lt;map&gt;</i></pre>
 <p>Make the desired <a href="https://wiki.archlinux.org/index.php/Linux_console#Fonts">font</a> persistent by setting
 <code>FONT</code> in <code>/etc/vconsole.conf</code></p>
 <pre class="header">/etc/vconsole.conf</pre>
 <pre class="content">FONT=<i>&lt;font&gt;</i></pre>
 
 <h2>Network configuration</h2>
-
-<h3>Hostname</h3>
-<p>Create <code>/etc/hostname</code> and add a line with the desired hostname <code><i>&lt;hostname&gt;</i></code></p>
-<pre class="header">/etc/hostname</pre>
-<pre class="content"><i>&lt;hostname&gt;</i></pre>
-
-<h3>Local hostname resolution</h3>
-<p>Create <code>/etc/hosts</code> and add matching entries</p>
-<pre class="header">/etc/hosts</pre>
-<pre class="content">127.0.0.1    localhost
-127.0.1.1    <i>&lt;hostname&gt;</i>.localdomain    <i>&lt;hostname&gt;</i>
-::1          localhost</pre>
-<p>If the system has a permanent IP address, it should be used instead of <code>127.0.1.1</code>.</p>
 
 <h3>NetworkManager</h3>
 <pre>$ sudo systemctl unmask NetworkManager.service

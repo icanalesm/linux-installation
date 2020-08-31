@@ -118,13 +118,58 @@ downloading a package. Edit the file to assign the desired priority (e.g. prefer
 file will be copied to the new system.</p>
 
 <h3>Install initial packages</h3>
-<pre>$ pacstrap /mnt base linux linux-firmware e2fsprogs man-db man-pages openssh unzip vim wget networkmanager firewalld base-devel git </pre>
+<pre>$ pacstrap /mnt base linux linux-firmware e2fsprogs dosfstools man-db man-pages openssh unzip vim rsync wget networkmanager firewalld base-devel git </pre>
 
 <h3>Generate <code>/etc/fstab</code> file</h3>
 <pre>$ genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</pre>
 
 <h3>Change root into the new system</h3>
 <pre>$ arch-chroot /mnt</pre>
+
+<h3>Time zone</h3>
+<pre>$ ln -sf /usr/share/zoneinfo/<i>&lt;Region&gt;</i>/<i>&lt;City&gt;</i> /etc/localtime</pre>
+<p>where <code><i>&lt;Region&gt;</i></code> is one of the available options from</p>
+<pre>$ ls /usr/share/zoneinfo</pre>
+<p>and <code><i>&lt;City&gt;</i></code> is one of the available options from</p>
+<pre>$ ls /usr/share/zoneinfo/<i>&lt;Region&gt;</i></pre>
+<p>Then, generate <code>/etc/adjtime</code></p>
+<pre>$ hwclock --systohc</pre>
+
+<h3>Locale</h3>
+<p>Open <code>/etc/locale.gen</code>, uncomment the desired localisation(s), and generate them with</p>
+<pre>$ locale-gen</pre>
+<p>Create <code>/etc/locale.conf</code> and add lines setting the variables
+<a href="http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names"><code>LANG</code></a> and
+<a href="http://www.gnu.org/software/gettext/manual/gettext.html#The-LANGUAGE-variable"><code>LANGUAGE</code></a> to
+the desired values</p>
+<pre class="header">/etc/locale.conf</pre>
+<pre class="content">LANG=<i>&lt;localisation&gt;</i>
+LANGUAGE=<i>&lt;list_languages&gt;</i></pre>
+<p>Make the desired
+<a href="https://wiki.archlinux.org/index.php/Linux_console/Keyboard_configuration#Keymaps">keymap</a> persistent by
+setting <code>KEYMAP</code> in <code>/etc/vconsole.conf</code></p>
+<pre class="header">/etc/vconsole.conf</pre>
+<pre class="content">KEYMAP=<i>&lt;map&gt;</i></pre>
+
+<h3>Network configuration</h3>
+<p>Create <code>/etc/hostname</code> and add a line with the desired hostname <code><i>&lt;hostname&gt;</i></code></p>
+<pre class="header">/etc/hostname</pre>
+<pre class="content"><i>&lt;hostname&gt;</i></pre>
+<p>Create <code>/etc/hosts</code> and add matching entries</p>
+<pre class="header">/etc/hosts</pre>
+<pre class="content">127.0.0.1    localhost
+127.0.1.1    <i>&lt;hostname&gt;</i>.localdomain    <i>&lt;hostname&gt;</i>
+::1          localhost</pre>
+<p>If the system has a permanent IP address, it should be used instead of <code>127.0.1.1</code>.</p>
+
+<h3>Configure <code>mkinitcpio</code></h3>
+<p>Update <code>/etc/mkinitcpio.conf</code> so that it contains the following hooks</p>
+<pre class="header">/etc/mkinitcpio.conf</pre>
+<pre class="content">...
+HOOKS=(base udev autodetect keyboard keymap consolefont modconf block filesystems fsck)
+...</pre>
+<p>Regenerate the initramfs</p>
+<pre>mkinitcpio -p linux</pre>
 
 <h3>Set root password</h3>
 <pre>$ passwd</pre>
