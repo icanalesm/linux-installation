@@ -35,6 +35,15 @@ Defaults targetpw
 ...
 <i>&lt;user&gt;</i> ALL=(ALL) ALL</pre>
 
+<h2>Microcode</h2>
+<p>For AMD processors</p>
+<pre>$ sudo pacman -S amd-ucode</pre>
+<p>For Intel processors</p>
+<pre>$ sudo pacman -S intel-ucode</pre>
+<p>Add <code>amd-ucode</code> or <code>intel-ucode</code> as the first initrd in the bootloader configuration. See the
+<a href="https://wiki.archlinux.org/index.php/Microcode#Configuration">Arch wiki</a> for instructions for common
+bootloaders.</p>
+
 <h2>Linux console</h2>
 <p>Make the desired <a href="https://wiki.archlinux.org/index.php/Linux_console#Fonts">font</a> persistent by setting
 <code>FONT</code> in <code>/etc/vconsole.conf</code></p>
