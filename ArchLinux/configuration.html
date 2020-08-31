@@ -59,7 +59,7 @@ $ sudo systemctl enable --now firewalld.service</pre>
 <h2>NTP</h2>
 
 <h3>chrony</h3>
-<pre>$ sudo pacman -Syu chrony</pre>
+<pre>$ sudo pacman -S chrony</pre>
 <p>Apply the following configuration in <code>/etc/chrony.conf</code></p>
 <pre class="header">/etc/chrony.conf</pre>
 <pre class="content">server 0.pool.ntp.org iburst
@@ -79,7 +79,7 @@ $ makepkg -si</pre>
 <h2>Power management</h2>
 
 <h3>TLP</h3>
-<pre>$ sudo pacman -Syu ethtool smartmontools tlp tlp-rdw</pre>
+<pre>$ sudo pacman -S ethtool smartmontools tlp tlp-rdw</pre>
 <p>Enable the services required by <code>tlp</code>:</p>
 <pre>$ sudo systemctl enable tlp.service</pre>
 <p>Configure TLP via <code>/etc/tlp.d/01-myconf.conf</code>:</p>
@@ -151,17 +151,17 @@ filesystems.</p>
 <h2>Fonts</h2>
 
 <h3>IBM Plex</h3>
-<pre>$ sudo pacman -Syu ttf-ibm-plex</pre>
+<pre>$ sudo pacman -S ttf-ibm-plex</pre>
 
 <h3>Fira Mono</h3>
-<pre>$ sudo pacman -Syu ttf-fira-mono</pre>
+<pre>$ sudo pacman -S ttf-fira-mono</pre>
 
 <h3>Font Awesome</h3>
-<pre>$ sudo pacman -Syu ttf-font-awesome</pre>
+<pre>$ sudo pacman -S ttf-font-awesome</pre>
 
 <h2>X Window System</h2>
 
-<pre>$ sudo pacman -Syu xorg-server xorg-xinit xorg-xrandr</pre>
+<pre>$ sudo pacman -S xorg-server xorg-xinit xorg-xrandr</pre>
 
 <h3>Keyboard and touchpad configuration</h3>
 
@@ -180,13 +180,13 @@ EndSection</pre>
 
 <h2>Desktop notifications</h2>
 
-<pre>$ sudo pacman -Syu libnotify dunst</pre>
+<pre>$ sudo pacman -S libnotify dunst</pre>
 
 <h2>Window manager</h2>
 
 <h3>dwm</h3>
 <p>Install the required library dependencies:</p>
-<pre>$ sudo pacman -Syu libx11 libxft libxinerama</pre>
+<pre>$ sudo pacman -S libx11 libxft libxinerama</pre>
 <p>Install <a href="https://github.com/icanalesm/dwm">my fork</a> of
 <a href="https://dwm.suckless.org/" rel="nofollow">dwm</a>:</p>
 <pre>$ git clone https://github.com/icanalesm/dwm.git
@@ -210,7 +210,7 @@ $ sudo make install</pre>
 <h2>Terminal multiplexer</h2>
 
 <h3>tmux</h3>
-<pre>$ sudo pacman -Syu tmux</pre>
+<pre>$ sudo pacman -S tmux</pre>
 
 <h2>Color calibration</h2>
 
@@ -237,7 +237,7 @@ $ sudo make install</pre>
 
 <h2>Sound</h2>
 
-<pre>$ sudo pacman -Syu alsa-utils pulseaudio pulseaudio-alsa pavucontrol</pre>
+<pre>$ sudo pacman -S alsa-utils pulseaudio pulseaudio-alsa pavucontrol</pre>
 <p>Execute <code>alsamixer</code> to adjust the playback controls.</p>
 <p>Create <code>/var/lib/alsa/asound.state</code> for <code>alsa-restore.service</code>:</p>
 <pre>$ sudo alsactl store</pre>
@@ -245,15 +245,15 @@ $ sudo make install</pre>
 <h2>Web browser</h2>
 
 <h3>Firefox</h3>
-<pre>$ sudo pacman -Syu firefox</pre>
+<pre>$ sudo pacman -S firefox</pre>
 
 <h2>Image viewer</h2>
 
 <h3>feh</h3>
-<pre>$ sudo pacman -Syu feh imagemagick</pre>
+<pre>$ sudo pacman -S feh imagemagick</pre>
 
 <h2>PDF viewer</h2>
 
 <h3>zathura</h3>
-<pre>$ sudo pacman -Syu zathura zathura-pdf-mupdf zathura-ps zathura-djvu</pre>
+<pre>$ sudo pacman -S zathura zathura-pdf-mupdf zathura-ps zathura-djvu</pre>
 </article>
