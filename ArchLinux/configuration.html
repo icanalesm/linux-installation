@@ -81,8 +81,7 @@ $ makepkg -si</pre>
 <h3>TLP</h3>
 <pre>$ sudo pacman -Syu ethtool smartmontools tlp tlp-rdw</pre>
 <p>Enable the services required by <code>tlp</code>:</p>
-<pre>$ sudo systemctl enable tlp.service
-$ sudo systemctl enable tlp-sleep.service</pre>
+<pre>$ sudo systemctl enable tlp.service</pre>
 <p>Configure TLP via <code>/etc/tlp.d/01-myconf.conf</code>:</p>
 <ul>
 <li>Exclude smartphones from autosuspend (i.e. enable charging)</li>
