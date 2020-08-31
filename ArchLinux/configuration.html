@@ -82,6 +82,9 @@ $ makepkg -si</pre>
 <pre>$ sudo pacman -S ethtool smartmontools tlp tlp-rdw</pre>
 <p>Enable the services required by <code>tlp</code>:</p>
 <pre>$ sudo systemctl enable tlp.service</pre>
+<p>Mask the following services to avoid conflicts with TLP's radio device switching options:</p>
+<pre>$ sudo systemctl mask systemd-rfkill.service
+$ systemctl mask systemd-rfkill.socket</pre>
 <p>Configure TLP via <code>/etc/tlp.d/01-myconf.conf</code>:</p>
 <ul>
 <li>Exclude smartphones from autosuspend (i.e. enable charging)</li>
@@ -96,6 +99,7 @@ CPU_BOOST_ON_BAT=0
 DISK_DEVICES="<i>&lt;dev1&gt;</i> ... <i>&lt;devn&gt;</i>"
 USB_BLACKLIST_PHONE=1
 USB_AUTOSUSPEND_DISABLE_ON_SHUTDOWN=1
+RESTORE_DEVICE_STATE_ON_STARTUP=1
 </pre>
 
 <h3>Hibernation using swap file</h3>
