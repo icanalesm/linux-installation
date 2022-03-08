@@ -5,69 +5,62 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../css/style.css">
-	<title>Arch Linux - Installation procedure</title>
+	<title>Arch Linux - Installation</title>
 </head>
 
 <article>
 <header>
-	<h1>Arch Linux - Installation procedure</h1>
+	<h1>Arch Linux - Installation</h1>
 </header>
 
+<p>Personal <a href="https://www.archlinux.org">Arch Linux</a> installation guide; this is part of
+<a href="../index.html">my Linux installation guide</a>. The instructions here are based on ArchWiki's
+<a href="https://wiki.archlinux.org/index.php/Installation_guide">installation</a> and
+<a href="https://wiki.archlinux.org/title/Dm-crypt">dm-crypt</a> wikis.</p>
+
 <ol>
-<li><a href="#Introduction">Introduction</a></li>
 <li><a href="#Preinstallation">Pre-installation</a></li>
 <li><a href="#Installation">Installation</a></li>
 <li><a href="#Postinstallation">Post-installation</a></li>
 </ol>
 
-<h2 id="Introduction">Introduction</h2>
-
-<p>This guide shows how to install <a href="https://www.archlinux.org">Arch Linux</a> in
-<a href="https://en.wikipedia.org/wiki/Extensible_Firmware_Interface">UEFI</a> mode. It will be assumed that a
-<a href="https://wiki.archlinux.org/index.php/USB_flash_installation_media">USB installer</a> is used. The instructions
-here are based on ArchWiki's <a href="https://wiki.archlinux.org/index.php/Installation_guide">installation guide</a>.
-When some of the instructions here do not work, check ArchWiki.</p>
-
-<h3 id="Partition_scheme">Partition scheme</h3>
-<p>The following partition scheme will be used:</p>
-<table style="width:90%; margin:auto;">
-	<tr><th>Mount point</th><th>Type</th><th>Comments</th></tr>
-	<tr><td><code>/</code></td><td>ext4</td><td></td></tr>
-	<tr><td><code>/boot</code></td><td>EFI partition</td><td></td></tr>
-	<tr><td><code>/home</code></td><td>ext4</td><td></td></tr>
-</table>
-
 <h2 id="Preinstallation">Pre-installation</h2>
 
-<p>Power on the computer and boot from the installation USB.</p>
+<p>Boot from the installation media.</p>
 
-<h3 id="Keyboard_layout">Set keyboard layout</h3>
+<h3>Set keyboard layout</h3>
+
 <pre>$ loadkeys <i>&lt;map&gt;</i></pre>
 <p>where <code><i>&lt;map&gt;</i></code> is one of the available layouts from</p>
 <pre>$ ls /usr/share/kbd/keymaps/**/*.map.gz</pre>
 <p>omitting path and file extension.</p>
 
 <h3>Connect to the Internet</h3>
+
 <p>Verify that there is a working Internet connection</p>
 <pre>$ ping archlinux.org</pre>
-<p>If no connection is available, stop the <code>dhcpcd</code> service with</p>
-<pre>$ systemctl stop dhcpcd@<i>&lt;interface&gt;</i></pre>
-<p>where <code><i>&lt;interface&gt;</i></code> can be tab-completed. Then configure the network as described in
-<a href="https://wiki.archlinux.org/index.php/Network_configuration">ArchWiki's Network configuration</a>.</p>
+<p>If no connection is available, follow ArchWiki's
+<a href="https://wiki.archlinux.org/title/Installation_guide#Connect_to_the_internet">connect to the internet</a> (or
+<a href="https://wiki.archlinux.org/index.php/Network_configuration">Network configuration</a>).</p>
 
 <h3>Update the system clock</h3>
+
 <pre>$ timedatectl set-ntp true</pre>
 
 <h3>Partition the disks</h3>
+
 <p>If required, manage the partitions on the disks. Execute</p>
 <pre>$ fdisk /dev/<i>&lt;dev&gt;</i></pre>
-<p>where <code><i>&lt;dev&gt;</i></code> is the device identifier of the disk to partition (for example:
-<code>sda</code>, <code>nvme0n1</code>).</p>
+<p>where <code><i>&lt;dev&gt;</i></code> is the device identifier of the disk to partition (e.g., <code>sda</code>,
+<code>nvme0n1</code>).</p>
+
 <h4>Create a new partition table</h4>
+
 <p>If needed, create a new GUID Partition Table (GPT). Creating a GPT on a disk with data on it will erase all the data
-on the disk.</p>
-<p>To create a new GPT, on <code>fdisk</code>'s prompt type <code>g</code> to create it.</p>
+on the disk. To create a new GPT, on <code>fdisk</code>'s prompt type <code>g</code> to create it.</p>
+
 <h4>Manage partitions</h4>
+
 <ul>
 <li>To create a new partition, on <code>fdisk</code>'s prompt:
 	<ul>
@@ -81,63 +74,89 @@ on the disk.</p>
 	<ul>
 	<li>Type <code>t</code>;</li>
 	<li>Specify the partition number;</li>
-	<li>Specify the partition type. (type <code>L</code> to list all possible values.)</li>
+	<li>Specify the partition type (press <code>L</code> to list all possible values).</li>
 	</ul>
 </li>
 <li>To list the partitions, on <code>fdisk</code>'s prompt type <code>p</code>.</li>
 </ul>
-<h4>Write changes to disk</h4>
+
 <p>To write the changes to disk, on <code>fdisk</code>'s prompt type <code>w</code>.</p>
 
+<h3>Device encryption</h3>
+
+<p>Setup the root and home partitions as encrypted LUKS partitions</p>
+<pre>$ cryptsetup -v --type luks -c aes-xts-plain64 -s 512 -h sha512 -y luksFormat /dev/<i>&lt;devpart_root&gt;</i>
+$ cryptsetup -v --type luks -c aes-xts-plain64 -s 512 -h sha512 -y luksFormat /dev/<i>&lt;devpart_home&gt;</i></pre>
+<p>where <code><i>&lt;devpart_root&gt;</i></code> and <code><i>&lt;devpart_home&gt;</i></code> refer to the device
+identifier and partition number of the root and home partitions, respectively (e.g., <code>/dev/sda2</code> or
+<code>/dev/nvme0n1p2</code>).</p>
+
 <h3>Format the partitions</h3>
+
+<p>Unlock the partitions</p>
+<pre>$ cryptsetup open /dev/<i>&lt;devpart_root&gt;</i> cryptroot
+$ cryptsetup open /dev/<i>&lt;devpart_home&gt;</i> home</pre>
+<p>where <code><i>&lt;devpart_root&gt;</i></code> and <code><i>&lt;devpart_home&gt;</i></code> are as explained above.
+Unlocking the partitions will map them to a new device name under <code>/dev/mapper</code> using the device mapper. For
+example, the commands above will map <code>/dev/<i>&lt;devpart_root&gt;</i></code> and
+<code>/dev/<i>&lt;devpart_home&gt;</i></code> to <code>/dev/mapper/cryptroot</code> and <code>/dev/mapper/home</code>,
+respectively.</p>
+
 <p>Format the partitions by executing</p>
 <pre>$ mkfs.fat -F32 /dev/<i>&lt;devpart_EFI&gt;</i>
-$ mkfs.ext4 /dev/<i>&lt;devpart_root&gt;</i>
-$ mkfs.ext4 /dev/<i>&lt;devpart_home&gt;</i></pre>
-<p>where <code><i>&lt;devpart_EFI&gt;</i></code>, <code><i>&lt;devpart_root&gt;</i></code> and
-<code><i>&lt;devpart_home&gt;</i></code> refer to the device identifier and partition number of the EFI, root and home
-partitions, respectively (for example <code>/dev/sda1</code> or <code>/dev/nvme0n1p1</code>).</p>
+$ mkfs.ext4 /dev/mapper/cryptroot
+$ mkfs.ext4 /dev/mapper/home</pre>
+<p>where <code><i>&lt;devpart_EFI&gt;</i></code> refers to the device identifier and partition number of the
+<a href="https://en.wikipedia.org/wiki/EFI_system_partition">EFI partition</a> (e.g., <code>/dev/sda1</code> or
+<code>/dev/nvme0n1p1</code>).</p>
 
 <h3>Mount the file systems</h3>
-<p>Mount the root partition under <code>/mnt</code>, and the EFI and home partitions under the corresponding mounting
-points in the root partition</p>
-<pre>$ mount /dev/<i>&lt;devpart_root&gt;</i> /mnt
+
+<p>Mount the root partition under <code>/mnt</code> and the EFI and home partitions under the corresponding mounting
+points</p>
+<pre>$ mount /dev/mapper/cryptroot /mnt
 $ mkdir /mnt/boot
 $ mkdir /mnt/home
 $ mount /dev/<i>&lt;devpart_EFI&gt;</i> /mnt/boot
-$ mount /dev/<i>&lt;devpart_home&gt;</i> /mnt/home</pre>
-<p>where <code><i>&lt;devpart_EFI&gt;</i></code>, <code><i>&lt;devpart_root&gt;</i></code> and
-<code><i>&lt;devpart_home&gt;</i></code> are as explained above.</p>
+$ mount /dev/mapper/home /mnt/home</pre>
+<p>where <code><i>&lt;devpart_EFI&gt;</i></code> is as explained above.</p>
 
 <h2 id="Installation">Installation</h2>
 
 <h3>Select the mirrors</h3>
+
 <p>Packages to be installed must be downloaded from mirror servers, which are defined in
-<code>/etc/pacman.d/mirrorlist</code>. The higher a mirror is placed in this file, the more priority it is given when
-downloading a package. Edit the file to assign the desired priority (e.g. prefer mirrors geographically closer). This
-file will be copied to the new system.</p>
+<code>/etc/pacman.d/mirrorlist</code>. Edit the file to assign the desired priority (the higher a mirror is placed in
+the file, the more priority it is given when downloading a package). This file will be copied to the new system.</p>
 
 <h3>Install initial packages</h3>
-<pre>$ pacstrap /mnt base linux linux-firmware e2fsprogs dosfstools man-db man-pages openssh unzip vim rsync wget networkmanager firewalld base-devel git </pre>
+
+<pre>$ pacstrap /mnt base linux linux-firmware base-devel e2fsprogs dosfstools man-db man-pages unzip vim tmux rsync wget git openssh networkmanager</pre>
 
 <h3>Generate <code>/etc/fstab</code> file</h3>
+
 <pre>$ genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</pre>
 
 <h3>Change root into the new system</h3>
+
 <pre>$ arch-chroot /mnt</pre>
 
 <h3>Time zone</h3>
+
 <pre>$ ln -sf /usr/share/zoneinfo/<i>&lt;Region&gt;</i>/<i>&lt;City&gt;</i> /etc/localtime</pre>
 <p>where <code><i>&lt;Region&gt;</i></code> is one of the available options from</p>
 <pre>$ ls /usr/share/zoneinfo</pre>
 <p>and <code><i>&lt;City&gt;</i></code> is one of the available options from</p>
 <pre>$ ls /usr/share/zoneinfo/<i>&lt;Region&gt;</i></pre>
-<p>Then, generate <code>/etc/adjtime</code></p>
+
+<p>To generate <code>/etc/adjtime</code>, execute</p>
 <pre>$ hwclock --systohc</pre>
 
 <h3>Locale</h3>
-<p>Open <code>/etc/locale.gen</code>, uncomment the desired localisation(s), and generate them with</p>
+
+<p>Update <code>/etc/locale.gen</code> by uncommenting the desired localisations. To generate them, execute</p>
 <pre>$ locale-gen</pre>
+
 <p>Create <code>/etc/locale.conf</code> and add lines setting the variables
 <a href="http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names"><code>LANG</code></a> and
 <a href="http://www.gnu.org/software/gettext/manual/gettext.html#The-LANGUAGE-variable"><code>LANGUAGE</code></a> to
@@ -145,6 +164,7 @@ the desired values</p>
 <pre class="header">/etc/locale.conf</pre>
 <pre class="content">LANG=<i>&lt;localisation&gt;</i>
 LANGUAGE=<i>&lt;list_languages&gt;</i></pre>
+
 <p>Make the desired
 <a href="https://wiki.archlinux.org/index.php/Linux_console/Keyboard_configuration#Keymaps">keymap</a> persistent by
 setting <code>KEYMAP</code> in <code>/etc/vconsole.conf</code></p>
@@ -152,41 +172,80 @@ setting <code>KEYMAP</code> in <code>/etc/vconsole.conf</code></p>
 <pre class="content">KEYMAP=<i>&lt;map&gt;</i></pre>
 
 <h3>Network configuration</h3>
+
 <p>Create <code>/etc/hostname</code> and add a line with the desired hostname <code><i>&lt;hostname&gt;</i></code></p>
 <pre class="header">/etc/hostname</pre>
 <pre class="content"><i>&lt;hostname&gt;</i></pre>
+
 <p>Create <code>/etc/hosts</code> and add matching entries</p>
 <pre class="header">/etc/hosts</pre>
 <pre class="content">127.0.0.1    localhost
-127.0.1.1    <i>&lt;hostname&gt;</i>.localdomain    <i>&lt;hostname&gt;</i>
-::1          localhost</pre>
+::1          localhost
+127.0.1.1    <i>&lt;hostname&gt;</i></pre>
 <p>If the system has a permanent IP address, it should be used instead of <code>127.0.1.1</code>.</p>
 
 <h3>Configure <code>mkinitcpio</code></h3>
+
 <p>Update <code>/etc/mkinitcpio.conf</code> so that it contains the following hooks</p>
 <pre class="header">/etc/mkinitcpio.conf</pre>
 <pre class="content">...
-HOOKS=(base udev autodetect keyboard keymap consolefont modconf block filesystems fsck)
+HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt filesystems fsck)
 ...</pre>
+<p><code>encrypt</code> must be placed after the <code>udev</code> hook and <code>keymap</code> must appear before the
+<code>encrypt</code> hook (otherwise the encryption password is entered using the default US keymap instead of that
+specified in <code>/etc/vconsole.conf</code>).</p>
+
 <p>Regenerate the initramfs</p>
 <pre>mkinitcpio -p linux</pre>
 
+<h3>Unlock the home partition at boot</h3>
+
+<p>Create or copy a keyfile for unlocking the home partition and set the correct file permissions:</p>
+<ul>
+<li>
+	<p>If creating a file, execute</p>
+	<pre>$ dd bs=512 count=4 if=/dev/random of=/etc/keyfile-home iflag=fullblock status=progress
+$ chmod 600 /etc/keyfile-home</pre>
+</li>
+<li>
+	<p>If copying a file, execute</p>
+	<pre>$ cp <i>&lt;path_to_keyfile&gt;</i> /etc/keyfile-home
+$ chmod 600 /etc/keyfile-home</pre>
+</li>
+</ul>
+<p>Add a keyslot for the keyfile to the LUKS header</p>
+<pre>$ cryptsetup luksAddKey /dev/<i>&lt;devpart_home&gt;</i> /etc/keyfile-home</pre>
+<p>where <code><i>&lt;devpart_home&gt;</i></code> is as explained above.</p>
+
+<p>Update <code>/etc/crypttab</code> for automatically unlocking the home partition at boot</p>
+<pre class="header">/etc/crypttab</pre>
+<pre class="content">home    UUID=<i>&lt;partition_UUID&gt;</i>    /etc/keyfile-home</pre>
+<p>where <code><i>&lt;partition_UUID&gt;</i></code> is the UUID of <code>/dev/<i>&lt;devpart_home&gt;</i></code>.</p>
+
 <h3>Set root password</h3>
+
 <pre>$ passwd</pre>
 
 <h3>Boot loader</h3>
-<p>Install a <a href="https://wiki.archlinux.org/index.php/Arch_boot_process#Boot_loader">boot loader</a> (see
-<a href="../index.html">Boot loader installation</a>).</p>
+
+<p><a href="../rEFInd/installation.html">Install rEFInd</a> and set the required kernel parameters:</p>
+<ul>
+	<li><code>cryptdevice=UUID=<i>&lt;partition_UUID&gt;</i>:cryptroot</code>, and</li>
+	<li><code>root=/dev/mapper/cryptroot</code>,</li>
+</ul>
+<p>where <code><i>&lt;partition_UUID&gt;</i></code> is the UUID of <code>/dev/<i>&lt;devpart_root&gt;</i></code>.</p>
 
 <h3>Reboot</h3>
-<p>Exit the chroot environment by executing <code>exit</code> or pressing <kbd>Ctrl</kbd>+<kbd>D</kbd>.</p>
-<p>Optionally, unmount all the partitions</p>
+
+<p>Exit the chroot environment by executing <code>exit</code> or pressing <kbd>Ctrl</kbd>+<kbd>D</kbd>. Optionally,
+unmount all partitions</p>
 <pre>$ umount -R /mnt</pre>
+
 <p>Restart the machine by executing <code>reboot</code>.</p>
 
 <h2 id="Postinstallation">Post-installation</h2>
 
-<p>Continue with the <a href="configuration.html">configuration</a>. Also, take a look at the different
-<a href="../index.html">special configuration sections</a>.</p>
+<p>Configure the system following the <a href="postinstallation.html">post-installation guide</a>. Also, take a look at
+the different <a href="../index.html#Guide_Arch">special configuration sections</a>.</p>
 
 </article>

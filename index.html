@@ -5,42 +5,83 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="css/style.css">
-	<title>Linux installation and configuration</title>
+	<title>Linux installation</title>
 </head>
 
 <article>
 <header>
-	<h1>Linux installation and configuration</h1>
+	<h1>Linux installation</h1>
 </header>
 
-<p>Personal instructions, notes and guides for installing and configuring Linux.</p>
-<p>(<a href="old/index.html">View</a> old instructions, notes and guides.)</p>
+<p>Personal guides (instructions and notes) for installing and configuring Linux.</p>
+<p>(<a href="old/index.html">View</a> old guides.)</p>
 
-<h2>Arch Linux</h2>
+<ol type="1">
+<li><a href="#Overview">Overview</a></li>
+<li><a href="#Guides">Guides</a>
+	<ul>
+	<li><a href="#Guide_rEFInd">rEFInd</a></li>
+	<li><a href="#Guide_Artix">Artix Linux</a></li>
+	<li><a href="#Guide_Arch">Arch Linux</a></li>
+	</ul>
+</li>
+</ol>
+
+<h2 id="Overview">Overview</h2>
+
+<p>This is a personal guide for installing a Linux-based system in
+<a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> mode</li> with full disk
+encryption.</p>
+
+<p>Encryption will be done using <a href="https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup">LUKS</a> on the
+partitions (see the
+<a href="https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition">ArchWiki</a>). The
+following partition scheme will be used:</p>
+<table style="width:90%; margin:auto;">
+	<tr><th>Partition</th><th>Type</th></tr>
+	<tr><td>Boot</td><td>EFI</td></tr>
+	<tr><td>Encrypted system</td><td>ext4</td></tr>
+	<tr><td>Encrypted home</td><td>ext4</td></tr>
+</table>
+
+<p>The system has the following characteristics:</p>
 <ul>
-<li>Installation:
-	<ul>
-	<li>Installation procedure [<a href="ArchLinux/installation.html">view</a>]</li>
-	<li>Installation + encryption procedure [<a href="ArchLinux/installation-encryption.html">view</a>]</li>
-	<li>Boot loader installation
-		<ul>
-		<li>MacBook Pro 9.2: EFI boot using native Apple boot loader and rEFInd [view]</li>
-		<li>Dell G5 5590: EFI boot using rEFInd [<a href="ArchLinux/dellG5_5590-EFIrEFInd.html">view</a>]</li>
-		</ul>
-	</li>
-	</ul>
-</li>
-<li>Configuration:
-	<ul>
-	<li>Configuration [<a href="ArchLinux/configuration.html">view</a>]</li>
-	<li>Special configuration
-		<ul>
-		<li>MacBook Pro 9.2 [<a href="ArchLinux/macBookPro9.2-configuration.html">view</a>]</li>
-		<li>Dell G5 5590 [<a href="ArchLinux/dellG5_5590-configuration.html">view</a>]</li>
-		<li>rEFInd [<a href="ArchLinux/refind-configuration.html">view</a>]</li>
-		</ul>
-	</li>
-	</ul>
-</li>
+<li>Boot loader: <a href="https://www.rodsbooks.com/refind">rEFInd</a></li>
+<li>Network manager: <a href="https://networkmanager.dev">NetworkManager</a></li>
+<li>Firewall: <a href="https://firewalld.org">firewalld</a></li>
+<li>Time synchronization: <a href="https://chrony.tuxfamily.org/">chrony</a></li>
+<li>Power management: <a href="https://linrunner.de/tlp">TLP</a></li>
+<li>Display server: <a href="https://www.x.org/wiki">Xorg</a></li>
+<li>Sound server: <a href="https://pipewire.org">PipeWire</a></li>
 </ul>
+
+<h2 id="Guides">Guides</h2>
+
+<h3 id="Guide_rEFInd">rEFInd</h3>
+
+<ul>
+<li>Installation [view]</li>
+</ul>
+
+<h3 id="Guide_Artix">Artix Linux</h3>
+
+<ul>
+<li>Installation [<a href="ArtixLinux/installation.html">view</a>]</li>
+<li>Post-installation [<a href="#">view</a>]</li>
+	<ul>
+	<li>MacBook Pro 9.2 [<a href="ArtixLinux/macBookPro9.2-postinstallation.html">view</a>]</li>
+	<li>Dell G5 5590 [<a href="ArtixLinux/dellG5_5590-postinstallation.html">view</a>]</li>
+	</ul>
+</ul>
+
+<h3 id="Guide_Arch">Arch Linux</h3>
+<ul>
+<li>Installation [<a href="ArchLinux/installation.html">view</a>]</li>
+<li>Post-installation [<a href="ArchLinux/postinstallation.html">view</a>]</li>
+	<ul>
+	<li>MacBook Pro 9.2 [<a href="ArchLinux/macBookPro9.2-postinstallation.html">view</a>]</li>
+	<li>Dell G5 5590 [<a href="ArchLinux/dellG5_5590-postinstallation.html">view</a>]</li>
+	</ul>
+</ul>
+
 </article>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>Artix Linux - Post-installation</title>
+</head>
+
+<article>
+<header>
+	<h1>Artix Linux - Post-installation</h1>
+</header>
+
+<p>Personal <a href="https://www.artixlinux.org">Artix Linux</a> post-installation guide; this is part of
+<a href="../index.html">my Linux installation guide</a>.</p>
+
+<h2>Microcode</h2>
+
+<p>For AMD processors</p>
+<pre>$ pacman -S amd-ucode</pre>
+
+<p>For Intel processors</p>
+<pre>$ pacman -S intel-ucode</pre>
+
+<p>Add <code>amd-ucode.img</code> or <code>intel-ucode.img</code> as the first initrd in the
+<a href="https://wiki.archlinux.org/index.php/Microcode#Configuration">bootloader configuration file</a>, i.e.,
+<a href="https://www.rodsbooks.com/refind/configfile.html">rEFInd's configuration file</a>; see the section below.</p>
+
+<h2>Kernel parameters</h2>
+
+<ul>
+<li><p>Microcode: <code>initrd=\amd-ucode.img</code> or <code>initrd=\intel-ucode.img</code>.</p></li>
+<li><p>Specify that the root device is mounted as read-write instead of read-only (see
+    <a href="https://bbs.archlinux.org/viewtopic.php?pid=1303683#p1303683">this</a>): <code>rw</code>.</p></li>
+<li><p>Silent boot: <code>quiet loglevel=3</code>.</p></li>
+</ul>
+
+<p>The parameters above must be placed in the corresponding
+<a href="https://www.rodsbooks.com/refind/configfile.html#stanzas">manual boot stanza</a> within
+rEFInd's configuration file. For example</p>
+<pre>menuentry "Artix Linux" {
+    volume    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    loader    /vmlinuz-linux
+    initrd    /initramfs-linux.img
+    options   "cryptdevice=UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:cryptroot root=/dev/mapper/cryptroot rw quiet loglevel=3 initrd=\intel-ucode.img"
+}</pre>
+
+<h2>Mount options</h2>
+
+<p>In <code>/etc/fstab</code>, change <code>relatime</code> to <code>noatime</code> for the root and home
+filesystems.</p>
+
+<h2>Privilege elevation</h2>
+
+<h3>sudo</h3>
+
+<p>Open <code>/etc/sudoers</code> using <code>visudo</code></p>
+<pre>$ EDITOR=vim visudo</pre>
+<p>and uncomment the line <code>%wheel ALL=(ALL:ALL) ALL</code> to allow members of the <code>wheel</code> group to run
+commands as other users.</p>
+
+<h2>Create unprivileged user</h2>
+
+<p>Create a non-privileged user <code><i>user</i></code></p>
+<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>user</i>
+$ passwd <i>user</i></pre>
+<p>where <code><i>&lt;uid&gt;</i></code> is the user ID. Add <code><i>user</i></code> to the <code>wheel</code> group</p>
+<pre>$ usermod -aG wheel <i>user</i></pre>
+
+<p>It will be assumed that the rest of this guide is done using an unprivileged user.</p>
+
+<h2>Linux console</h2>
+
+<p>Make the desired <a href="https://wiki.archlinux.org/index.php/Linux_console#Fonts">console font</a> persistent by
+setting <code>FONT</code> in <code>/etc/vconsole.conf</code></p>
+<pre class="header">/etc/vconsole.conf</pre>
+<pre class="content">FONT=<i>&lt;font&gt;</i></pre>
+
+<h2>Network configuration</h2>
+
+<h3>NetworkManager</h3>
+
+NetworkManager's service is enabled during <a href="installation.html#Installation">installation</a>. If for some reason
+it is not enabled, execute
+<pre>$ sudo ln -s /etc/runit/sv/NetworkManager /run/runit/service/</pre>
+
+<h2>Firewall</h2>
+
+<h3>firewalld</h3>
+
+<pre>$ sudo pacman -S firewalld firewalld-runit
+$ sudo ln -s /etc/runit/sv/firewalld /run/runit/service/</pre>
+
+<h2>NTP</h2>
+
+<h3>chrony</h3>
+
+<pre>$ sudo pacman -S chrony chrony-runit</pre>
+
+<p>Apply the following configuration in <code>/etc/chrony.conf</code>:</p>
+<pre class="header">/etc/chrony.conf</pre>
+<pre class="content">...
+server 0.pool.ntp.org iburst
+server 1.pool.ntp.org iburst
+server 2.pool.ntp.org iburst
+server 3.pool.ntp.org iburst
+...</pre>
+<p>and enable the service</p>
+<pre>$ sudo ln -s /etc/runit/sv/chrony /run/runit/service/</pre>
+
+<h2>Power management</h2>
+
+<h3>TLP</h3>
+
+<pre>$ sudo pacman -S ethtool smartmontools tlp tlp-rdw tlp-runit</pre>
+
+<p>Configure TLP via <code>/etc/tlp.d/01-myconf.conf</code></p>
+<pre class="header">/etc/tlp.d/01-myconf.conf</pre>
+<pre class="content">TLP_DEFAULT_MODE=AC
+DISK_DEVICES="<i>&lt;dev1&gt;</i> ... <i>&lt;devn&gt;</i>"
+USB_BLACKLIST_PHONE=1
+USB_AUTOSUSPEND_DISABLE_ON_SHUTDOWN=1
+RESTORE_DEVICE_STATE_ON_STARTUP=1
+</pre>
+<p>and enable the service</p>
+<pre>$ sudo ln -s /etc/runit/sv/tlp /run/runit/service/</pre>
+
+<h2>Enable Arch repositories</h2>
+
+<p>Arch repositories are
+<a href="https://wiki.artixlinux.org/Main/Repositories#Arch_repositories">disabled by default in Artix</a>. To enable
+them, execute</p>
+<pre>$ sudo pacman -S artix-archlinux-support</pre>
+<p>and activate the extra and community Arch repositories by adding their corresponding entries in
+<code>/etc/pacman.conf</code> after the Artix repositories:</p>
+<pre class="header">/etc/pacman.conf</pre>
+<pre class="content">...
+[system]
+Include = /etc/pacman.d/mirrorlist
+
+[world]
+Include = /etc/pacman.d/mirrorlist
+
+[galaxy]
+Include = /etc/pacman.d/mirrorlist
+
+# Arch
+
+[extra]
+Include = /etc/pacman.d/mirrorlist-arch
+
+[community]
+Include = /etc/pacman.d/mirrorlist-arch
+...</pre>
+<p>Refresh the package databases</p>
+<pre>$ sudo pacman -Sy</pre>
+
+<p>At the moment of writing this guide, the following packages are on Arch repositories only:</p>
+<ul>
+<li><code>ttf-ibm-plex</code></li>
+<li><code>xcalib</code></li>
+</ul>
+
+<h2>Fonts</h2>
+
+<pre>$ sudo pacman -S ttf-ibm-plex ttf-fira-mono ttf-font-awesome</pre>
+
+<h2>X Window System</h2>
+
+<pre>$ sudo pacman -S xorg-server xorg-xinit xorg-xrandr</pre>
+
+<h3>Keyboard and touchpad configuration</h3>
+
+<h4>Tap for touchpad</h4>
+
+<p>Add <code>Option "Tapping" "On"</code> to the <i>touchpad</i> section in
+<code>/etc/X11/xorg.conf.d/40-libinput.conf</code>:</p>
+<pre class="header">/etc/X11/xorg.conf.d/40-libinput.conf</pre>
+<pre class="content">Section "InputClass"
+	Identifier "libinput touchpad catchall"
+	MatchIsTouchpad "on"
+	MatchDevicePath "/dev/input/event*"
+	Driver "libinput"
+	Option "Tapping" "On"
+EndSection</pre>
+<p>If the file does not exist, copy <code>40-libinput.conf</code> from <code>/usr/share/X11/xorg.conf.d/</code>.</p>
+
+<h2>Screen colour temperature</h2>
+
+<h3>redshift</h3>
+
+<pre>$ sudo pacman -S redshift</pre>
+
+<h2>Monitor colour calibration</h2>
+
+<h3>xcalib</h3>
+
+<pre>$ sudo pacman -S xcalib</pre>
+
+<h2>Sound</h2>
+
+<h3>PipeWire</h3>
+
+<pre>$ sudo pacman -S alsa-utils pipewire pipewire-alsa pipewire-pulse pavucontrol</pre>
+
+<h2>Desktop notifications</h2>
+
+<h3>dunst</h3>
+
+<pre>$ sudo pacman -S libnotify dunst</pre>
+
+<h2>Window manager</h2>
+
+<h3>dwm</h3>
+
+<p>If not already installed, install the required dependencies</p>
+<pre>$ sudo pacman -S libx11 libxft libxinerama</pre>
+
+<p>Install <a href="https://github.com/icanalesm/dwm">my fork</a> of
+<a href="https://dwm.suckless.org/" rel="nofollow">dwm</a></p>
+<pre>$ git clone https://github.com/icanalesm/dwm.git
+$ cd dwm
+$ make
+$ sudo make install</pre>
+
+<p>To execute <code>dwm</code> with <code>startx</code>, add <code>exec dwm</code> at the end of
+<code>~/.xinitrc</code>.</p>
+
+<h2>Terminal emulator</h2>
+
+<h3>st</h3>
+
+<p>Install <a href="https://github.com/icanalesm/st">my fork</a> of
+<a href="https://st.suckless.org/" rel="nofollow">st</a>:</p>
+<pre>$ git clone https://github.com/icanalesm/st.git
+$ cd st
+$ make
+$ sudo make install</pre>
+
+<h2>Backlight control</h2>
+
+<h3>brightctl</h3>
+
+<pre>$ git clone https://github.com/icanalesm/brightctl.git
+$ cd brightctl</pre>
+<p>Apply the desired <a href="https://github.com/icanalesm/brightctl#configuration">configuration</a>. Compile and
+install</p>
+<pre>$ make
+$ sudo make install</pre>
+
+<p>Configure <code>sudo</code> to allow user <code><i>user</i></code> the execution of <code>brightctl</code> as
+<i>root</i> without a password. Open <code>/etc/sudoers.d/usercmds</code> using <code>visudo</code></p>
+<pre>$ sudo EDITOR=vim visudo -f /etc/sudoers.d/usercmds</pre>
+<p>and add the following lines:</p>
+<pre class="header">/etc/sudoers.d/usercmds</pre>
+<pre class="content">## brightctl commands
+<i>user</i> <i>&lt;hostname&gt;</i>=NOPASSWD:/usr/local/bin/brightctl</pre>
+<p>where <code><i>&lt;hostname&gt;</i></code> is the machine's hostname.</p>
+
+<h2>Web browser</h2>
+
+<h3>Firefox</h3>
+
+<pre>$ sudo pacman -S firefox</pre>
+
+<h2>PDF viewer</h2>
+
+<h3>zathura</h3>
+
+<pre>$ sudo pacman -S zathura zathura-pdf-mupdf zathura-ps zathura-djvu</pre>
+
+<h2>Image viewer</h2>
+
+<h3>feh</h3>
+
+<pre>$ sudo pacman -S feh imagemagick</pre>
+
+</article>

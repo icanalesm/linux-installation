@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>Artix Linux - Post-installation - MacBook Pro 9.2</title>
+</head>
+
+<article>
+<header>
+	<h1>Artix Linux - Post-installation<br />MacBook Pro 9.2</h1>
+</header>
+
+<p>Personal <a href="https://www.artixlinux.org">Artix Linux</a> post-installation guide for a MacBook Pro 9.2. This
+guide is a complement of <a href="postinstallation.html">my Artix Linux post-installation guide</a> and is part of
+<a href="../index.html">my Linux installation guide</a>.</p>
+
+<p>It will be assumed that this guide is done using an unprivileged user.</p>
+
+<h2>Wi-Fi</h2>
+
+<h3>Broadcom 4331</h3>
+
+<pre>$ sudo pacman -S linux-headers broadcom-wl-dkms</pre>
+
+<h2>X Window System</h2>
+
+<h3>Keyboard and touchpad configuration</h3>
+
+<h4>Function keys</h4>
+
+<p>The behaviour of <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd> is configured by the <code>fnmode</code> option of the
+<code>hid_apple</code> kernel module via the <code>/etc/modprobe.d/hid_apple.conf</code> file:</p>
+<ul>
+<li>To disable the <kbd>fn</kbd> key, add the following line:
+<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="content">options hid_apple fnmode=0</pre>
+</li>
+<li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd>, add the following
+    line:
+<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="content">options hid_apple fnmode=1</pre>
+</li>
+<li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>F<i>&lt;num&gt;</i></kbd>, add the following line:
+<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="content">options hid_apple fnmode=2</pre>
+</li>
+</ul>
+
+<h2>Sound</h2>
+
+<h3>Configure controller</h3>
+
+<p>Add to <code>/etc/modprobe.d/sound.conf</code> the following line:</p>
+<pre class="header">/etc/modprobe.d/sound.conf</pre>
+<pre class="content">options snd_hda_intel model=mbp81</pre>
+
+</article>

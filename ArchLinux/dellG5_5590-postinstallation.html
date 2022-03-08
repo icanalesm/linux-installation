@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>Arch Linux - Post-installation - Dell G5 5590</title>
+</head>
+
+<article>
+<header>
+	<h1>Arch Linux - Post-installation<br />Dell G5 5590</h1>
+</header>
+
+<p>Personal <a href="https://www.archlinux.org">Arch Linux</a> post-installation guide for a Dell G5 5590. This
+guide is a complement of <a href="postinstallation.html">my Arch Linux post-installation guide</a> and is part of
+<a href="../index.html">my Linux installation guide</a>.</p>
+
+<p>It will be assumed that this guide is done using an unprivileged user.</p>
+
+<h2>Graphics card - Nvidia RTX 2060</h2>
+
+<pre>$ sudo pacman -S nvidia nvidia-settings</pre>
+
+<h3>Power management</h3>
+
+<p>Set the kernel parameter <code>mem_sleep_default</code> to <code>deep</code> (see
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/510.54/README/powermanagement.html#KnownIssuesAndWf438e">this</a>)
+</p>
+<pre>... mem_sleep_default=deep ...</pre>
+
+<p>If there is a long waiting time when resuming (see
+<a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1850238">this</a>), blacklist the kernel module
+<code>ucsi_ccg</code></p>
+<pre class="header">/etc/modprobe.d/dell.conf</pre>
+<pre class="content">blacklist ucsi_ccg</pre>
+
+<h3>X Window System</h3>
+
+<h4>PRIME Render Offload</h4>
+
+<p>According to the
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/510.54/README/primerenderoffload.html#configurexscreen">official documentation</a>,
+the X server will automatically use NVIDIA's PRIME render offload (since the X server version in the repositories is
+newer than 1.20.7). To check this, execute</p>
+<pre>$ xrandr --listproviders</pre>
+<p>and check that the output has a provider provider named "NVIDIA-G0", for example:</p>
+<pre>Providers: number : 2
+Provider 0: id: 0x1b7 cap: 0x1, Source Output crtcs: 4 outputs: 3 associated providers: 1 name:NVIDIA-0
+Provider 1: id: 0x1f1 cap: 0xf, Source Output, Sink Output, Source Offload, Sink Offload crtcs: 3 outputs: 5 associated providers: 1 name:modesetting</pre>
+<p>If automatic configuration does not work,
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/510.54/README/primerenderoffload.html#renderoffloadtroubleshooting">explicitly configure</a>
+the iGPU and dGPU devices:</p>
+<pre class="header">/etc/X11/xorg.conf.d/20-nvidia.conf</pre>
+<pre class="content">Section "ServerLayout"
+        Identifier     "layout"
+        Screen      0  "iGPU"
+EndSection
+
+Section "Device"
+        Identifier     "iGPU"
+        Driver         "modesetting"
+EndSection
+
+Section "Screen"
+        Identifier     "iGPU"
+        Device         "iGPU"
+EndSection
+
+Section "Device"
+        Identifier     "dGPU"
+        Driver         "nvidia"
+EndSection</pre>
+
+<h4>Offloading Graphics Display</h4>
+<p>Configure the X Server according to the
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/510.54/README/randr14.html#outputsource">official documentation</a>:
+</p>
+<pre class="header">/etc/X11/xorg.conf.d/20-nvidia.conf</pre>
+<pre class="content">Section "ServerLayout"
+	Identifier     "layout"
+	Screen      0  "dGPU"
+	Inactive       "iGPU"
+EndSection
+
+Section "Device"
+	Identifier     "dGPU"
+	Driver         "nvidia"
+	BusID          "<i>&lt;busID_nvidia&gt;</i>"
+EndSection
+
+Section "Screen"
+	Identifier     "dGPU"
+	Device         "dGPU"
+	Option         "AllowEmptyInitialConfiguration"
+EndSection
+
+Section "Device"
+	Identifier     "iGPU"
+	Driver         "modesetting"
+EndSection
+
+Section "Screen"
+	Identifier     "iGPU"
+	Device         "iGPU"
+EndSection
+</pre>
+<p>where <code><i>&lt;busID_nvidia&gt;</i></code> is the PCI Bus ID of the Nvidia graphics card. To get the appropriate
+Bus ID (e.g., <code>PCI:1:0:0</code>), execute</p>
+<pre>lspci | grep VGA</pre>
+
+<p>Add the following lines to <code>~/.xinitrc</code>:</p>
+<pre class="header">~/.xinitrc</pre>
+<pre class="content">...
+xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto
+...
+</pre>
+
+</article>
