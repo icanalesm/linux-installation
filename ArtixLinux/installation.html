@@ -193,30 +193,6 @@ specified in <code>/etc/vconsole.conf</code>).</p>
 <p>Regenerate the initramfs</p>
 <pre>mkinitcpio -p linux</pre>
 
-<h3>Unlock the home partition at boot</h3>
-
-<p>Create or copy a keyfile for unlocking the home partition and set the correct file permissions:</p>
-<ul>
-<li>
-	<p>If creating a file, execute</p>
-	<pre>$ dd bs=512 count=4 if=/dev/random of=/etc/keyfile-home iflag=fullblock status=progress
-$ chmod 600 /etc/keyfile-home</pre>
-</li>
-<li>
-	<p>If copying a file, execute</p>
-	<pre>$ cp <i>&lt;path_to_keyfile&gt;</i> /etc/keyfile-home
-$ chmod 600 /etc/keyfile-home</pre>
-</li>
-</ul>
-<p>Add a keyslot for the keyfile to the LUKS header</p>
-<pre>$ cryptsetup luksAddKey /dev/<i>&lt;devpart_home&gt;</i> /etc/keyfile-home</pre>
-<p>where <code><i>&lt;devpart_home&gt;</i></code> is as explained above.</p>
-
-<p>Update <code>/etc/crypttab</code> for automatically unlocking the home partition at boot</p>
-<pre class="header">/etc/crypttab</pre>
-<pre class="content">home    UUID=<i>&lt;partition_UUID&gt;</i>    /etc/keyfile-home</pre>
-<p>where <code><i>&lt;partition_UUID&gt;</i></code> is the UUID of <code>/dev/<i>&lt;devpart_home&gt;</i></code>.</p>
-
 <h3>Set root password</h3>
 
 <pre>$ passwd</pre>
@@ -260,6 +236,30 @@ menuentry "Artix Linux" {
 <code><i>&lt;devpart_ESP&gt;</i></code> and <code><i>&lt;devpart_root&gt;</i></code> are as explained above. The
 PARTUUID and UUID can be obtained with</p>
 <pre>$ blkid</pre>
+
+<h3>Unlock the home partition at boot</h3>
+
+<p>Create or copy a keyfile for unlocking the home partition and set the correct file permissions:</p>
+<ul>
+<li>
+	<p>If creating a file, execute</p>
+	<pre>$ dd bs=512 count=4 if=/dev/random of=/etc/keyfile-home iflag=fullblock status=progress
+$ chmod 600 /etc/keyfile-home</pre>
+</li>
+<li>
+	<p>If copying a file, execute</p>
+	<pre>$ cp <i>&lt;path_to_keyfile&gt;</i> /etc/keyfile-home
+$ chmod 600 /etc/keyfile-home</pre>
+</li>
+</ul>
+<p>Add a keyslot for the keyfile to the LUKS header</p>
+<pre>$ cryptsetup luksAddKey /dev/<i>&lt;devpart_home&gt;</i> /etc/keyfile-home</pre>
+<p>where <code><i>&lt;devpart_home&gt;</i></code> is as explained above.</p>
+
+<p>Update <code>/etc/crypttab</code> for automatically unlocking the home partition at boot</p>
+<pre class="header">/etc/crypttab</pre>
+<pre class="content">home    UUID=<i>&lt;UUID_home&gt;</i>    /etc/keyfile-home</pre>
+<p>where <code><i>&lt;UUID_home&gt;</i></code> is the UUID of <code>/dev/<i>&lt;devpart_home&gt;</i></code>.</p>
 
 <h3>Reboot</h3>
 
