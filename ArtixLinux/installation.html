@@ -101,23 +101,23 @@ example, the commands above will map <code>/dev/<i>&lt;devpart_root&gt;</i></cod
 respectively.</p>
 
 <p>Format the partitions by executing</p>
-<pre>$ mkfs.fat -F32 /dev/<i>&lt;devpart_EFI&gt;</i>
+<pre>$ mkfs.fat -F32 /dev/<i>&lt;devpart_ESP&gt;</i>
 $ mkfs.ext4 /dev/mapper/cryptroot
 $ mkfs.ext4 /dev/mapper/home</pre>
-<p>where <code><i>&lt;devpart_EFI&gt;</i></code> refers to the device identifier and partition number of the
-<a href="https://en.wikipedia.org/wiki/EFI_system_partition">EFI partition</a> (e.g., <code>/dev/sda1</code> or
-<code>/dev/nvme0n1p1</code>).</p>
+<p>where <code><i>&lt;devpart_ESP&gt;</i></code> refers to the device identifier and partition number of the
+<a href="https://en.wikipedia.org/wiki/EFI_system_partition">EFI system partition</a> or ESP (e.g.,
+<code>/dev/sda1</code> or <code>/dev/nvme0n1p1</code>).</p>
 
 <h3>Mount the file systems</h3>
 
-<p>Mount the root partition under <code>/mnt</code> and the EFI and home partitions under the corresponding mounting
+<p>Mount the root partition under <code>/mnt</code> and the ESP and home partition under the corresponding mounting
 points</p>
 <pre>$ mount /dev/mapper/cryptroot /mnt
 $ mkdir /mnt/boot
 $ mkdir /mnt/home
-$ mount /dev/<i>&lt;devpart_EFI&gt;</i> /mnt/boot
+$ mount /dev/<i>&lt;devpart_ESP&gt;</i> /mnt/boot
 $ mount /dev/mapper/home /mnt/home</pre>
-<p>where <code><i>&lt;devpart_EFI&gt;</i></code> is as explained above.</p>
+<p>where <code><i>&lt;devpart_ESP&gt;</i></code> is as explained above.</p>
 
 <h2 id="Installation">Installation</h2>
 
@@ -223,12 +223,43 @@ $ chmod 600 /etc/keyfile-home</pre>
 
 <h3>Boot loader</h3>
 
-<p><a href="../rEFInd/installation.html">Install rEFInd</a> and set the required kernel parameters:</p>
+<p>Get the latest version of rEFInd (0.13.2 when writing this guide), uncompress the file and copy the rEFInd files into
+the ESP</p>
+<pre>$ wget https://downloads.sourceforge.net/project/refind/0.13.2/refind-bin-0.13.2.zip
+$ unzip refind-bin-0.13.2.zip
+$ mkdir /boot/EFI
+$ cp -r refind-bin-0.13.2/refind /boot/EFI/</pre>
+<p>Remove files not relevant to the x64 architecture</p>
+<pre>$ cd /boot/EFI/refind
+$ rm -r refind_ia32.efi refind_aa64.efi drivers_ia32 drivers_aa64 tools_ia32 tools_aa64</pre>
+<p>Also, it is <a href="https://www.rodsbooks.com/refind/installing.html#linux">strongly recommended</a> to remove
+unneeded drives in <code>drivers_x64</code> (see rEFInd's
+<a href="https://www.rodsbooks.com/refind/drivers.html">page on drivers</a>). Rename the configuration file</p>
+<pre>$ mv refind.conf-sample refind.conf</pre>
+
+<p>The boot option for this installation will be specified with a
+<a href="https://www.rodsbooks.com/refind/configfile.html#stanzas">manual boot stanza</a>. Kernel parameters are
+set in the boot stanza. Particularly, we need to set those required to boot from an encrypted root partition:</p>
 <ul>
-	<li><code>cryptdevice=UUID=<i>&lt;partition_UUID&gt;</i>:cryptroot</code>, and</li>
-	<li><code>root=/dev/mapper/cryptroot</code>,</li>
+<li><code>root</code>: specifies the device of the decrypted root file system.</li>
+<li><code>cryptdevice</code>: parsed by <code>mkinitcpio</code>'s <code>encrypt</code> hook to identify the device
+    containing the encrypted system. This will make the system prompt for the passphrase to unlock the device containing
+    the encrypted installation on boot.</li>
 </ul>
-<p>where <code><i>&lt;partition_UUID&gt;</i></code> is the UUID of <code>/dev/<i>&lt;devpart_root&gt;</i></code>.</p>
+<p>Create a manual boot stanza at the end of <code>/boot/EFI/refind/refind.conf</code></p>
+<pre class="header">/boot/EFI/refind/refind.conf</pre>
+<pre class="content">...
+menuentry "Artix Linux" {
+    volume    "<i>&lt;PARTUUID_ESP&gt;</i>"
+    loader    /vmlinuz-linux
+    initrd    /initramfs-linux.img
+    options   "cryptdevice=UUID=<i>&lt;UUID_root&gt;</i>:cryptroot root=/dev/mapper/cryptroot"
+}</pre>
+<p>where <code><i>&lt;PARTUUID_ESP&gt;</i></code> is the PARTUUID of <code>/dev/<i>&lt;devpart_ESP&gt;</i></code>,
+<code><i>&lt;UUID_root&gt;</i></code> is the UUID of <code>/dev/<i>&lt;devpart_root&gt;</i></code> and
+<code><i>&lt;devpart_ESP&gt;</i></code> and <code><i>&lt;devpart_root&gt;</i></code> are as explained above. The
+PARTUUID and UUID can be obtained with</p>
+<pre>$ blkid</pre>
 
 <h3>Reboot</h3>
 
