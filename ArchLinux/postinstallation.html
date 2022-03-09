@@ -53,9 +53,10 @@ filesystems.</p>
 <p>For Intel processors</p>
 <pre>$ sudo pacman -S intel-ucode</pre>
 
-<p>Add <code>amd-ucode.img</code> or <code>intel-ucode.img</code> as the first initrd in the
-<a href="https://wiki.archlinux.org/index.php/Microcode#Configuration">bootloader configuration file</a>, i.e.,
-<a href="https://www.rodsbooks.com/refind/configfile.html">rEFInd's configuration file</a>; see the section below.</p>
+<p>Add <code>amd-ucode.img</code> or <code>intel-ucode.img</code> as the first initrd in
+<code>/boot/EFI/refind/refind.conf</code>; see the section below. (Also, see the
+<a href="https://wiki.archlinux.org/index.php/Microcode#Configuration">ArchWiki</a> for configuring different boot
+loaders.)</p>
 
 <h2>Kernel parameters</h2>
 
