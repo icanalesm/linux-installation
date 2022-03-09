@@ -63,9 +63,11 @@ loaders.)</p>
 </ul>
 
 <p>The parameters above must be placed in the corresponding
-<a href="https://www.rodsbooks.com/refind/configfile.html#stanzas">manual boot stanza</a> within
-rEFInd's configuration file. For example</p>
-<pre>menuentry "Artix Linux" {
+<a href="https://www.rodsbooks.com/refind/configfile.html#stanzas">boot stanza</a> in
+<code>/boot/EFI/refind/refind.conf</code></p>
+<pre class="header">/boot/EFI/refind/refind.conf</pre>
+<pre class="content">...
+menuentry "Artix Linux" {
     volume    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
     loader    /vmlinuz-linux
     initrd    /initramfs-linux.img
