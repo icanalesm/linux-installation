@@ -49,14 +49,12 @@ filesystems.</p>
 
 <p>For AMD processors</p>
 <pre>$ sudo pacman -S amd-ucode</pre>
-
 <p>For Intel processors</p>
 <pre>$ sudo pacman -S intel-ucode</pre>
 
-<p>Add <code>amd-ucode.img</code> or <code>intel-ucode.img</code> as the first initrd in
-<code>/boot/EFI/refind/refind.conf</code>; see the section below. (Also, see the
-<a href="https://wiki.archlinux.org/index.php/Microcode#Configuration">ArchWiki</a> for configuring different boot
-loaders.)</p>
+<p>The boot loader must be configured to load either <code>amd-ucode.img</code> or <code>intel-ucode.img</code> as the
+first initrd. The section below shows how to configure rEFInd. (See the
+<a href="https://wiki.archlinux.org/index.php/Microcode#Configuration">ArchWiki</a> for other boot loaders.)</p>
 
 <h2>Kernel parameters</h2>
 
