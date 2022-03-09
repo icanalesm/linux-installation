@@ -21,13 +21,37 @@
 <a href="https://wiki.archlinux.org/index.php/PKGBUILD">PKGBUILD</a>, any <i>.install</i> files and any other files in
 the package for malicious or dangerous commands.</p>
 
+<h2>Privilege elevation</h2>
+
+<h3>sudo</h3>
+
+<p>As the <code>root</code> user, open <code>/etc/sudoers</code> using <code>visudo</code></p>
+<pre>$ EDITOR=vim visudo</pre>
+<p>and uncomment the line <code>%wheel ALL=(ALL:ALL) ALL</code> to allow members of the <code>wheel</code> group to run
+commands as other users.</p>
+
+<h2>Create unprivileged user</h2>
+
+<p>As the <code>root</code> user, create a non-privileged user <code><i>user</i></code></p>
+<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>user</i>
+$ passwd <i>user</i></pre>
+<p>where <code><i>&lt;uid&gt;</i></code> is the user ID. Add <code><i>user</i></code> to the <code>wheel</code> group</p>
+<pre>$ usermod -aG wheel <i>user</i></pre>
+
+<p>It will be assumed that the rest of this guide is done using an unprivileged user.</p>
+
+<h2>Mount options</h2>
+
+<p>In <code>/etc/fstab</code>, change <code>relatime</code> to <code>noatime</code> for the root and home
+filesystems.</p>
+
 <h2>Microcode</h2>
 
 <p>For AMD processors</p>
-<pre>$ pacman -S amd-ucode</pre>
+<pre>$ sudo pacman -S amd-ucode</pre>
 
 <p>For Intel processors</p>
-<pre>$ pacman -S intel-ucode</pre>
+<pre>$ sudo pacman -S intel-ucode</pre>
 
 <p>Add <code>amd-ucode.img</code> or <code>intel-ucode.img</code> as the first initrd in the
 <a href="https://wiki.archlinux.org/index.php/Microcode#Configuration">bootloader configuration file</a>, i.e.,
@@ -51,30 +75,6 @@ rEFInd's configuration file. For example</p>
     initrd    /initramfs-linux.img
     options   "cryptdevice=UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:cryptroot root=/dev/mapper/cryptroot rw quiet loglevel=3 udev.log_priority=3 initrd=\intel-ucode.img"
 }</pre>
-
-<h2>Mount options</h2>
-
-<p>In <code>/etc/fstab</code>, change <code>relatime</code> to <code>noatime</code> for the root and home
-filesystems.</p>
-
-<h2>Privilege elevation</h2>
-
-<h3>sudo</h3>
-
-<p>Open <code>/etc/sudoers</code> using <code>visudo</code></p>
-<pre>$ EDITOR=vim visudo</pre>
-<p>and uncomment the line <code>%wheel ALL=(ALL:ALL) ALL</code> to allow members of the <code>wheel</code> group to run
-commands as other users.</p>
-
-<h2>Create unprivileged user</h2>
-
-<p>Create a non-privileged user <code><i>user</i></code></p>
-<pre>$ useradd -U -u <i>&lt;uid&gt;</i> -m -k /dev/null <i>user</i>
-$ passwd <i>user</i></pre>
-<p>where <code><i>&lt;uid&gt;</i></code> is the user ID. Add <code><i>user</i></code> to the <code>wheel</code> group</p>
-<pre>$ usermod -aG wheel <i>user</i></pre>
-
-<p>It will be assumed that the rest of this guide is done using an unprivileged user.</p>
 
 <h2>Linux console</h2>
 
