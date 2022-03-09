@@ -84,6 +84,41 @@ setting <code>FONT</code> in <code>/etc/vconsole.conf</code></p>
 <pre class="header">/etc/vconsole.conf</pre>
 <pre class="content">FONT=<i>&lt;font&gt;</i></pre>
 
+<h2>Boot loader</h2>
+
+<h3>rEFInd</h3>
+
+<p>Get rEFInd themes and copy the relevant files to the ESP</p>
+<pre>$ git clone https://github.com/bobafetthotmail/refind-theme-regular.git
+$ git clone https://github.com/htower/refind-theme-regular-black.git
+$ sudo mkdir -p /boot/EFI/refind/theme/icons
+$ sudo cp refind-theme-regular/icons/256-96/* /boot/EFI/refind/theme/icons
+$ sudo cp refind-theme-regular-black/icons/256-96/bg.png /boot/EFI/refind/theme/icons/bg_black.png
+$ sudo cp refind-theme-regular-black/icons/256-96/selection-big.png /boot/EFI/refind/theme/icons/selection_black-big.png
+$ sudo cp refind-theme-regular-black/icons/256-96/selection-small.png /boot/EFI/refind/theme/icons/selection_black-small.png
+</pre>
+
+<p>Comment out all configuration values in <code>/boot/EFI/refind/refind.conf</code> and include the file
+<code>myconf.conf</code></p>
+<pre class="header">/boot/EFI/refind/refind.conf</pre>
+<pre class="content">...
+include myconf.conf
+...</pre>
+<p>Create <code>/boot/EFI/refind/myconf.conf</code> with the following content</p>
+<pre class="header">/boot/EFI/refind/myconf.conf</pre>
+<pre class="content">timeout 20
+use_nvram false
+hideui label,singleuser,hints
+use_graphics_for linux,osx,windows
+showtools shell,gdisk,memtest,mok_tool,apple_recovery,windows_recovery,about,hidden_tags,firmware,reboot,exit
+
+icons_dir theme/icons
+big_icon_size 128
+small_icon_size 48
+banner theme/icons/bg_black.png
+selection_big theme/icons/selection_black-big.png
+selection_small theme/icons/selection_black-small.png</pre>
+
 <h2>Network configuration</h2>
 
 <h3>NetworkManager</h3>
