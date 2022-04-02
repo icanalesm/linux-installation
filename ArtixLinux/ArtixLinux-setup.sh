@@ -85,7 +85,7 @@ pacman -S redshift xcalib
 
 # Sound
 
-pacman -S pipewire pipewire-alsa pipewire-pulse pavucontrol
+pacman -S pipewire pipewire-media-session pipewire-alsa pipewire-pulse pipewire-jack pavucontrol
 
 # Desktop notifications
 
