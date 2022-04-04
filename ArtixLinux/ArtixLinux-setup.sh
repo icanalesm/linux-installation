@@ -47,22 +47,22 @@ pacman -S "$microcode_pkg"
 # Network
 
 pacman -S networkmanager networkmanager-runit
-ln -s /etc/runit/sv/NetworkManager /etc/runit/runsvdir/default
+ln -s /etc/runit/sv/NetworkManager /etc/runit/runsvdir/default/
 
 # Firewall
 
 pacman -S firewalld firewalld-runit
-ln -s /etc/runit/sv/firewalld /etc/runit/runsvdir/default
+ln -s /etc/runit/sv/firewalld /etc/runit/runsvdir/default/
 
 # NTP
 
 pacman -S chrony chrony-runit
-ln -s /etc/runit/sv/chrony /etc/runit/runsvdir/default
+ln -s /etc/runit/sv/chrony /etc/runit/runsvdir/default/
 
 # Power management
 
 pacman -S ethtool smartmontools tlp tlp-rdw tlp-runit
-ln -s /etc/runit/sv/tlp /etc/runit/runsvdir/default
+ln -s /etc/runit/sv/tlp /etc/runit/runsvdir/default/
 
 # Arch repos
 
