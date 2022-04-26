@@ -32,19 +32,19 @@ guide is a complement of <a href="postinstallation.html">my Artix Linux post-ins
 <h4>Function keys</h4>
 
 <p>The behaviour of <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd> is configured by the <code>fnmode</code> option of the
-<code>hid_apple</code> kernel module via the <code>/etc/modprobe.d/hid_apple.conf</code> file:</p>
+<code>hid_apple</code> kernel module. Set the configuration in <code>/etc/modprobe.d/mbp.conf</code>:</p>
 <ul>
 <li>To disable the <kbd>fn</kbd> key, add the following line:
-<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="header">/etc/modprobe.d/mbp.conf</pre>
 <pre class="content">options hid_apple fnmode=0</pre>
 </li>
 <li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>fn</kbd>+<kbd>F<i>&lt;num&gt;</i></kbd>, add the following
     line:
-<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="header">/etc/modprobe.d/mbp.conf</pre>
 <pre class="content">options hid_apple fnmode=1</pre>
 </li>
 <li>To get <kbd>F<i>&lt;num&gt;</i></kbd> by pressing <kbd>F<i>&lt;num&gt;</i></kbd>, add the following line:
-<pre class="header">/etc/modprobe.d/hid_apple.conf</pre>
+<pre class="header">/etc/modprobe.d/mbp.conf</pre>
 <pre class="content">options hid_apple fnmode=2</pre>
 </li>
 </ul>
