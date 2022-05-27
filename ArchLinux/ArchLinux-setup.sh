@@ -38,7 +38,7 @@ printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t%s" "$hostname" >> /e
 printf "Set root password\n"
 passwd
 
-pacman -S base-devel e2fsprogs dosfstools man-db man-pages unzip vim tmux rsync wget git openssh
+pacman -S base-devel e2fsprogs dosfstools man-db man-pages vim tmux rsync wget git openssh unzip p7zip bc htop tree
 
 # Microcode
 
