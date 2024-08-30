@@ -17,14 +17,14 @@
 # - Create unprivileged user
 # - Configure kernel modules through files in /etc/modprobe.d/
 
-region=Europe
-city=Oslo
+region=
+city=
 locale_name=en_GB.UTF-8
 locale_charset=UTF-8
 locale_langs=en_GB
-vconsole_keymap=es
+vconsole_keymap=en
 vconsole_font=Lat2-Terminus16
-hostname=jupiterx
+hostname=
 microcode_pkg=intel-ucode
 
 ln -sf "/usr/share/zoneinfo/$region/$city" /etc/localtime
@@ -83,7 +83,7 @@ pacman -S redshift xcalib
 
 # Sound
 
-pacman -S pipewire pipewire-media-session pipewire-alsa pipewire-pulse pipewire-jack pavucontrol
+pacman -S pipewire wireplumber pipewire-alsa pipewire-pulse pipewire-jack pavucontrol
 
 # Desktop notifications
 
@@ -103,5 +103,5 @@ pacman -S gvim
 
 # mkinitcpio configuration
 
-sed -i 's/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+sed -i 's/^HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -p linux

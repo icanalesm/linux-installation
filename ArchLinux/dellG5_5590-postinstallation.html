@@ -21,7 +21,10 @@ guide is a complement of <a href="postinstallation.html">my Arch Linux post-inst
 
 <h2>Graphics card - Nvidia RTX 2060</h2>
 
-<pre>$ sudo pacman -S nvidia nvidia-settings</pre>
+<pre>$ sudo pacman -S nvidia-open nvidia-settings</pre>
+
+<p>Remove <code>kms</code> from the <code>HOOKS</code> array in <code>/etc/mkinitcpio.conf</code> and regenerate
+the initramfs with <code>mkinitcpio -p linux</code>.</p>
 
 <h3>Power management</h3>
 

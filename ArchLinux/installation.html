@@ -189,7 +189,7 @@ setting <code>KEYMAP</code> in <code>/etc/vconsole.conf</code></p>
 <p>Update <code>/etc/mkinitcpio.conf</code> so that it contains the following hooks</p>
 <pre class="header">/etc/mkinitcpio.conf</pre>
 <pre class="content">...
-HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt filesystems fsck)
+HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)
 ...</pre>
 <p><code>encrypt</code> must be placed after the <code>udev</code> hook and <code>keymap</code> must appear before the
 <code>encrypt</code> hook (otherwise the encryption password is entered using the default US keymap instead of that
@@ -204,12 +204,12 @@ specified in <code>/etc/vconsole.conf</code>).</p>
 
 <h3>Boot loader</h3>
 
-<p>Get the latest version of rEFInd (0.13.2 when writing this guide), uncompress the file and copy the rEFInd files into
-the ESP</p>
-<pre>$ wget https://downloads.sourceforge.net/project/refind/0.13.2/refind-bin-0.13.2.zip
-$ unzip refind-bin-0.13.2.zip
+<p>Get the <a href="https://www.rodsbooks.com/refind/getting.html">latest version of rEFInd</a>, uncompress the
+file and copy the rEFInd files into the ESP</p>
+<pre>$ wget https://downloads.sourceforge.net/project/refind/<i>&lt;version&gt;</i>/refind-bin-<i>&lt;version&gt;</i>.zip
+$ unzip refind-bin-<i>&lt;version&gt;</i>.zip
 $ mkdir /boot/EFI
-$ cp -r refind-bin-0.13.2/refind /boot/EFI/</pre>
+$ cp -r refind-bin-<i>&lt;version&gt;</i>/refind /boot/EFI/</pre>
 <p>Remove files not relevant to the x64 architecture</p>
 <pre>$ cd /boot/EFI/refind
 $ rm -r refind_ia32.efi refind_aa64.efi drivers_ia32 drivers_aa64 tools_ia32 tools_aa64</pre>
