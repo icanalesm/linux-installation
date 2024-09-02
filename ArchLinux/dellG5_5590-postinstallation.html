@@ -44,7 +44,7 @@ the initramfs with <code>mkinitcpio -p linux</code>.</p>
 <h4>PRIME Render Offload</h4>
 
 <p>According to the
-<a href="https://download.nvidia.com/XFree86/Linux-x86_64/510.54/README/primerenderoffload.html#configurexscreen">official documentation</a>,
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/560.35.03/README/primerenderoffload.html#configurexscreen">official documentation</a>,
 the X server will automatically use NVIDIA's PRIME render offload (since the X server version in the repositories is
 newer than 1.20.7). To check this, execute</p>
 <pre>$ xrandr --listproviders</pre>
@@ -53,9 +53,9 @@ newer than 1.20.7). To check this, execute</p>
 Provider 0: id: 0x46 cap: 0xf, Source Output, Sink Output, Source Offload, Sink Offload crtcs: 3 outputs: 5 associated providers: 1 name:modesetting
 Provider 1: id: 0x270 cap: 0x2, Sink Output crtcs: 4 outputs: 3 associated providers: 1 name:NVIDIA-G0</pre>
 <p>If automatic configuration does not work,
-<a href="https://download.nvidia.com/XFree86/Linux-x86_64/510.54/README/primerenderoffload.html#renderoffloadtroubleshooting">explicitly configure</a>
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/560.35.03/README/primerenderoffload.html#renderoffloadtroubleshooting">explicitly configure</a>
 the iGPU and dGPU devices:</p>
-<pre class="header">/etc/X11/xorg.conf.d/20-nvidia.conf</pre>
+<pre class="header">/etc/X11/xorg.conf.d/20-nvidia-offload.conf</pre>
 <pre class="content">Section "ServerLayout"
         Identifier     "layout"
         Screen      0  "iGPU"
@@ -76,11 +76,11 @@ Section "Device"
         Driver         "nvidia"
 EndSection</pre>
 
-<h4>Offloading Graphics Display</h4>
+<h4>Offloading Graphics Display - PRIME</h4>
 <p>Configure the X Server according to the
-<a href="https://download.nvidia.com/XFree86/Linux-x86_64/510.54/README/randr14.html#outputsource">official documentation</a>:
+<a href="https://download.nvidia.com/XFree86/Linux-x86_64/560.35.03/README/randr14.html#outputsource">official documentation</a>:
 </p>
-<pre class="header">/etc/X11/xorg.conf.d/20-nvidia.conf</pre>
+<pre class="header">/etc/X11/xorg.conf.d/20-nvidia-offload.conf</pre>
 <pre class="content">Section "ServerLayout"
 	Identifier     "layout"
 	Screen      0  "dGPU"
