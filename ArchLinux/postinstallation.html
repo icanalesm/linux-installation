@@ -190,9 +190,10 @@ RESTORE_DEVICE_STATE_ON_STARTUP=1
 
 <h3>Keyboard and touchpad configuration</h3>
 
-<h4>Tap for touchpad</h4>
+<h4>Touchpad - Tap-to-click and correct scrolling</h4>
 
-<p>Add <code>Option "Tapping" "On"</code> to the <i>touchpad</i> section in
+<p>Add <code>Option "Tapping" "On"</code> and
+<code>Option "NaturalScrolling" "Off"</code> to the <i>touchpad</i> section in
 <code>/etc/X11/xorg.conf.d/40-libinput.conf</code>:</p>
 <pre class="header">/etc/X11/xorg.conf.d/40-libinput.conf</pre>
 <pre class="content">Section "InputClass"
@@ -201,6 +202,7 @@ RESTORE_DEVICE_STATE_ON_STARTUP=1
 	MatchDevicePath "/dev/input/event*"
 	Driver "libinput"
 	Option "Tapping" "On"
+	Option "NaturalScrolling" "Off"
 EndSection</pre>
 <p>If the file does not exist, copy <code>40-libinput.conf</code> from <code>/usr/share/X11/xorg.conf.d/</code>.</p>
 
