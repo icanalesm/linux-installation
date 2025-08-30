@@ -70,7 +70,7 @@ systemctl enable tlp.service
 
 # Fonts
 
-pacman -S ttf-ibm-plex ttf-fira-mono ttf-font-awesome
+pacman -S ttf-ibm-plex ttf-fira-mono otf-font-awesome
 
 # X Window System
 
