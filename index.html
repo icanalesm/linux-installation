@@ -13,8 +13,7 @@
 	<h1>Linux installation</h1>
 </header>
 
-<p>Personal guides (instructions and notes) for installing and configuring Linux.</p>
-<p>(<a href="old/index.html">View</a> old guides.)</p>
+<p>Personal guide (instructions and notes) for installing and configuring a Linux-based system.</p>
 
 <ol type="1">
 <li><a href="#Overview">Overview</a></li>
@@ -25,21 +24,23 @@
 </li>
 </ol>
 
+<p>(<a href="old/index.html">View old guides</a>.)</p>
+
 <h2 id="Overview">Overview</h2>
 
-<p>This is a personal guide for installing a 64-bit Linux-based system in
-<a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> mode</li> with full disk
+<p>This is a personal guide for installing a Linux-based system in
+<a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> mode with full disk
 encryption.</p>
 
-<p>Encryption will be done using <a href="https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup">LUKS</a> on the
-partitions (see the
+<p>Encryption is done using <a href="https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup">LUKS</a> on the partitions
+(see the
 <a href="https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition">ArchWiki</a>). The
 following partition scheme will be used:</p>
 <table style="width:90%; margin:auto;">
 	<tr><th>Partition</th><th>Type</th></tr>
 	<tr><td>Boot</td><td>EFI</td></tr>
-	<tr><td>Encrypted system</td><td>ext4</td></tr>
-	<tr><td>Encrypted home</td><td>ext4</td></tr>
+	<tr><td>Root (encrypted)</td><td>ext4</td></tr>
+	<tr><td>Home (encrypted)</td><td>ext4</td></tr>
 </table>
 
 <p>The system has the following characteristics:</p>
@@ -47,9 +48,9 @@ following partition scheme will be used:</p>
 <li>Boot loader: <a href="https://www.rodsbooks.com/refind">rEFInd</a></li>
 <li>Network manager: <a href="https://networkmanager.dev">NetworkManager</a></li>
 <li>Firewall: <a href="https://firewalld.org">firewalld</a></li>
-<li>Time synchronization: <a href="https://chrony.tuxfamily.org/">chrony</a></li>
+<li>Time synchronization: <a href="https://chrony-project.org">chrony</a></li>
 <li>Power management: <a href="https://linrunner.de/tlp">TLP</a></li>
-<li>Display server: <a href="https://www.x.org/wiki">Xorg</a></li>
+<li>Display server: <a href="https://www.x.org">Xorg</a></li>
 <li>Sound server: <a href="https://pipewire.org">PipeWire</a></li>
 </ul>
 
@@ -58,11 +59,12 @@ following partition scheme will be used:</p>
 <h3 id="Guide_Arch">Arch Linux</h3>
 <ul>
 <li>Installation [<a href="ArchLinux/installation.html">view</a>]</li>
-<li>Post-installation [<a href="ArchLinux/postinstallation.html">view</a>]</li>
+<li>Post-installation [<a href="ArchLinux/postinstallation.html">view</a>]
 	<ul>
 	<li>MacBook Pro 9.2 [<a href="ArchLinux/macBookPro9.2-postinstallation.html">view</a>]</li>
 	<li>Dell G5 5590 [<a href="ArchLinux/dellG5_5590-postinstallation.html">view</a>]</li>
 	</ul>
+</li>
 </ul>
 
 </article>
