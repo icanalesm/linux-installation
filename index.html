@@ -30,18 +30,9 @@
 
 <p>This is a personal guide for installing a Linux-based system in
 <a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">UEFI</a> mode with full disk
-encryption.</p>
-
-<p>Encryption is done using <a href="https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup">LUKS</a> on the partitions
-(see the
-<a href="https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition">ArchWiki</a>). The
-following partition scheme will be used:</p>
-<table style="width:90%; margin:auto;">
-	<tr><th>Partition</th><th>Type</th></tr>
-	<tr><td>Boot</td><td>EFI</td></tr>
-	<tr><td>Root (encrypted)</td><td>ext4</td></tr>
-	<tr><td>Home (encrypted)</td><td>ext4</td></tr>
-</table>
+encryption. Encryption is done using <a href="https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup">LUKS</a> on the
+partitions (see the
+<a href="https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition">ArchWiki</a>).</p>
 
 <p>The system has the following characteristics:</p>
 <ul>

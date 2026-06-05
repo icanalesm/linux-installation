@@ -49,7 +49,15 @@
 
 <h3>Partition the disks</h3>
 
-<p>If required, manage the partitions on the disks. Execute</p>
+<p>The following partition scheme will be used:</p>
+<table style="width:90%; margin:auto;">
+    <tr><th>Partition</th><th>Type</th><th>Mount point</th></tr>
+    <tr><td>Boot</td><td>EFI system partition</td><td><code>/boot</code> and <code>/esp</code></td></tr>
+	<tr><td>Root (encrypted)</td><td>Linux filesystem</td><td><code>/</code></td></tr>
+	<tr><td>Home (encrypted)</td><td>Linux filesystem</td><td><code>/home</code></td></tr>
+</table>
+
+<p>To manage the partitions on the disks, execute</p>
 <pre>$ fdisk /dev/<i>&lt;dev&gt;</i></pre>
 <p>where <code><i>&lt;dev&gt;</i></code> is the device identifier of the disk to partition (e.g., <code>sda</code>,
 <code>nvme0n1</code>).</p>
@@ -93,7 +101,7 @@ identifier and partition number of the root and home partitions, respectively (e
 
 <h3>Format the partitions</h3>
 
-<p>Unlock the partitions</p>
+<p>Unlock the encrypted partitions</p>
 <pre>$ cryptsetup open /dev/<i>&lt;devpart_root&gt;</i> cryptroot
 $ cryptsetup open /dev/<i>&lt;devpart_home&gt;</i> home</pre>
 <p>where <code><i>&lt;devpart_root&gt;</i></code> and <code><i>&lt;devpart_home&gt;</i></code> are as explained above.
@@ -112,12 +120,15 @@ $ mkfs.ext4 /dev/mapper/home</pre>
 
 <h3>Mount the file systems</h3>
 
-<p>Mount the root partition under <code>/mnt</code> and the ESP and home partitions under the corresponding mounting
-points</p>
+<p>Mount the root partition under <code>/mnt</code>, the ESP under <code>/mnt/esp</code> together with a bind mount
+under <code>/mnt/boot</code> and the home partition under <code>/mnt/home</code>:</p>
 <pre>$ mount /dev/mapper/cryptroot /mnt
+$ mkdir /mnt/esp
+$ mount /dev/<i>&lt;devpart_ESP&gt;</i> /mnt/esp
+$ mkdir -p /mnt/esp/EFI/archlinux
 $ mkdir /mnt/boot
+$ mount --bind /mnt/esp/EFI/archlinux /mnt/boot
 $ mkdir /mnt/home
-$ mount /dev/<i>&lt;devpart_ESP&gt;</i> /mnt/boot
 $ mount /dev/mapper/home /mnt/home</pre>
 <p>where <code><i>&lt;devpart_ESP&gt;</i></code> is as explained above.</p>
 
