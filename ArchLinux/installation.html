@@ -15,7 +15,7 @@
 
 <p>Personal <a href="https://www.archlinux.org">Arch Linux</a> installation guide; this is part of
 <a href="../index.html">my Linux installation guide</a>. The instructions here are based on ArchWiki's
-<a href="https://wiki.archlinux.org/index.php/Installation_guide">installation</a> and
+<a href="https://wiki.archlinux.org/title/Installation_guide">installation</a> and
 <a href="https://wiki.archlinux.org/title/Dm-crypt">dm-crypt</a> wikis.</p>
 
 <ol>
@@ -41,7 +41,7 @@
 <pre>$ ping archlinux.org</pre>
 <p>If no connection is available, follow ArchWiki's
 <a href="https://wiki.archlinux.org/title/Installation_guide#Connect_to_the_internet">connect to the internet</a> (or
-<a href="https://wiki.archlinux.org/index.php/Network_configuration">Network configuration</a>).</p>
+<a href="https://wiki.archlinux.org/title/Network_configuration">Network configuration</a>).</p>
 
 <h3>Update the system clock</h3>
 
@@ -166,7 +166,7 @@ the desired values</p>
 LANGUAGE=<i>&lt;list_languages&gt;</i></pre>
 
 <p>Make the desired
-<a href="https://wiki.archlinux.org/index.php/Linux_console/Keyboard_configuration#Keymaps">keymap</a> persistent by
+<a href="https://wiki.archlinux.org/title/Linux_console/Keyboard_configuration#Keymaps">keymap</a> persistent by
 setting <code>KEYMAP</code> in <code>/etc/vconsole.conf</code></p>
 <pre class="header">/etc/vconsole.conf</pre>
 <pre class="content">KEYMAP=<i>&lt;map&gt;</i></pre>
@@ -244,7 +244,7 @@ PARTUUID and UUID can be obtained with</p>
 
 <h3>Unlock the home partition at boot</h3>
 
-<p>Create or copy a keyfile for unlocking the home partition and set the correct file permissions:</p>
+<p>Create or use an existing file for unlocking the home partition and set the correct permissions:</p>
 <ul>
 <li>
 	<p>If creating a file, execute</p>
@@ -253,7 +253,7 @@ $ chmod 600 /etc/keyfile-home</pre>
 </li>
 <li>
 	<p>If copying a file, execute</p>
-	<pre>$ cp <i>&lt;path_to_keyfile&gt;</i> /etc/keyfile-home
+	<pre>$ cp <i>&lt;path_to_file&gt;</i> /etc/keyfile-home
 $ chmod 600 /etc/keyfile-home</pre>
 </li>
 </ul>

@@ -18,7 +18,7 @@
 
 <p><b>WARNING</b>: Put special attention when installing packages from the
 <a href="https://aur.archlinux.org/" rel="nofollow">AUR</a>. Carefully check the
-<a href="https://wiki.archlinux.org/index.php/PKGBUILD">PKGBUILD</a>, any <i>.install</i> files and any other files in
+<a href="https://wiki.archlinux.org/title/PKGBUILD">PKGBUILD</a>, any <i>.install</i> files and any other files in
 the package for malicious or dangerous commands.</p>
 
 <h2>Privilege elevation</h2>
@@ -54,7 +54,7 @@ filesystems.</p>
 
 <p>The boot loader must be configured to load either <code>amd-ucode.img</code> or <code>intel-ucode.img</code> as the
 first initrd. The section below shows how to configure rEFInd. (See the
-<a href="https://wiki.archlinux.org/index.php/Microcode#Configuration">ArchWiki</a> for other boot loaders.)</p>
+<a href="https://wiki.archlinux.org/title/Microcode#Configuration">ArchWiki</a> for other boot loaders.)</p>
 
 <h2>Kernel parameters</h2>
 
@@ -79,7 +79,7 @@ menuentry "Arch Linux" {
 
 <h2>Linux console</h2>
 
-<p>Make the desired <a href="https://wiki.archlinux.org/index.php/Linux_console#Fonts">console font</a> persistent by
+<p>Make the desired <a href="https://wiki.archlinux.org/title/Linux_console#Fonts">console font</a> persistent by
 setting <code>FONT</code> in <code>/etc/vconsole.conf</code></p>
 <pre class="header">/etc/vconsole.conf</pre>
 <pre class="content">FONT=<i>&lt;font&gt;</i></pre>
@@ -144,10 +144,7 @@ $ sudo systemctl enable --now firewalld.service</pre>
 <p>Apply the following configuration in <code>/etc/chrony.conf</code>:</p>
 <pre class="header">/etc/chrony.conf</pre>
 <pre class="content">...
-server 0.pool.ntp.org iburst
-server 1.pool.ntp.org iburst
-server 2.pool.ntp.org iburst
-server 3.pool.ntp.org iburst
+pool 2.pool.ntp.org iburst maxsources 4
 ...</pre>
 
 <p><code>systemd-timesyncd.service</code> is in conflict with <code>chronyd.service</code>, so disable it first and
@@ -156,9 +153,8 @@ then enable <code>chronyd.service</code></p>
 $ sudo systemctl enable chronyd.service</pre>
 
 <p>Install the dispatcher script</p>
-<pre>$ git clone https://aur.archlinux.org/networkmanager-dispatcher-chrony.git
-$ cd networkmanager-dispatcher-chrony/
-$ makepkg -si</pre>
+<pre>$ cp /usr/share/doc/chrony/examples/chrony.nm-dispatcher.onoffline /etc/NetworkManager/dispatcher.d/20-chrony-onoffline.sh
+$ chmod 700 /etc/NetworkManager/dispatcher.d/20-chrony-onoffline.sh</pre>
 
 <h2>Power management</h2>
 
