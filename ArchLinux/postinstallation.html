@@ -67,8 +67,8 @@ first initrd. The section below shows how to configure rEFInd. (See the
 
 <p>The parameters above must be placed in the corresponding
 <a href="https://www.rodsbooks.com/refind/configfile.html#stanzas">boot stanza</a> in
-<code>/boot/EFI/refind/refind.conf</code></p>
-<pre class="header">/boot/EFI/refind/refind.conf</pre>
+<code>/esp/EFI/refind/refind.conf</code></p>
+<pre class="header">/esp/EFI/refind/refind.conf</pre>
 <pre class="content">...
 menuentry "Arch Linux" {
     volume    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -91,21 +91,21 @@ setting <code>FONT</code> in <code>/etc/vconsole.conf</code></p>
 <p>Get rEFInd themes and copy the relevant files to the ESP</p>
 <pre>$ git clone https://github.com/bobafetthotmail/refind-theme-regular.git
 $ git clone https://github.com/htower/refind-theme-regular-black.git
-$ sudo mkdir -p /boot/EFI/refind/theme/icons
-$ sudo cp refind-theme-regular/icons/256-96/* /boot/EFI/refind/theme/icons
-$ sudo cp refind-theme-regular-black/icons/256-96/bg.png /boot/EFI/refind/theme/icons/bg_black.png
-$ sudo cp refind-theme-regular-black/icons/256-96/selection-big.png /boot/EFI/refind/theme/icons/selection_black-big.png
-$ sudo cp refind-theme-regular-black/icons/256-96/selection-small.png /boot/EFI/refind/theme/icons/selection_black-small.png
+$ sudo mkdir -p /esp/EFI/refind/theme/icons
+$ sudo cp refind-theme-regular/icons/256-96/* /esp/EFI/refind/theme/icons
+$ sudo cp refind-theme-regular-black/icons/256-96/bg.png /esp/EFI/refind/theme/icons/bg_black.png
+$ sudo cp refind-theme-regular-black/icons/256-96/selection-big.png /esp/EFI/refind/theme/icons/selection_black-big.png
+$ sudo cp refind-theme-regular-black/icons/256-96/selection-small.png /esp/EFI/refind/theme/icons/selection_black-small.png
 </pre>
 
-<p>Comment out all configuration values in <code>/boot/EFI/refind/refind.conf</code> and include the file
+<p>Comment out all configuration values in <code>/esp/EFI/refind/refind.conf</code> and include the file
 <code>myconf.conf</code></p>
-<pre class="header">/boot/EFI/refind/refind.conf</pre>
+<pre class="header">/esp/EFI/refind/refind.conf</pre>
 <pre class="content">...
 include myconf.conf
 ...</pre>
-<p>Create <code>/boot/EFI/refind/myconf.conf</code> with the following content</p>
-<pre class="header">/boot/EFI/refind/myconf.conf</pre>
+<p>Create <code>/esp/EFI/refind/myconf.conf</code> with the following content</p>
+<pre class="header">/esp/EFI/refind/myconf.conf</pre>
 <pre class="content">timeout 20
 use_nvram false
 hideui label,singleuser,hints
@@ -169,16 +169,15 @@ $ sudo systemctl mask systemd-rfkill.socket</pre>
 
 <p>Configure TLP via <code>/etc/tlp.d/01-myconf.conf</code></p>
 <pre class="header">/etc/tlp.d/01-myconf.conf</pre>
-<pre class="content">TLP_DEFAULT_MODE=AC
+<pre class="content">TLP_PROFILE_DEFAULT=PRF
 DISK_DEVICES="<i>&lt;dev1&gt;</i> ... <i>&lt;devn&gt;</i>"
-USB_BLACKLIST_PHONE=1
-USB_AUTOSUSPEND_DISABLE_ON_SHUTDOWN=1
-RESTORE_DEVICE_STATE_ON_STARTUP=1
+DEVICES_TO_DISABLE_ON_STARTUP="bluetooth"
+USB_EXCLUDE_PHONE=1
 </pre>
 
 <h2>Fonts</h2>
 
-<pre>$ sudo pacman -S ttf-ibm-plex ttf-fira-mono otf-font-awesome</pre>
+<pre>$ sudo pacman -S ttf-ibm-plex otf-font-awesome</pre>
 
 <h2>X Window System</h2>
 
@@ -202,46 +201,17 @@ RESTORE_DEVICE_STATE_ON_STARTUP=1
 EndSection</pre>
 <p>If the file does not exist, copy <code>40-libinput.conf</code> from <code>/usr/share/X11/xorg.conf.d/</code>.</p>
 
-<h2>Screen colour temperature</h2>
-
-<h3>redshift</h3>
-
-<pre>$ sudo pacman -S redshift</pre>
-
-<h2>Monitor colour calibration</h2>
-
-<h3>xcalib</h3>
-
-<pre>$ sudo pacman -S xcalib</pre>
-
 <h2>Sound</h2>
 
 <h3>PipeWire</h3>
 
 <pre>$ sudo pacman -S pipewire wireplumber pipewire-alsa pipewire-pulse pipewire-jack pavucontrol</pre>
 
-<h2>Desktop notifications</h2>
+<h2>Backlight control</h2>
 
-<h3>dunst</h3>
+<h3>brightnessctl</h3>
 
-<pre>$ sudo pacman -S libnotify dunst</pre>
-
-<h2>Window manager</h2>
-
-<h3>dwm</h3>
-
-<p>If not already installed, install the required dependencies</p>
-<pre>$ sudo pacman -S libx11 libxft libxinerama</pre>
-
-<p>Install <a href="https://github.com/icanalesm/dwm">my fork</a> of
-<a href="https://dwm.suckless.org/" rel="nofollow">dwm</a></p>
-<pre>$ git clone https://github.com/icanalesm/dwm.git
-$ cd dwm
-$ make
-$ sudo make install</pre>
-
-<p>To execute <code>dwm</code> with <code>startx</code>, add <code>exec dwm</code> at the end of
-<code>~/.xinitrc</code>.</p>
+<pre>$ sudo pacman -S brightnessctl</pre>
 
 <h2>Terminal emulator</h2>
 
@@ -254,25 +224,28 @@ $ cd st
 $ make
 $ sudo make install</pre>
 
-<h2>Backlight control</h2>
+<h2>Window manager</h2>
 
-<h3>brightctl</h3>
+<h3>dwm</h3>
 
-<pre>$ git clone https://github.com/icanalesm/brightctl.git
-$ cd brightctl</pre>
-<p>Apply the desired <a href="https://github.com/icanalesm/brightctl#configuration">configuration</a>. Compile and
-install</p>
-<pre>$ make
+<p>If not already installed, install the required dependencies</p>
+<pre>$ sudo pacman -S libx11 libxft</pre>
+
+<p>Install <a href="https://github.com/icanalesm/dwm">my fork</a> of
+<a href="https://dwm.suckless.org/" rel="nofollow">dwm</a></p>
+<pre>$ git clone https://github.com/icanalesm/dwm.git
+$ cd dwm
+$ make
 $ sudo make install</pre>
 
-<p>Configure <code>sudo</code> to allow user <code><i>user</i></code> the execution of <code>brightctl</code> as
-<i>root</i> without a password. Open <code>/etc/sudoers.d/usercmds</code> using <code>visudo</code></p>
-<pre>$ sudo EDITOR=vim visudo -f /etc/sudoers.d/usercmds</pre>
-<p>and add the following lines:</p>
-<pre class="header">/etc/sudoers.d/usercmds</pre>
-<pre class="content">## brightctl commands
-<i>user</i> <i>&lt;hostname&gt;</i>=NOPASSWD:/usr/local/bin/brightctl</pre>
-<p>where <code><i>&lt;hostname&gt;</i></code> is the machine's hostname.</p>
+<p>To execute <code>dwm</code> with <code>startx</code>, add <code>exec dwm</code> at the end of
+<code>~/.xinitrc</code>.</p>
+
+<h2>Desktop notifications</h2>
+
+<h3>dunst</h3>
+
+<pre>$ sudo pacman -S libnotify dunst</pre>
 
 <h2>Web browser</h2>
 
@@ -291,5 +264,17 @@ $ sudo make install</pre>
 <h3>feh</h3>
 
 <pre>$ sudo pacman -S feh imagemagick</pre>
+
+<h2>Monitor colour calibration</h2>
+
+<h3>xcalib</h3>
+
+<pre>$ sudo pacman -S xcalib</pre>
+
+<h2>Screen colour temperature</h2>
+
+<h3>redshift</h3>
+
+<pre>$ sudo pacman -S redshift</pre>
 
 </article>

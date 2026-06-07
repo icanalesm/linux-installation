@@ -219,10 +219,10 @@ specified in <code>/etc/vconsole.conf</code>).</p>
 file and copy the rEFInd files into the ESP</p>
 <pre>$ wget https://downloads.sourceforge.net/project/refind/<i>&lt;version&gt;</i>/refind-bin-<i>&lt;version&gt;</i>.zip
 $ unzip refind-bin-<i>&lt;version&gt;</i>.zip
-$ mkdir /boot/EFI
-$ cp -r refind-bin-<i>&lt;version&gt;</i>/refind /boot/EFI/</pre>
+$ mkdir /esp/EFI
+$ cp -r refind-bin-<i>&lt;version&gt;</i>/refind /esp/EFI/</pre>
 <p>Remove files not relevant to the x64 architecture</p>
-<pre>$ cd /boot/EFI/refind
+<pre>$ cd /esp/EFI/refind
 $ rm -r refind_ia32.efi refind_aa64.efi drivers_ia32 drivers_aa64 tools_ia32 tools_aa64</pre>
 <p>Also, it is <a href="https://www.rodsbooks.com/refind/installing.html#linux">strongly recommended</a> to remove
 unneeded drives in <code>drivers_x64</code> (see rEFInd's
@@ -238,8 +238,8 @@ set in the boot stanza. Particularly, we need to set those required to boot from
     containing the encrypted system. This will make the system prompt for the passphrase to unlock the device containing
     the encrypted installation on boot.</li>
 </ul>
-<p>Create a manual boot stanza at the end of <code>/boot/EFI/refind/refind.conf</code></p>
-<pre class="header">/boot/EFI/refind/refind.conf</pre>
+<p>Create a manual boot stanza at the end of <code>/esp/EFI/refind/refind.conf</code></p>
+<pre class="header">/esp/EFI/refind/refind.conf</pre>
 <pre class="content">...
 menuentry "Arch Linux" {
     volume    "<i>&lt;PARTUUID_ESP&gt;</i>"
