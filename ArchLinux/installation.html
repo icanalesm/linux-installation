@@ -52,14 +52,22 @@
 <p>The following partition scheme will be used:</p>
 <table style="width:90%; margin:auto;">
     <tr><th>Partition</th><th>Type</th><th>Mount point</th></tr>
-    <tr><td>Boot</td><td>EFI system partition</td><td><code>/boot</code> and <code>/esp</code></td></tr>
-	<tr><td>Root (encrypted)</td><td>Linux filesystem</td><td><code>/</code></td></tr>
-	<tr><td>Home (encrypted)</td><td>Linux filesystem</td><td><code>/home</code></td></tr>
+    <tr><td><a href="https://en.wikipedia.org/wiki/EFI_system_partition">EFI system partition</a> (ESP)</td><td>EFI system</td><td><code>/boot</code> and <code>/esp</code></td></tr>
+	<tr><td>Root</td><td>Linux filesystem</td><td><code>/</code></td></tr>
+	<tr><td>Home</td><td>Linux filesystem</td><td><code>/home</code></td></tr>
 </table>
 
-<p>To manage the partitions on the disks, execute</p>
+<p>In the rest of this guide, the device identifier and partition number (e.g., <code>sda1</code> or
+<code>nvme0n1p1</code>) of the partitions above are identified as follows:</p>
+<ul>
+    <li>ESP: <code><i>&lt;devpart_ESP&gt;</i></code>;</li>
+    <li>Root: <code><i>&lt;devpart_root&gt;</i></code>;</li>
+    <li>Home: <code><i>&lt;devpart_home&gt;</i></code>.</li>
+</ul>
+
+<p>To manage partitions on a disk, execute</p>
 <pre>$ fdisk /dev/<i>&lt;dev&gt;</i></pre>
-<p>where <code><i>&lt;dev&gt;</i></code> is the device identifier of the disk to partition (e.g., <code>sda</code>,
+<p>where <code><i>&lt;dev&gt;</i></code> is the device identifier of the disk (e.g., <code>sda</code> or
 <code>nvme0n1</code>).</p>
 
 <h4>Create a new partition table</h4>
@@ -95,33 +103,26 @@ on the disk. To create a new GPT, on <code>fdisk</code>'s prompt type <code>g</c
 <p>Setup the root and home partitions as encrypted LUKS partitions</p>
 <pre>$ cryptsetup -v --type luks -c aes-xts-plain64 -s 512 -h sha512 -y luksFormat /dev/<i>&lt;devpart_root&gt;</i>
 $ cryptsetup -v --type luks -c aes-xts-plain64 -s 512 -h sha512 -y luksFormat /dev/<i>&lt;devpart_home&gt;</i></pre>
-<p>where <code><i>&lt;devpart_root&gt;</i></code> and <code><i>&lt;devpart_home&gt;</i></code> refer to the device
-identifier and partition number of the root and home partitions, respectively (e.g., <code>/dev/sda2</code> or
-<code>/dev/nvme0n1p2</code>).</p>
 
 <h3>Format the partitions</h3>
 
 <p>Unlock the encrypted partitions</p>
 <pre>$ cryptsetup open /dev/<i>&lt;devpart_root&gt;</i> cryptroot
 $ cryptsetup open /dev/<i>&lt;devpart_home&gt;</i> home</pre>
-<p>where <code><i>&lt;devpart_root&gt;</i></code> and <code><i>&lt;devpart_home&gt;</i></code> are as explained above.
-Unlocking the partitions will map them to a new device name under <code>/dev/mapper</code> using the device mapper. For
-example, the commands above will map <code>/dev/<i>&lt;devpart_root&gt;</i></code> and
-<code>/dev/<i>&lt;devpart_home&gt;</i></code> to <code>/dev/mapper/cryptroot</code> and <code>/dev/mapper/home</code>,
-respectively.</p>
+<p>Unlocking the partitions will map them to a new device name under <code>/dev/mapper</code> using the device mapper.
+For example, the commands above will map <code>/dev/<i>&lt;devpart_root&gt;</i></code> to
+<code>/dev/mapper/cryptroot</code> and <code>/dev/<i>&lt;devpart_home&gt;</i></code> to
+<code>/dev/mapper/home</code>.</p>
 
-<p>Format the partitions by executing</p>
+<p>Format the partitions</p>
 <pre>$ mkfs.fat -F32 /dev/<i>&lt;devpart_ESP&gt;</i>
 $ mkfs.ext4 /dev/mapper/cryptroot
 $ mkfs.ext4 /dev/mapper/home</pre>
-<p>where <code><i>&lt;devpart_ESP&gt;</i></code> refers to the device identifier and partition number of the
-<a href="https://en.wikipedia.org/wiki/EFI_system_partition">EFI system partition</a> or ESP (e.g.,
-<code>/dev/sda1</code> or <code>/dev/nvme0n1p1</code>).</p>
 
 <h3>Mount the file systems</h3>
 
-<p>Mount the root partition under <code>/mnt</code>, the ESP under <code>/mnt/esp</code> together with a bind mount
-under <code>/mnt/boot</code> and the home partition under <code>/mnt/home</code>:</p>
+<p>Mount the root partition under <code>/mnt</code>, the ESP under <code>/mnt/esp</code> as well as a bind mount under
+<code>/mnt/boot</code> and the home partition under <code>/mnt/home</code>:</p>
 <pre>$ mount /dev/mapper/cryptroot /mnt
 $ mkdir /mnt/esp
 $ mount /dev/<i>&lt;devpart_ESP&gt;</i> /mnt/esp
@@ -130,15 +131,14 @@ $ mkdir /mnt/boot
 $ mount --bind /mnt/esp/EFI/archlinux /mnt/boot
 $ mkdir /mnt/home
 $ mount /dev/mapper/home /mnt/home</pre>
-<p>where <code><i>&lt;devpart_ESP&gt;</i></code> is as explained above.</p>
 
 <h2 id="Installation">Installation</h2>
 
 <h3>Select the mirrors</h3>
 
-<p>Packages to be installed must be downloaded from mirror servers, which are defined in
-<code>/etc/pacman.d/mirrorlist</code>. Edit the file to assign the desired priority (the higher a mirror is placed in
-the file, the more priority it is given when downloading a package). This file will be copied to the new system.</p>
+<p>Packages to install are downloaded from mirror servers defined in <code>/etc/pacman.d/mirrorlist</code>. Edit the
+file to assign the desired priority (the higher a mirror is placed in the file, the higher its priority when downloading
+a package). This file will be copied to the new system.</p>
 
 <h3>Install initial packages</h3>
 
@@ -168,7 +168,7 @@ the file, the more priority it is given when downloading a package). This file w
 <p>Update <code>/etc/locale.gen</code> by uncommenting the desired localisations. To generate them, execute</p>
 <pre>$ locale-gen</pre>
 
-<p>Create <code>/etc/locale.conf</code> and add lines setting the variables
+<p>Create <code>/etc/locale.conf</code> and set the variables
 <a href="http://www.gnu.org/software/gettext/manual/gettext.html#Locale-Names"><code>LANG</code></a> and
 <a href="http://www.gnu.org/software/gettext/manual/gettext.html#The-LANGUAGE-variable"><code>LANGUAGE</code></a> to
 the desired values</p>
@@ -184,7 +184,7 @@ setting <code>KEYMAP</code> in <code>/etc/vconsole.conf</code></p>
 
 <h3>Network configuration</h3>
 
-<p>Create <code>/etc/hostname</code> and add a line with the desired hostname <code><i>&lt;hostname&gt;</i></code></p>
+<p>Create <code>/etc/hostname</code> and set the desired hostname <code><i>&lt;hostname&gt;</i></code></p>
 <pre class="header">/etc/hostname</pre>
 <pre class="content"><i>&lt;hostname&gt;</i></pre>
 
@@ -219,21 +219,22 @@ specified in <code>/etc/vconsole.conf</code>).</p>
 file and copy the rEFInd files into the ESP</p>
 <pre>$ wget https://downloads.sourceforge.net/project/refind/<i>&lt;version&gt;</i>/refind-bin-<i>&lt;version&gt;</i>.zip
 $ unzip refind-bin-<i>&lt;version&gt;</i>.zip
-$ mkdir /esp/EFI
 $ cp -r refind-bin-<i>&lt;version&gt;</i>/refind /esp/EFI/</pre>
 <p>Remove files not relevant to the x64 architecture</p>
 <pre>$ cd /esp/EFI/refind
 $ rm -r refind_ia32.efi refind_aa64.efi drivers_ia32 drivers_aa64 tools_ia32 tools_aa64</pre>
 <p>Also, it is <a href="https://www.rodsbooks.com/refind/installing.html#linux">strongly recommended</a> to remove
 unneeded drives in <code>drivers_x64</code> (see rEFInd's
-<a href="https://www.rodsbooks.com/refind/drivers.html">page on drivers</a>). Rename the configuration file</p>
+<a href="https://www.rodsbooks.com/refind/drivers.html">page on drivers</a>).</p>
+
+<p>Rename the configuration file</p>
 <pre>$ mv refind.conf-sample refind.conf</pre>
 
 <p>The boot option for this installation will be specified with a
 <a href="https://www.rodsbooks.com/refind/configfile.html#stanzas">manual boot stanza</a>. Kernel parameters are
 set in the boot stanza. Particularly, we need to set those required to boot from an encrypted root partition:</p>
 <ul>
-<li><code>root</code>: specifies the device of the decrypted root file system.</li>
+<li><code>root</code>: specifies the device of the decrypted root file system;</li>
 <li><code>cryptdevice</code>: parsed by <code>mkinitcpio</code>'s <code>encrypt</code> hook to identify the device
     containing the encrypted system. This will make the system prompt for the passphrase to unlock the device containing
     the encrypted installation on boot.</li>
@@ -247,10 +248,9 @@ menuentry "Arch Linux" {
     initrd    /initramfs-linux.img
     options   "cryptdevice=UUID=<i>&lt;UUID_root&gt;</i>:cryptroot root=/dev/mapper/cryptroot"
 }</pre>
-<p>where <code><i>&lt;PARTUUID_ESP&gt;</i></code> is the PARTUUID of <code>/dev/<i>&lt;devpart_ESP&gt;</i></code>,
-<code><i>&lt;UUID_root&gt;</i></code> is the UUID of <code>/dev/<i>&lt;devpart_root&gt;</i></code> and
-<code><i>&lt;devpart_ESP&gt;</i></code> and <code><i>&lt;devpart_root&gt;</i></code> are as explained above. The
-PARTUUID and UUID can be obtained with</p>
+<p>where <code><i>&lt;PARTUUID_ESP&gt;</i></code> is the PARTUUID of <code>/dev/<i>&lt;devpart_ESP&gt;</i></code> and
+<code><i>&lt;UUID_root&gt;</i></code> is the UUID of <code>/dev/<i>&lt;devpart_root&gt;</i></code>. The PARTUUID and
+UUID can be obtained with</p>
 <pre>$ blkid</pre>
 
 <h3>Unlock the home partition at boot</h3>
@@ -270,7 +270,6 @@ $ chmod 600 /etc/keyfile-home</pre>
 </ul>
 <p>Add a keyslot for the keyfile to the LUKS header</p>
 <pre>$ cryptsetup luksAddKey /dev/<i>&lt;devpart_home&gt;</i> /etc/keyfile-home</pre>
-<p>where <code><i>&lt;devpart_home&gt;</i></code> is as explained above.</p>
 
 <p>Update <code>/etc/crypttab</code> for automatically unlocking the home partition at boot</p>
 <pre class="header">/etc/crypttab</pre>
