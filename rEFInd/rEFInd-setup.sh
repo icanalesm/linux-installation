@@ -1,9 +1,9 @@
 #!/bin/sh
 
-refind_ver=0.13.3.1
+refind_ver=0.14.2
 refind_dir="refind-bin-$refind_ver"
 refind_file="refind-bin-$refind_ver.zip"
-install_dir=/boot/EFI/refind
+install_dir=/esp/EFI/refind
 
 wget "https://downloads.sourceforge.net/project/refind/$refind_ver/$refind_file"
 unzip "$refind_file"
