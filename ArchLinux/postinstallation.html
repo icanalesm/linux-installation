@@ -175,9 +175,30 @@ DEVICES_TO_DISABLE_ON_STARTUP="bluetooth"
 USB_EXCLUDE_PHONE=1
 </pre>
 
+<h2>Sound</h2>
+
+<h3>PipeWire</h3>
+
+<pre>$ sudo pacman -S pipewire wireplumber pipewire-alsa pipewire-pulse pipewire-jack pavucontrol</pre>
+
+<h2>Bluetooth</h2>
+
+<pre>$ sudo pacman -S bluez bluez-utils</pre>
+
+<h2>Backlight control</h2>
+
+<h3>brightnessctl</h3>
+
+<pre>$ sudo pacman -S brightnessctl</pre>
+
 <h2>Fonts</h2>
 
 <pre>$ sudo pacman -S ttf-ibm-plex otf-font-awesome</pre>
+
+<h2>Printing</h2>
+
+<pre>$ sudo pacman -S cups cups-pdf
+$ sudo systemctl enable --now cups.socket</pre>
 
 <h2>X Window System</h2>
 
@@ -201,29 +222,6 @@ USB_EXCLUDE_PHONE=1
 EndSection</pre>
 <p>If the file does not exist, copy <code>40-libinput.conf</code> from <code>/usr/share/X11/xorg.conf.d/</code>.</p>
 
-<h2>Sound</h2>
-
-<h3>PipeWire</h3>
-
-<pre>$ sudo pacman -S pipewire wireplumber pipewire-alsa pipewire-pulse pipewire-jack pavucontrol</pre>
-
-<h2>Backlight control</h2>
-
-<h3>brightnessctl</h3>
-
-<pre>$ sudo pacman -S brightnessctl</pre>
-
-<h2>Terminal emulator</h2>
-
-<h3>st</h3>
-
-<p>Install <a href="https://github.com/icanalesm/st">my fork</a> of
-<a href="https://st.suckless.org/" rel="nofollow">st</a>:</p>
-<pre>$ git clone https://github.com/icanalesm/st.git
-$ cd st
-$ make
-$ sudo make install</pre>
-
 <h2>Window manager</h2>
 
 <h3>dwm</h3>
@@ -240,6 +238,17 @@ $ sudo make install</pre>
 
 <p>To execute <code>dwm</code> with <code>startx</code>, add <code>exec dwm</code> at the end of
 <code>~/.xinitrc</code>.</p>
+
+<h2>Terminal emulator</h2>
+
+<h3>st</h3>
+
+<p>Install <a href="https://github.com/icanalesm/st">my fork</a> of
+<a href="https://st.suckless.org/" rel="nofollow">st</a>:</p>
+<pre>$ git clone https://github.com/icanalesm/st.git
+$ cd st
+$ make
+$ sudo make install</pre>
 
 <h2>Desktop notifications</h2>
 
